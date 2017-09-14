@@ -19481,7 +19481,7 @@ var _mdgriffith$style_elements$Style_Font$typeface = function (families) {
 
 var _user$project$Types$Model = F2(
 	function (a, b) {
-		return {selectedLanguage: a, levels: b};
+		return {selectedSite: a, levels: b};
 	});
 var _user$project$Types$Site = F2(
 	function (a, b) {
@@ -19492,21 +19492,23 @@ var _user$project$Types$Level = F3(
 		return {id: a, type_: b, text: c};
 	});
 
-var _user$project$Client$sites = {
-	ctor: '::',
-	_0: {language: 'Svenska', url: 'http://api.scb.se/OV0104/v1/doris/sv/ssd'},
-	_1: {
-		ctor: '::',
-		_0: {language: 'English', url: ' http://api.scb.se/OV0104/v1/doris/en/ssd'},
-		_1: {ctor: '[]'}
-	}
-};
 var _user$project$Client$columnAttributes = {
 	ctor: '::',
 	_0: _mdgriffith$style_elements$Element_Attributes$spacing(20),
 	_1: {
 		ctor: '::',
 		_0: _mdgriffith$style_elements$Element_Attributes$padding(20),
+		_1: {ctor: '[]'}
+	}
+};
+var _user$project$Client$english = {language: 'English', url: ' http://api.scb.se/OV0104/v1/doris/en/ssd'};
+var _user$project$Client$swedish = {language: 'Svenska', url: 'http://api.scb.se/OV0104/v1/doris/sv/ssd'};
+var _user$project$Client$sites = {
+	ctor: '::',
+	_0: _user$project$Client$swedish,
+	_1: {
+		ctor: '::',
+		_0: _user$project$Client$english,
 		_1: {ctor: '[]'}
 	}
 };
@@ -19524,16 +19526,7 @@ var _user$project$Client$levelDecoder = A3(
 			_elm_lang$core$Json_Decode$string,
 			_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$decode(_user$project$Types$Level))));
 var _user$project$Client$initialModel = {
-	selectedLanguage: A2(
-		_elm_lang$core$Maybe$withDefault,
-		'',
-		_elm_lang$core$List$head(
-			A2(
-				_elm_lang$core$List$map,
-				function (_) {
-					return _.language;
-				},
-				_user$project$Client$sites))),
+	selectedSite: _user$project$Client$swedish,
 	levels: {ctor: '[]'}
 };
 var _user$project$Client$LevelLoaded = function (a) {
@@ -19562,7 +19555,7 @@ var _user$project$Client$update = F2(
 					var _v1 = _user$project$Client$LoadLevel(_p1.url),
 						_v2 = _elm_lang$core$Native_Utils.update(
 						model,
-						{selectedLanguage: _p1.language});
+						{selectedSite: _p1});
 					msg = _v1;
 					model = _v2;
 					continue update;
@@ -19594,8 +19587,8 @@ var _user$project$Client$Selected = {ctor: 'Selected'};
 var _user$project$Client$Main = {ctor: 'Main'};
 var _user$project$Client$None = {ctor: 'None'};
 var _user$project$Client$elementFromSite = F2(
-	function (language, site) {
-		var style = _elm_lang$core$Native_Utils.eq(site.language, language) ? _user$project$Client$Selected : _user$project$Client$None;
+	function (selected, site) {
+		var style = _elm_lang$core$Native_Utils.eq(site, selected) ? _user$project$Client$Selected : _user$project$Client$None;
 		return A3(
 			_mdgriffith$style_elements$Element$el,
 			style,
@@ -19694,7 +19687,7 @@ var _user$project$Client$view = function (model) {
 					_user$project$Client$columnAttributes,
 					A2(
 						_elm_lang$core$List$map,
-						_user$project$Client$elementFromSite(model.selectedLanguage),
+						_user$project$Client$elementFromSite(model.selectedSite),
 						_user$project$Client$sites)),
 				_1: {
 					ctor: '::',

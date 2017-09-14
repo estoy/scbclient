@@ -1,6 +1,7 @@
 module Client exposing (..)
 
 import Types exposing (..)
+
 import Json.Decode exposing (string, list, Decoder, at, map, lazy, oneOf, null)
 import Json.Decode.Pipeline exposing (decode, required, requiredAt, custom, optional)
 import Http
@@ -16,11 +17,7 @@ import Style.Font as Font
 
 initialModel : Model
 initialModel =
-    { selectedLanguage =
-        sites
-            |> List.map .language
-            |> List.head
-            |> Maybe.withDefault ""
+    { selectedSite = swedish
     , levels = []
     }
 
@@ -38,7 +35,7 @@ view model =
             []
             [ column Main
                 columnAttributes
-                (List.map (elementFromSite model.selectedLanguage) sites)
+                (List.map (elementFromSite model.selectedSite) sites)
             , column Main
                 columnAttributes
                 (List.map elementFromLevel model.levels)
@@ -49,7 +46,7 @@ update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         SelectSite site ->
-            update (LoadLevel site.url) { model | selectedLanguage = site.language }
+            update (LoadLevel site.url) { model | selectedSite = site }
 
         LoadLevel url ->
             ( model, loadLevelCmd url )
@@ -71,11 +68,11 @@ main =
         }
 
 
-elementFromSite : String -> Site -> Element Styles variation Msg
-elementFromSite language site =
+elementFromSite : Site -> Site -> Element Styles variation Msg
+elementFromSite selected site =
     let
         style =
-            if site.language == language then
+            if site == selected then
                 Selected
             else
                 None
@@ -103,6 +100,23 @@ levelDecoder =
         |> required "text" string
 
 
+sites : List Site
+sites =
+    [ swedish
+    , english
+    ]
+
+
+swedish : Site
+swedish =
+    { language = "Svenska", url = "http://api.scb.se/OV0104/v1/doris/sv/ssd" }
+
+
+english : Site
+english =
+    { language = "English", url = " http://api.scb.se/OV0104/v1/doris/en/ssd" }
+
+
 
 -- Layout ------------------------
 
@@ -114,13 +128,6 @@ columnAttributes =
 
 
 -- Styles -------------------------
-
-
-sites : List Site
-sites =
-    [ { language = "Svenska", url = "http://api.scb.se/OV0104/v1/doris/sv/ssd" }
-    , { language = "English", url = " http://api.scb.se/OV0104/v1/doris/en/ssd" }
-    ]
 
 
 type Styles
