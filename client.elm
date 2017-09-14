@@ -4,7 +4,10 @@ import Types exposing (..)
 import Html exposing (Html)
 import Element exposing (..)
 import Element.Attributes exposing (..)
+import Color
 import Style exposing (..)
+import Style.Color as Color
+import Style.Font as Font
 
 
 initialModel : Model
@@ -20,9 +23,9 @@ initialModel =
 view : Model -> Html msg
 view model =
     viewport stylesheet <|
-        column None
+        column Main
             [ spacing 20, padding 20 ]
-            (List.map (\site -> el None [] (text site.language)) sites)
+            (List.map (elementFromSite model.selectedLanguage) sites)
 
 
 update : msg -> Model -> ( Model, Cmd msg )
@@ -40,6 +43,14 @@ main =
         }
 
 
+elementFromSite : String -> Site -> Element Styles variation msg
+elementFromSite language site =
+    let
+        style = if site.language == language then Selected else None
+    in
+        el style [] (text site.language)
+
+
 sites : List Site
 sites =
     [ { language = "Svenska", url = "http://api.scb.se/OV0104/v1/doris/sv/ssd" }
@@ -49,9 +60,23 @@ sites =
 
 type Styles
     = None
+    | Main
+    | Selected
 
 
 stylesheet : StyleSheet Styles variation
 stylesheet =
     Style.styleSheet
-        [ style None [] ]
+        [ style None []
+        , style Main
+            [ Color.text Color.darkCharcoal
+            , Color.background Color.white
+            , Font.typeface [ "helvetica", "arial", "sans-serif" ]
+            , Font.size 16
+            , Font.lineHeight 1.3
+            ]
+        , style Selected
+            [ Color.text Color.white
+            , Color.background Color.charcoal
+            ]
+        ]

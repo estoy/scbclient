@@ -18722,6 +18722,113 @@ var _mdgriffith$style_elements$Element$Option = F3(
 	});
 var _mdgriffith$style_elements$Element$option = _mdgriffith$style_elements$Element$Option;
 
+var _mdgriffith$style_elements$Style_Color$placeholder = function (clr) {
+	return A2(
+		_mdgriffith$style_elements$Style_Internal_Model$PseudoElement,
+		'::placeholder',
+		{
+			ctor: '::',
+			_0: _mdgriffith$style_elements$Style_Internal_Model$TextColor(clr),
+			_1: {
+				ctor: '::',
+				_0: A2(_mdgriffith$style_elements$Style_Internal_Model$Exact, 'opacity', '1'),
+				_1: {ctor: '[]'}
+			}
+		});
+};
+var _mdgriffith$style_elements$Style_Color$selection = function (clr) {
+	return _mdgriffith$style_elements$Style_Internal_Model$SelectionColor(clr);
+};
+var _mdgriffith$style_elements$Style_Color$decoration = function (clr) {
+	return A2(
+		_mdgriffith$style_elements$Style_Internal_Model$Exact,
+		'text-decoration-color',
+		_mdgriffith$style_elements$Style_Internal_Render_Value$color(clr));
+};
+var _mdgriffith$style_elements$Style_Color$cursor = function (clr) {
+	return A2(
+		_mdgriffith$style_elements$Style_Internal_Model$Exact,
+		'cursor-color',
+		_mdgriffith$style_elements$Style_Internal_Render_Value$color(clr));
+};
+var _mdgriffith$style_elements$Style_Color$border = function (clr) {
+	return A2(
+		_mdgriffith$style_elements$Style_Internal_Model$Exact,
+		'border-color',
+		_mdgriffith$style_elements$Style_Internal_Render_Value$color(clr));
+};
+var _mdgriffith$style_elements$Style_Color$background = function (clr) {
+	return A2(
+		_mdgriffith$style_elements$Style_Internal_Model$Exact,
+		'background-color',
+		_mdgriffith$style_elements$Style_Internal_Render_Value$color(clr));
+};
+var _mdgriffith$style_elements$Style_Color$text = _mdgriffith$style_elements$Style_Internal_Model$TextColor;
+
+var _mdgriffith$style_elements$Style_Font$lowercase = A2(_mdgriffith$style_elements$Style_Internal_Model$Font, 'text-transform', 'lowercase');
+var _mdgriffith$style_elements$Style_Font$capitalize = A2(_mdgriffith$style_elements$Style_Internal_Model$Font, 'text-transform', 'capitalize');
+var _mdgriffith$style_elements$Style_Font$uppercase = A2(_mdgriffith$style_elements$Style_Internal_Model$Font, 'text-transform', 'uppercase');
+var _mdgriffith$style_elements$Style_Font$weight = function (fontWeight) {
+	return A2(
+		_mdgriffith$style_elements$Style_Internal_Model$Font,
+		'font-weight',
+		_elm_lang$core$Basics$toString(fontWeight));
+};
+var _mdgriffith$style_elements$Style_Font$light = A2(_mdgriffith$style_elements$Style_Internal_Model$Font, 'font-weight', '300');
+var _mdgriffith$style_elements$Style_Font$bold = A2(_mdgriffith$style_elements$Style_Internal_Model$Font, 'font-weight', '700');
+var _mdgriffith$style_elements$Style_Font$italic = A2(_mdgriffith$style_elements$Style_Internal_Model$Font, 'font-style', 'italic');
+var _mdgriffith$style_elements$Style_Font$strike = A2(_mdgriffith$style_elements$Style_Internal_Model$Font, 'text-decoration', 'line-through');
+var _mdgriffith$style_elements$Style_Font$underline = A2(_mdgriffith$style_elements$Style_Internal_Model$Font, 'text-decoration', 'underline');
+var _mdgriffith$style_elements$Style_Font$noWrap = A2(_mdgriffith$style_elements$Style_Internal_Model$Font, 'white-space', 'nowrap');
+var _mdgriffith$style_elements$Style_Font$preLine = A2(_mdgriffith$style_elements$Style_Internal_Model$Font, 'white-space', 'pre-line');
+var _mdgriffith$style_elements$Style_Font$preWrap = A2(_mdgriffith$style_elements$Style_Internal_Model$Font, 'white-space', 'pre-wrap');
+var _mdgriffith$style_elements$Style_Font$pre = A2(_mdgriffith$style_elements$Style_Internal_Model$Font, 'white-space', 'pre');
+var _mdgriffith$style_elements$Style_Font$wrap = A2(_mdgriffith$style_elements$Style_Internal_Model$Font, 'white-space', 'normal');
+var _mdgriffith$style_elements$Style_Font$justifyAll = A2(_mdgriffith$style_elements$Style_Internal_Model$Font, 'text-align', 'justifyAll');
+var _mdgriffith$style_elements$Style_Font$justify = A2(_mdgriffith$style_elements$Style_Internal_Model$Font, 'text-align', 'justify');
+var _mdgriffith$style_elements$Style_Font$center = A2(_mdgriffith$style_elements$Style_Internal_Model$Font, 'text-align', 'center');
+var _mdgriffith$style_elements$Style_Font$alignRight = A2(_mdgriffith$style_elements$Style_Internal_Model$Font, 'text-align', 'right');
+var _mdgriffith$style_elements$Style_Font$alignLeft = A2(_mdgriffith$style_elements$Style_Internal_Model$Font, 'text-align', 'left');
+var _mdgriffith$style_elements$Style_Font$wordSpacing = function (offset) {
+	return A2(
+		_mdgriffith$style_elements$Style_Internal_Model$Font,
+		'word-spacing',
+		A2(
+			_elm_lang$core$Basics_ops['++'],
+			_elm_lang$core$Basics$toString(offset),
+			'px'));
+};
+var _mdgriffith$style_elements$Style_Font$letterSpacing = function (offset) {
+	return A2(
+		_mdgriffith$style_elements$Style_Internal_Model$Font,
+		'letter-spacing',
+		A2(
+			_elm_lang$core$Basics_ops['++'],
+			_elm_lang$core$Basics$toString(offset),
+			'px'));
+};
+var _mdgriffith$style_elements$Style_Font$lineHeight = function (height) {
+	return A2(
+		_mdgriffith$style_elements$Style_Internal_Model$Font,
+		'line-height',
+		_elm_lang$core$Basics$toString(height));
+};
+var _mdgriffith$style_elements$Style_Font$size = function (size) {
+	return A2(
+		_mdgriffith$style_elements$Style_Internal_Model$Font,
+		'font-size',
+		A2(
+			_elm_lang$core$Basics_ops['++'],
+			_elm_lang$core$Basics$toString(size),
+			'px'));
+};
+var _mdgriffith$style_elements$Style_Font$typeface = function (families) {
+	return A2(
+		_mdgriffith$style_elements$Style_Internal_Model$Font,
+		'font-family',
+		_mdgriffith$style_elements$Style_Internal_Render_Value$typeface(families));
+};
+
 var _user$project$Types$Model = function (a) {
 	return {selectedLanguage: a};
 };
@@ -18755,15 +18862,81 @@ var _user$project$Client$initialModel = {
 				},
 				_user$project$Client$sites)))
 };
+var _user$project$Client$Selected = {ctor: 'Selected'};
+var _user$project$Client$Main = {ctor: 'Main'};
 var _user$project$Client$None = {ctor: 'None'};
-var _user$project$Client$stylesheet = _mdgriffith$style_elements$Style$stylesheet(
+var _user$project$Client$elementFromSite = F2(
+	function (language, site) {
+		var style = _elm_lang$core$Native_Utils.eq(site.language, language) ? _user$project$Client$Selected : _user$project$Client$None;
+		return A3(
+			_mdgriffith$style_elements$Element$el,
+			style,
+			{ctor: '[]'},
+			_mdgriffith$style_elements$Element$text(site.language));
+	});
+var _user$project$Client$stylesheet = _mdgriffith$style_elements$Style$styleSheet(
 	{
 		ctor: '::',
 		_0: A2(
 			_mdgriffith$style_elements$Style$style,
 			_user$project$Client$None,
 			{ctor: '[]'}),
-		_1: {ctor: '[]'}
+		_1: {
+			ctor: '::',
+			_0: A2(
+				_mdgriffith$style_elements$Style$style,
+				_user$project$Client$Main,
+				{
+					ctor: '::',
+					_0: _mdgriffith$style_elements$Style_Color$text(_elm_lang$core$Color$darkCharcoal),
+					_1: {
+						ctor: '::',
+						_0: _mdgriffith$style_elements$Style_Color$background(_elm_lang$core$Color$white),
+						_1: {
+							ctor: '::',
+							_0: _mdgriffith$style_elements$Style_Font$typeface(
+								{
+									ctor: '::',
+									_0: 'helvetica',
+									_1: {
+										ctor: '::',
+										_0: 'arial',
+										_1: {
+											ctor: '::',
+											_0: 'sans-serif',
+											_1: {ctor: '[]'}
+										}
+									}
+								}),
+							_1: {
+								ctor: '::',
+								_0: _mdgriffith$style_elements$Style_Font$size(16),
+								_1: {
+									ctor: '::',
+									_0: _mdgriffith$style_elements$Style_Font$lineHeight(1.3),
+									_1: {ctor: '[]'}
+								}
+							}
+						}
+					}
+				}),
+			_1: {
+				ctor: '::',
+				_0: A2(
+					_mdgriffith$style_elements$Style$style,
+					_user$project$Client$Selected,
+					{
+						ctor: '::',
+						_0: _mdgriffith$style_elements$Style_Color$text(_elm_lang$core$Color$white),
+						_1: {
+							ctor: '::',
+							_0: _mdgriffith$style_elements$Style_Color$background(_elm_lang$core$Color$charcoal),
+							_1: {ctor: '[]'}
+						}
+					}),
+				_1: {ctor: '[]'}
+			}
+		}
 	});
 var _user$project$Client$view = function (model) {
 	return A2(
@@ -18771,7 +18944,7 @@ var _user$project$Client$view = function (model) {
 		_user$project$Client$stylesheet,
 		A3(
 			_mdgriffith$style_elements$Element$column,
-			_user$project$Client$None,
+			_user$project$Client$Main,
 			{
 				ctor: '::',
 				_0: _mdgriffith$style_elements$Element_Attributes$spacing(20),
@@ -18783,13 +18956,7 @@ var _user$project$Client$view = function (model) {
 			},
 			A2(
 				_elm_lang$core$List$map,
-				function (site) {
-					return A3(
-						_mdgriffith$style_elements$Element$el,
-						_user$project$Client$None,
-						{ctor: '[]'},
-						_mdgriffith$style_elements$Element$text(site.language));
-				},
+				_user$project$Client$elementFromSite(model.selectedLanguage),
 				_user$project$Client$sites)));
 };
 var _user$project$Client$main = _elm_lang$html$Html$program(
