@@ -2,7 +2,20 @@ module Types exposing (..)
 
 
 type alias Model =
-    { selectedSite : Site
+    { siteContext : SiteCtx
+    , levelContexts : List LevelCtx
+    }
+
+
+type alias SiteCtx =
+    { selected : Site
+    , sites : List Site
+    }
+
+
+type alias LevelCtx =
+    { index : Int
+    , selected : Maybe Level
     , levels : List Level
     }
 

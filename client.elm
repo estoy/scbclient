@@ -1,7 +1,6 @@
 module Client exposing (..)
 
 import Types exposing (..)
-
 import Json.Decode exposing (string, list, Decoder, at, map, lazy, oneOf, null)
 import Json.Decode.Pipeline exposing (decode, required, requiredAt, custom, optional)
 import Http
@@ -17,15 +16,14 @@ import Style.Font as Font
 
 initialModel : Model
 initialModel =
-    { selectedSite = swedish
-    , levels = []
+    { siteContext = { selected = swedish, sites = sites }
+    , levelContexts = []
     }
 
 
 type Msg
     = SelectSite Site
-    | LoadLevel Url
-    | LevelLoaded (Result Http.Error (List Level))
+    | SiteLoaded Site (Result Http.Error (List Level))
 
 
 view : Model -> Html Msg
@@ -33,35 +31,31 @@ view model =
     viewport stylesheet <|
         row Main
             []
-            [ column Main
+            ((column Main
                 columnAttributes
-                (List.map (elementFromSite model.selectedSite) sites)
-            , column Main
-                columnAttributes
-                (List.map elementFromLevel model.levels)
-            ]
+                (List.map (elementFromSite model.siteContext.selected) sites)
+             )
+                :: (List.map columnFromLevelContext model.levelContexts)
+            )
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         SelectSite site ->
-            update (LoadLevel site.url) { model | selectedSite = site }
+            ( model, loadSiteCmd site )
 
-        LoadLevel url ->
-            ( model, loadLevelCmd url )
+        SiteLoaded site (Ok levels) ->
+            ( modelWithSite model site levels, Cmd.none )
 
-        LevelLoaded (Ok levels) ->
-            ( { model | levels = levels }, Cmd.none )
-
-        LevelLoaded (Err _) ->
+        SiteLoaded _ (Err _) ->
             ( model, Cmd.none )
 
 
 main : Program Never Model Msg
 main =
     Html.program
-        { init = ( initialModel, Cmd.none )
+        { init = ( initialModel, loadSiteCmd swedish )
         , view = view
         , update = update
         , subscriptions = (\model -> Sub.none)
@@ -80,16 +74,57 @@ elementFromSite selected site =
         el style [ onClick <| SelectSite site ] (text site.language)
 
 
-elementFromLevel : Level -> Element Styles variation Msg
-elementFromLevel level =
-    el None [] (text level.text)
+columnFromLevelContext : LevelCtx -> Element Styles variation Msg
+columnFromLevelContext context =
+    column Main
+        columnAttributes
+        (List.map (elementFromLevel context.selected) context.levels)
 
 
-loadLevelCmd : Url -> Cmd Msg
-loadLevelCmd url =
+elementFromLevel : Maybe Level -> Level -> Element Styles variation Msg
+elementFromLevel selected level =
+    let
+        style =
+            case selected of
+                Just sel ->
+                    if sel == level then
+                        Selected
+                    else
+                        None
+
+                Nothing ->
+                    None
+    in
+        el style [] (text level.text)
+
+
+modelWithSite : Model -> Site -> List Level -> Model
+modelWithSite model site levels =
+    let
+        oldSiteContext =
+            model.siteContext
+
+        oldLevelContexts =
+            model.levelContexts
+    in
+        { siteContext = { oldSiteContext | selected = site }
+        , levelContexts =
+            if List.length levels > 0 then
+                [ { index = 0
+                  , selected = Nothing
+                  , levels = levels
+                  }
+                ]
+            else
+                []
+        }
+
+
+loadSiteCmd : Site -> Cmd Msg
+loadSiteCmd site =
     list levelDecoder
-        |> Http.get url
-        |> Http.send (LevelLoaded)
+        |> Http.get site.url
+        |> Http.send (SiteLoaded site)
 
 
 levelDecoder : Decoder Level

@@ -19481,7 +19481,15 @@ var _mdgriffith$style_elements$Style_Font$typeface = function (families) {
 
 var _user$project$Types$Model = F2(
 	function (a, b) {
-		return {selectedSite: a, levels: b};
+		return {siteContext: a, levelContexts: b};
+	});
+var _user$project$Types$SiteCtx = F2(
+	function (a, b) {
+		return {selected: a, sites: b};
+	});
+var _user$project$Types$LevelCtx = F3(
+	function (a, b, c) {
+		return {index: a, selected: b, levels: c};
 	});
 var _user$project$Types$Site = F2(
 	function (a, b) {
@@ -19525,58 +19533,58 @@ var _user$project$Client$levelDecoder = A3(
 			'id',
 			_elm_lang$core$Json_Decode$string,
 			_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$decode(_user$project$Types$Level))));
+var _user$project$Client$modelWithSite = F3(
+	function (model, site, levels) {
+		var oldLevelContexts = model.levelContexts;
+		var oldSiteContext = model.siteContext;
+		return {
+			siteContext: _elm_lang$core$Native_Utils.update(
+				oldSiteContext,
+				{selected: site}),
+			levelContexts: (_elm_lang$core$Native_Utils.cmp(
+				_elm_lang$core$List$length(levels),
+				0) > 0) ? {
+				ctor: '::',
+				_0: {index: 0, selected: _elm_lang$core$Maybe$Nothing, levels: levels},
+				_1: {ctor: '[]'}
+			} : {ctor: '[]'}
+		};
+	});
 var _user$project$Client$initialModel = {
-	selectedSite: _user$project$Client$swedish,
-	levels: {ctor: '[]'}
+	siteContext: {selected: _user$project$Client$swedish, sites: _user$project$Client$sites},
+	levelContexts: {ctor: '[]'}
 };
-var _user$project$Client$LevelLoaded = function (a) {
-	return {ctor: 'LevelLoaded', _0: a};
-};
-var _user$project$Client$loadLevelCmd = function (url) {
+var _user$project$Client$SiteLoaded = F2(
+	function (a, b) {
+		return {ctor: 'SiteLoaded', _0: a, _1: b};
+	});
+var _user$project$Client$loadSiteCmd = function (site) {
 	return A2(
 		_elm_lang$http$Http$send,
-		_user$project$Client$LevelLoaded,
+		_user$project$Client$SiteLoaded(site),
 		A2(
 			_elm_lang$http$Http$get,
-			url,
+			site.url,
 			_elm_lang$core$Json_Decode$list(_user$project$Client$levelDecoder)));
-};
-var _user$project$Client$LoadLevel = function (a) {
-	return {ctor: 'LoadLevel', _0: a};
 };
 var _user$project$Client$update = F2(
 	function (msg, model) {
-		update:
-		while (true) {
-			var _p0 = msg;
-			switch (_p0.ctor) {
-				case 'SelectSite':
-					var _p1 = _p0._0;
-					var _v1 = _user$project$Client$LoadLevel(_p1.url),
-						_v2 = _elm_lang$core$Native_Utils.update(
-						model,
-						{selectedSite: _p1});
-					msg = _v1;
-					model = _v2;
-					continue update;
-				case 'LoadLevel':
-					return {
-						ctor: '_Tuple2',
-						_0: model,
-						_1: _user$project$Client$loadLevelCmd(_p0._0)
-					};
-				default:
-					if (_p0._0.ctor === 'Ok') {
-						return {
-							ctor: '_Tuple2',
-							_0: _elm_lang$core$Native_Utils.update(
-								model,
-								{levels: _p0._0._0}),
-							_1: _elm_lang$core$Platform_Cmd$none
-						};
-					} else {
-						return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
-					}
+		var _p0 = msg;
+		if (_p0.ctor === 'SelectSite') {
+			return {
+				ctor: '_Tuple2',
+				_0: model,
+				_1: _user$project$Client$loadSiteCmd(_p0._0)
+			};
+		} else {
+			if (_p0._1.ctor === 'Ok') {
+				return {
+					ctor: '_Tuple2',
+					_0: A3(_user$project$Client$modelWithSite, model, _p0._0, _p0._1._0),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
+			} else {
+				return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
 			}
 		}
 	});
@@ -19600,12 +19608,31 @@ var _user$project$Client$elementFromSite = F2(
 			},
 			_mdgriffith$style_elements$Element$text(site.language));
 	});
-var _user$project$Client$elementFromLevel = function (level) {
+var _user$project$Client$elementFromLevel = F2(
+	function (selected, level) {
+		var style = function () {
+			var _p1 = selected;
+			if (_p1.ctor === 'Just') {
+				return _elm_lang$core$Native_Utils.eq(_p1._0, level) ? _user$project$Client$Selected : _user$project$Client$None;
+			} else {
+				return _user$project$Client$None;
+			}
+		}();
+		return A3(
+			_mdgriffith$style_elements$Element$el,
+			style,
+			{ctor: '[]'},
+			_mdgriffith$style_elements$Element$text(level.text));
+	});
+var _user$project$Client$columnFromLevelContext = function (context) {
 	return A3(
-		_mdgriffith$style_elements$Element$el,
-		_user$project$Client$None,
-		{ctor: '[]'},
-		_mdgriffith$style_elements$Element$text(level.text));
+		_mdgriffith$style_elements$Element$column,
+		_user$project$Client$Main,
+		_user$project$Client$columnAttributes,
+		A2(
+			_elm_lang$core$List$map,
+			_user$project$Client$elementFromLevel(context.selected),
+			context.levels));
 };
 var _user$project$Client$stylesheet = _mdgriffith$style_elements$Style$styleSheet(
 	{
@@ -19687,22 +19714,18 @@ var _user$project$Client$view = function (model) {
 					_user$project$Client$columnAttributes,
 					A2(
 						_elm_lang$core$List$map,
-						_user$project$Client$elementFromSite(model.selectedSite),
+						_user$project$Client$elementFromSite(model.siteContext.selected),
 						_user$project$Client$sites)),
-				_1: {
-					ctor: '::',
-					_0: A3(
-						_mdgriffith$style_elements$Element$column,
-						_user$project$Client$Main,
-						_user$project$Client$columnAttributes,
-						A2(_elm_lang$core$List$map, _user$project$Client$elementFromLevel, model.levels)),
-					_1: {ctor: '[]'}
-				}
+				_1: A2(_elm_lang$core$List$map, _user$project$Client$columnFromLevelContext, model.levelContexts)
 			}));
 };
 var _user$project$Client$main = _elm_lang$html$Html$program(
 	{
-		init: {ctor: '_Tuple2', _0: _user$project$Client$initialModel, _1: _elm_lang$core$Platform_Cmd$none},
+		init: {
+			ctor: '_Tuple2',
+			_0: _user$project$Client$initialModel,
+			_1: _user$project$Client$loadSiteCmd(_user$project$Client$swedish)
+		},
 		view: _user$project$Client$view,
 		update: _user$project$Client$update,
 		subscriptions: function (model) {
