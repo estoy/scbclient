@@ -1,9 +1,13 @@
 module Client exposing (..)
 
 import Types exposing (..)
+import Json.Decode exposing (string, list, Decoder, at, map, lazy, oneOf, null)
+import Json.Decode.Pipeline exposing (decode, required, requiredAt, custom, optional)
+import Http
 import Html exposing (Html)
 import Element exposing (..)
-import Element.Attributes exposing (..)
+import Element.Attributes exposing (spacing, padding)
+import Element.Events exposing (onClick)
 import Color
 import Style exposing (..)
 import Style.Color as Color
@@ -17,23 +21,47 @@ initialModel =
             |> List.map .language
             |> List.head
             |> Maybe.withDefault ""
+    , levels = []
     }
 
 
-view : Model -> Html msg
+type Msg
+    = SelectSite Site
+    | LoadLevel Url
+    | LevelLoaded (Result Http.Error (List Level))
+
+
+view : Model -> Html Msg
 view model =
     viewport stylesheet <|
-        column Main
-            [ spacing 20, padding 20 ]
-            (List.map (elementFromSite model.selectedLanguage) sites)
+        row Main
+            []
+            [ column Main
+                columnAttributes
+                (List.map (elementFromSite model.selectedLanguage) sites)
+            , column Main
+                columnAttributes
+                (List.map elementFromLevel model.levels)
+            ]
 
 
-update : msg -> Model -> ( Model, Cmd msg )
+update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
-    ( model, Cmd.none )
+    case msg of
+        SelectSite site ->
+            update (LoadLevel site.url) { model | selectedLanguage = site.language }
+
+        LoadLevel url ->
+            ( model, loadLevelCmd url )
+
+        LevelLoaded (Ok levels) ->
+            ( { model | levels = levels }, Cmd.none )
+
+        LevelLoaded (Err _) ->
+            ( model, Cmd.none )
 
 
-main : Program Never Model msg
+main : Program Never Model Msg
 main =
     Html.program
         { init = ( initialModel, Cmd.none )
@@ -43,12 +71,49 @@ main =
         }
 
 
-elementFromSite : String -> Site -> Element Styles variation msg
+elementFromSite : String -> Site -> Element Styles variation Msg
 elementFromSite language site =
     let
-        style = if site.language == language then Selected else None
+        style =
+            if site.language == language then
+                Selected
+            else
+                None
     in
-        el style [] (text site.language)
+        el style [ onClick <| SelectSite site ] (text site.language)
+
+
+elementFromLevel : Level -> Element Styles variation Msg
+elementFromLevel level =
+    el None [] (text level.text)
+
+
+loadLevelCmd : Url -> Cmd Msg
+loadLevelCmd url =
+    list levelDecoder
+        |> Http.get url
+        |> Http.send (LevelLoaded)
+
+
+levelDecoder : Decoder Level
+levelDecoder =
+    decode Level
+        |> required "id" string
+        |> required "type" string
+        |> required "text" string
+
+
+
+-- Layout ------------------------
+
+
+columnAttributes : List (Attribute variation msg)
+columnAttributes =
+    [ spacing 20, padding 20 ]
+
+
+
+-- Styles -------------------------
 
 
 sites : List Site
