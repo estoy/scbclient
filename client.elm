@@ -3,17 +3,26 @@ module Client exposing (..)
 import Types exposing (..)
 import Html exposing (Html)
 import Element exposing (..)
+import Element.Attributes exposing (..)
 import Style exposing (..)
 
 
 initialModel : Model
 initialModel =
-    { message = "Hello, Elements World!" }
+    { selectedLanguage =
+        sites
+            |> List.map .language
+            |> List.head
+            |> Maybe.withDefault ""
+    }
 
 
 view : Model -> Html msg
 view model =
-    viewport (stylesheet []) (text model.message )
+    viewport stylesheet <|
+        column None
+            [ spacing 20, padding 20 ]
+            (List.map (\site -> el None [] (text site.language)) sites)
 
 
 update : msg -> Model -> ( Model, Cmd msg )
@@ -36,3 +45,13 @@ sites =
     [ { language = "Svenska", url = "http://api.scb.se/OV0104/v1/doris/sv/ssd" }
     , { language = "English", url = " http://api.scb.se/OV0104/v1/doris/en/ssd" }
     ]
+
+
+type Styles
+    = None
+
+
+stylesheet : StyleSheet Styles variation
+stylesheet =
+    Style.stylesheet
+        [ style None [] ]

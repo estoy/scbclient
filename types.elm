@@ -2,7 +2,7 @@ module Types exposing (..)
 
 
 type alias Model =
-    { message : String }
+    { selectedLanguage : String }
 
 
 type alias Site =

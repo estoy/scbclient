@@ -18723,7 +18723,7 @@ var _mdgriffith$style_elements$Element$Option = F3(
 var _mdgriffith$style_elements$Element$option = _mdgriffith$style_elements$Element$Option;
 
 var _user$project$Types$Model = function (a) {
-	return {message: a};
+	return {selectedLanguage: a};
 };
 var _user$project$Types$Site = F2(
 	function (a, b) {
@@ -18743,14 +18743,55 @@ var _user$project$Client$update = F2(
 	function (msg, model) {
 		return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
 	});
+var _user$project$Client$initialModel = {
+	selectedLanguage: A2(
+		_elm_lang$core$Maybe$withDefault,
+		'',
+		_elm_lang$core$List$head(
+			A2(
+				_elm_lang$core$List$map,
+				function (_) {
+					return _.language;
+				},
+				_user$project$Client$sites)))
+};
+var _user$project$Client$None = {ctor: 'None'};
+var _user$project$Client$stylesheet = _mdgriffith$style_elements$Style$stylesheet(
+	{
+		ctor: '::',
+		_0: A2(
+			_mdgriffith$style_elements$Style$style,
+			_user$project$Client$None,
+			{ctor: '[]'}),
+		_1: {ctor: '[]'}
+	});
 var _user$project$Client$view = function (model) {
 	return A2(
 		_mdgriffith$style_elements$Element$viewport,
-		_mdgriffith$style_elements$Style$stylesheet(
-			{ctor: '[]'}),
-		_mdgriffith$style_elements$Element$text(model.message));
+		_user$project$Client$stylesheet,
+		A3(
+			_mdgriffith$style_elements$Element$column,
+			_user$project$Client$None,
+			{
+				ctor: '::',
+				_0: _mdgriffith$style_elements$Element_Attributes$spacing(20),
+				_1: {
+					ctor: '::',
+					_0: _mdgriffith$style_elements$Element_Attributes$padding(20),
+					_1: {ctor: '[]'}
+				}
+			},
+			A2(
+				_elm_lang$core$List$map,
+				function (site) {
+					return A3(
+						_mdgriffith$style_elements$Element$el,
+						_user$project$Client$None,
+						{ctor: '[]'},
+						_mdgriffith$style_elements$Element$text(site.language));
+				},
+				_user$project$Client$sites)));
 };
-var _user$project$Client$initialModel = {message: 'Hello, Elements World!'};
 var _user$project$Client$main = _elm_lang$html$Html$program(
 	{
 		init: {ctor: '_Tuple2', _0: _user$project$Client$initialModel, _1: _elm_lang$core$Platform_Cmd$none},
