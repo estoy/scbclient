@@ -23788,6 +23788,45 @@ var _user$project$Client$SelectSite = function (a) {
 };
 var _user$project$Client$Selected = {ctor: 'Selected'};
 var _user$project$Client$Main = {ctor: 'Main'};
+var _user$project$Client$viewVariableMeta = function (variables) {
+	return A3(
+		_mdgriffith$style_elements$Element$column,
+		_user$project$Client$Main,
+		_user$project$Client$columnAttributes,
+		A2(
+			_elm_lang$core$List$map,
+			_mdgriffith$style_elements$Element$text,
+			A2(
+				_elm_lang$core$List$map,
+				function (_) {
+					return _.text;
+				},
+				variables)));
+};
+var _user$project$Client$viewTableMeta = function (tableMeta) {
+	var meta = A2(_elm_lang$core$Maybe$withDefault, _user$project$Client$emptyTableMeta, tableMeta);
+	return A3(
+		_mdgriffith$style_elements$Element$column,
+		_user$project$Client$Main,
+		{
+			ctor: '::',
+			_0: _mdgriffith$style_elements$Element_Attributes$height(
+				_mdgriffith$style_elements$Element_Attributes$percent(20)),
+			_1: _user$project$Client$columnAttributes
+		},
+		{
+			ctor: '::',
+			_0: _mdgriffith$style_elements$Element$text(
+				function (_) {
+					return _.title;
+				}(meta)),
+			_1: {
+				ctor: '::',
+				_0: _user$project$Client$viewVariableMeta(meta.variables),
+				_1: {ctor: '[]'}
+			}
+		});
+};
 var _user$project$Client$None = {ctor: 'None'};
 var _user$project$Client$elementFromSite = F2(
 	function (selected, site) {
@@ -23905,7 +23944,7 @@ var _user$project$Client$view = function (model) {
 		A3(
 			_mdgriffith$style_elements$Element$column,
 			_user$project$Client$Main,
-			{ctor: '[]'},
+			_user$project$Client$columnAttributes,
 			{
 				ctor: '::',
 				_0: A3(
@@ -23917,7 +23956,12 @@ var _user$project$Client$view = function (model) {
 						_0: A3(
 							_mdgriffith$style_elements$Element$column,
 							_user$project$Client$Main,
-							_user$project$Client$columnAttributes,
+							{
+								ctor: '::',
+								_0: _mdgriffith$style_elements$Element_Attributes$height(
+									_mdgriffith$style_elements$Element_Attributes$percent(80)),
+								_1: _user$project$Client$columnAttributes
+							},
 							A2(
 								_elm_lang$core$List$map,
 								_user$project$Client$elementFromSite(model.siteContext.selected),
@@ -23926,11 +23970,7 @@ var _user$project$Client$view = function (model) {
 					}),
 				_1: {
 					ctor: '::',
-					_0: _mdgriffith$style_elements$Element$text(
-						function (_) {
-							return _.title;
-						}(
-							A2(_elm_lang$core$Maybe$withDefault, _user$project$Client$emptyTableMeta, model.tableMeta))),
+					_0: _user$project$Client$viewTableMeta(model.tableMeta),
 					_1: {ctor: '[]'}
 				}
 			}));

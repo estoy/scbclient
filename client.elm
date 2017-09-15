@@ -6,7 +6,7 @@ import Json.Decode.Pipeline exposing (decode, required, requiredAt, custom, opti
 import Http
 import Html exposing (Html)
 import Element exposing (..)
-import Element.Attributes exposing (spacing, padding)
+import Element.Attributes exposing (spacing, padding, height, percent)
 import Element.Events exposing (onClick)
 import Color
 import Style exposing (..)
@@ -35,17 +35,41 @@ view : Model -> Html Msg
 view model =
     viewport stylesheet <|
         column Main
-            []
+            columnAttributes
             [ row Main
                 []
                 ((column Main
-                    columnAttributes
+                    (height (percent 80) :: columnAttributes)
                     (List.map (elementFromSite model.siteContext.selected) sites)
                  )
                     :: (List.map columnFromLevelContext model.levelContexts)
                 )
-            , text <| .title <| Maybe.withDefault emptyTableMeta model.tableMeta
+            , viewTableMeta model.tableMeta
             ]
+
+
+viewTableMeta : Maybe TableMeta -> Element Styles variation msg
+viewTableMeta tableMeta =
+    let
+        meta =
+            tableMeta
+                |> Maybe.withDefault emptyTableMeta
+    in
+        column Main
+            (height (percent 20) :: columnAttributes)
+            [ text <| .title meta
+            , viewVariableMeta meta.variables
+            ]
+
+
+viewVariableMeta : List VariableMeta -> Element Styles variation msg
+viewVariableMeta variables =
+    column Main
+        columnAttributes
+        (variables
+            |> List.map .text
+            |> List.map text
+        )
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
