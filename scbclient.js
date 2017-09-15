@@ -23467,6 +23467,15 @@ var _user$project$Types$VariableMeta = F4(
 		return {code: a, text: b, values: c, valueTexts: d};
 	});
 
+var _user$project$Client$listAttributes = {
+	ctor: '::',
+	_0: _mdgriffith$style_elements$Element_Attributes$spacing(5),
+	_1: {
+		ctor: '::',
+		_0: A2(_mdgriffith$style_elements$Element_Attributes$paddingXY, 10, 0),
+		_1: {ctor: '[]'}
+	}
+};
 var _user$project$Client$columnAttributes = {
 	ctor: '::',
 	_0: _mdgriffith$style_elements$Element_Attributes$spacing(20),
@@ -23797,20 +23806,43 @@ var _user$project$Client$SelectSite = function (a) {
 };
 var _user$project$Client$Selected = {ctor: 'Selected'};
 var _user$project$Client$Main = {ctor: 'Main'};
-var _user$project$Client$viewVariableMeta = function (variables) {
+var _user$project$Client$viewVariableMeta = function (variable) {
+	return A3(
+		_mdgriffith$style_elements$Element$row,
+		_user$project$Client$Main,
+		{ctor: '[]'},
+		{
+			ctor: '::',
+			_0: _mdgriffith$style_elements$Element$text(variable.text),
+			_1: {
+				ctor: '::',
+				_0: A3(
+					_mdgriffith$style_elements$Element$column,
+					_user$project$Client$Main,
+					A2(
+						_elm_lang$core$Basics_ops['++'],
+						{
+							ctor: '::',
+							_0: _mdgriffith$style_elements$Element_Attributes$yScrollbar,
+							_1: {
+								ctor: '::',
+								_0: _mdgriffith$style_elements$Element_Attributes$maxHeight(
+									_mdgriffith$style_elements$Element_Attributes$px(150)),
+								_1: {ctor: '[]'}
+							}
+						},
+						_user$project$Client$listAttributes),
+					A2(_elm_lang$core$List$map, _mdgriffith$style_elements$Element$text, variable.valueTexts)),
+				_1: {ctor: '[]'}
+			}
+		});
+};
+var _user$project$Client$viewVariablesMeta = function (variables) {
 	return A3(
 		_mdgriffith$style_elements$Element$column,
 		_user$project$Client$Main,
 		_user$project$Client$columnAttributes,
-		A2(
-			_elm_lang$core$List$map,
-			_mdgriffith$style_elements$Element$text,
-			A2(
-				_elm_lang$core$List$map,
-				function (_) {
-					return _.text;
-				},
-				variables)));
+		A2(_elm_lang$core$List$map, _user$project$Client$viewVariableMeta, variables));
 };
 var _user$project$Client$viewTableMeta = function (meta) {
 	return A3(
@@ -23850,7 +23882,7 @@ var _user$project$Client$viewTableMeta = function (meta) {
 				}),
 			_1: {
 				ctor: '::',
-				_0: _user$project$Client$viewVariableMeta(meta.variables),
+				_0: _user$project$Client$viewVariablesMeta(meta.variables),
 				_1: {ctor: '[]'}
 			}
 		});

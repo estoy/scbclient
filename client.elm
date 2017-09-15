@@ -6,7 +6,7 @@ import Json.Decode.Pipeline exposing (decode, required, requiredAt, custom, opti
 import Http
 import Html exposing (Html)
 import Element exposing (..)
-import Element.Attributes exposing (spacing, padding, justify)
+import Element.Attributes exposing (spacing, padding, paddingXY, justify, yScrollbar, maxHeight, px)
 import Element.Events exposing (onClick)
 import Color
 import Style exposing (..)
@@ -59,18 +59,25 @@ viewTableMeta meta =
             [ text <| .title meta
             , button <| el Main [ onClick ToggleTableView ] <| text "X"
             ]
-        , viewVariableMeta meta.variables
+        , viewVariablesMeta meta.variables
         ]
 
 
-viewVariableMeta : List VariableMeta -> Element Styles variation msg
-viewVariableMeta variables =
-    column Main
-        columnAttributes
-        (variables
-            |> List.map .text
-            |> List.map text
-        )
+viewVariablesMeta : List VariableMeta -> Element Styles variation msg
+viewVariablesMeta variables =
+    column Main columnAttributes <|
+        List.map viewVariableMeta variables
+
+
+viewVariableMeta : VariableMeta -> Element Styles variation msg
+viewVariableMeta variable =
+    row Main
+        []
+        [ text variable.text
+        , column Main
+            ([ yScrollbar, maxHeight (px 150) ] ++ listAttributes)
+            (List.map text variable.valueTexts)
+        ]
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -341,7 +348,9 @@ columnAttributes : List (Attribute variation msg)
 columnAttributes =
     [ spacing 20, padding 20 ]
 
-
+listAttributes : List (Attribute variation msg)
+listAttributes =
+    [ spacing 5, paddingXY 10 0 ]
 
 -- Styles -------------------------
 
