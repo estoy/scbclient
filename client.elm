@@ -6,7 +6,7 @@ import Json.Decode.Pipeline exposing (decode, required, requiredAt, custom, opti
 import Http
 import Html exposing (Html)
 import Element exposing (..)
-import Element.Attributes exposing (spacing, padding, height, percent)
+import Element.Attributes exposing (spacing, padding, justify)
 import Element.Events exposing (onClick)
 import Color
 import Style exposing (..)
@@ -29,37 +29,38 @@ type Msg
     | SelectLevel Level Int
     | LevelLoaded Level Int (Result Http.Error (List Level))
     | TableMetaLoaded Level Int (Result Http.Error TableMeta)
+    | ToggleTableView
 
 
 view : Model -> Html Msg
 view model =
     viewport stylesheet <|
-        column Main
-            columnAttributes
-            [ row Main
-                []
-                ((column Main
-                    (height (percent 80) :: columnAttributes)
-                    (List.map (elementFromSite model.siteContext.selected) sites)
-                 )
-                    :: (List.map columnFromLevelContext model.levelContexts)
-                )
-            , viewTableMeta model.tableMeta
-            ]
+        case model.tableMeta of
+            Nothing ->
+                row Main
+                    []
+                    ((column Main
+                        columnAttributes
+                        (List.map (elementFromSite model.siteContext.selected) sites)
+                     )
+                        :: (List.map columnFromLevelContext model.levelContexts)
+                    )
+
+            Just meta ->
+                viewTableMeta meta
 
 
-viewTableMeta : Maybe TableMeta -> Element Styles variation msg
-viewTableMeta tableMeta =
-    let
-        meta =
-            tableMeta
-                |> Maybe.withDefault emptyTableMeta
-    in
-        column Main
-            (height (percent 20) :: columnAttributes)
+viewTableMeta : TableMeta -> Element Styles variation Msg
+viewTableMeta meta =
+    column Main
+        columnAttributes
+        [ row Main
+            [ justify ]
             [ text <| .title meta
-            , viewVariableMeta meta.variables
+            , button <| el Main [ onClick ToggleTableView ] <| text "X"
             ]
+        , viewVariableMeta meta.variables
+        ]
 
 
 viewVariableMeta : List VariableMeta -> Element Styles variation msg
@@ -98,6 +99,9 @@ update msg model =
 
         TableMetaLoaded _ _ (Err err) ->
             ( { model | latestError = Just err }, Cmd.none )
+
+        ToggleTableView ->
+            ( { model | tableMeta = Nothing }, Cmd.none )
 
 
 main : Program Never Model Msg
