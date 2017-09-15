@@ -6,7 +6,7 @@ import Json.Decode.Pipeline exposing (decode, required, requiredAt, custom, opti
 import Http
 import Html exposing (Html)
 import Element exposing (..)
-import Element.Attributes exposing (spacing, padding, paddingXY, justify, yScrollbar, maxHeight, px)
+import Element.Attributes exposing (spacing, padding, paddingRight, paddingXY, justify, yScrollbar, maxHeight, px)
 import Element.Events exposing (onClick)
 import Color
 import Style exposing (..)
@@ -56,7 +56,7 @@ viewTableMeta meta =
         columnAttributes
         [ row None
             [ justify ]
-            [ el TableTitle [] (text meta.title)
+            [ el TableTitle [] <| text meta.title
             , button <| el Main [ onClick ToggleTableView ] <| text "X"
             ]
         , viewVariablesMeta meta.variables
@@ -71,10 +71,10 @@ viewVariablesMeta variables =
 
 viewVariableMeta : VariableMeta -> Element Styles variation msg
 viewVariableMeta variable =
-    row Table
+    row None
         []
-        [ text variable.text
-        , column None
+        [ el VariableName [paddingRight 10] <| text variable.text
+        , column VariableData
             ([ yScrollbar, maxHeight (px 150) ] ++ listAttributes)
             (List.map text variable.valueTexts)
         ]
@@ -375,6 +375,8 @@ type Styles
     | Site
     | Table
     | TableTitle
+    | VariableName
+    | VariableData
 
 baseStyle : List (Style.Property class variation)
 baseStyle =
@@ -407,4 +409,8 @@ stylesheet =
             )
         , style TableTitle
             [Font.size 24, Font.bold]
+        , style VariableName
+            [Font.bold]
+        , style VariableData
+            [Color.background (Color.rgba 239 227 195 1.0)]
         ]

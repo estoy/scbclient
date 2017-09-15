@@ -23830,6 +23830,8 @@ var _user$project$Client$update = F2(
 var _user$project$Client$SelectSite = function (a) {
 	return {ctor: 'SelectSite', _0: a};
 };
+var _user$project$Client$VariableData = {ctor: 'VariableData'};
+var _user$project$Client$VariableName = {ctor: 'VariableName'};
 var _user$project$Client$TableTitle = {ctor: 'TableTitle'};
 var _user$project$Client$Table = {ctor: 'Table'};
 var _user$project$Client$Site = {ctor: 'Site'};
@@ -23839,16 +23841,24 @@ var _user$project$Client$None = {ctor: 'None'};
 var _user$project$Client$viewVariableMeta = function (variable) {
 	return A3(
 		_mdgriffith$style_elements$Element$row,
-		_user$project$Client$Table,
+		_user$project$Client$None,
 		{ctor: '[]'},
 		{
 			ctor: '::',
-			_0: _mdgriffith$style_elements$Element$text(variable.text),
+			_0: A3(
+				_mdgriffith$style_elements$Element$el,
+				_user$project$Client$VariableName,
+				{
+					ctor: '::',
+					_0: _mdgriffith$style_elements$Element_Attributes$paddingRight(10),
+					_1: {ctor: '[]'}
+				},
+				_mdgriffith$style_elements$Element$text(variable.text)),
 			_1: {
 				ctor: '::',
 				_0: A3(
 					_mdgriffith$style_elements$Element$column,
-					_user$project$Client$None,
+					_user$project$Client$VariableData,
 					A2(
 						_elm_lang$core$Basics_ops['++'],
 						{
@@ -24050,7 +24060,30 @@ var _user$project$Client$stylesheet = _mdgriffith$style_elements$Style$styleShee
 										_1: {ctor: '[]'}
 									}
 								}),
-							_1: {ctor: '[]'}
+							_1: {
+								ctor: '::',
+								_0: A2(
+									_mdgriffith$style_elements$Style$style,
+									_user$project$Client$VariableName,
+									{
+										ctor: '::',
+										_0: _mdgriffith$style_elements$Style_Font$bold,
+										_1: {ctor: '[]'}
+									}),
+								_1: {
+									ctor: '::',
+									_0: A2(
+										_mdgriffith$style_elements$Style$style,
+										_user$project$Client$VariableData,
+										{
+											ctor: '::',
+											_0: _mdgriffith$style_elements$Style_Color$background(
+												A4(_elm_lang$core$Color$rgba, 239, 227, 195, 1.0)),
+											_1: {ctor: '[]'}
+										}),
+									_1: {ctor: '[]'}
+								}
+							}
 						}
 					}
 				}
