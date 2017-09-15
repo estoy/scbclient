@@ -1,9 +1,12 @@
 module Types exposing (..)
 
+import Http
+
 
 type alias Model =
     { siteContext : SiteCtx
     , levelContexts : List LevelCtx
+    , latestError : Maybe Http.Error
     }
 
 

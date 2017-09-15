@@ -18,12 +18,15 @@ initialModel : Model
 initialModel =
     { siteContext = { selected = swedish, sites = sites }
     , levelContexts = []
+    , latestError = Nothing
     }
 
 
 type Msg
     = SelectSite Site
     | SiteLoaded Site (Result Http.Error (List Level))
+    | SelectLevel Level Int
+    | LevelLoaded Level Int (Result Http.Error (List Level))
 
 
 view : Model -> Html Msg
@@ -50,6 +53,15 @@ update msg model =
 
         SiteLoaded _ (Err _) ->
             ( model, Cmd.none )
+
+        SelectLevel level index ->
+            ( model, loadLevelCmd level index model )
+
+        LevelLoaded level index (Ok levels) ->
+            ( modelWithLevel model level index levels, Cmd.none )
+
+        LevelLoaded _ _ (Err err) ->
+            ( { model | latestError = Just err }, Cmd.none )
 
 
 main : Program Never Model Msg
@@ -78,11 +90,11 @@ columnFromLevelContext : LevelCtx -> Element Styles variation Msg
 columnFromLevelContext context =
     column Main
         columnAttributes
-        (List.map (elementFromLevel context.selected) context.levels)
+        (List.map (elementFromLevel context.selected context.index) context.levels)
 
 
-elementFromLevel : Maybe Level -> Level -> Element Styles variation Msg
-elementFromLevel selected level =
+elementFromLevel : Maybe Level -> Int -> Level -> Element Styles variation Msg
+elementFromLevel selected index level =
     let
         style =
             case selected of
@@ -95,7 +107,7 @@ elementFromLevel selected level =
                 Nothing ->
                     None
     in
-        el style [] (text level.text)
+        el style [ onClick <| SelectLevel level index ] (text level.text)
 
 
 modelWithSite : Model -> Site -> List Level -> Model
@@ -107,17 +119,47 @@ modelWithSite model site levels =
         oldLevelContexts =
             model.levelContexts
     in
-        { siteContext = { oldSiteContext | selected = site }
-        , levelContexts =
-            if List.length levels > 0 then
-                [ { index = 0
-                  , selected = Nothing
-                  , levels = levels
-                  }
-                ]
-            else
-                []
+        { model
+            | siteContext = { oldSiteContext | selected = site }
+            , levelContexts =
+                if List.length levels > 0 then
+                    [ { index = 0
+                      , selected = Nothing
+                      , levels = levels
+                      }
+                    ]
+                else
+                    []
         }
+
+
+modelWithLevel : Model -> Level -> Int -> List Level -> Model
+modelWithLevel model level index levels =
+    let
+        parentContexts =
+            List.take index model.levelContexts
+
+        newContext =
+            { index = index + 1
+            , selected = Nothing
+            , levels = levels
+            }
+
+        selectedContext =
+            model.levelContexts
+                |> List.take (index + 1)
+                |> List.reverse
+                |> List.head
+
+        updatedContext =
+            case selectedContext of
+                Just ctx ->
+                    { ctx | selected = Just level }
+
+                Nothing ->
+                    { index = index, selected = Nothing, levels = [] }
+    in
+        { model | levelContexts = parentContexts ++ [ updatedContext, newContext ] }
 
 
 loadSiteCmd : Site -> Cmd Msg
@@ -127,12 +169,50 @@ loadSiteCmd site =
         |> Http.send (SiteLoaded site)
 
 
+loadLevelCmd : Level -> Int -> Model -> Cmd Msg
+loadLevelCmd level index model =
+    let
+        url =
+            urlForLevel model level index
+    in
+        list levelDecoder
+            |> Http.get url
+            |> Http.send (LevelLoaded level index)
+
+
 levelDecoder : Decoder Level
 levelDecoder =
     decode Level
         |> required "id" string
         |> required "type" string
         |> required "text" string
+
+
+urlForLevel : Model -> Level -> Int -> Url
+urlForLevel model level index =
+    Debug.log "Url:" (model.siteContext.selected.url ++ pathForLevel model.levelContexts level index)
+
+
+pathForLevel : List LevelCtx -> Level -> Int -> String
+pathForLevel contexts level index =
+    let
+        parentPath =
+            contexts
+                |> List.take (index)
+                |> List.map currentId
+                |> List.foldl (\a b -> b ++ "/" ++ a) ""
+    in
+        parentPath ++ "/" ++ level.id
+
+
+currentId : LevelCtx -> String
+currentId ctx =
+    case ctx.selected of
+        Just level ->
+            level.id
+
+        option2 ->
+            ""
 
 
 sites : List Site
