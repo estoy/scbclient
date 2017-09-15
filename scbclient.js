@@ -23438,9 +23438,9 @@ var _mdgriffith$style_elements$Style_Font$typeface = function (families) {
 		_mdgriffith$style_elements$Style_Internal_Render_Value$typeface(families));
 };
 
-var _user$project$Types$Model = F3(
-	function (a, b, c) {
-		return {siteContext: a, levelContexts: b, latestError: c};
+var _user$project$Types$Model = F4(
+	function (a, b, c, d) {
+		return {siteContext: a, levelContexts: b, tableMeta: c, latestError: d};
 	});
 var _user$project$Types$SiteCtx = F2(
 	function (a, b) {
@@ -23458,6 +23458,14 @@ var _user$project$Types$Level = F3(
 	function (a, b, c) {
 		return {id: a, type_: b, text: c};
 	});
+var _user$project$Types$TableMeta = F2(
+	function (a, b) {
+		return {title: a, variables: b};
+	});
+var _user$project$Types$VariableMeta = F4(
+	function (a, b, c, d) {
+		return {code: a, text: b, values: c, valueTexts: d};
+	});
 
 var _user$project$Client$columnAttributes = {
 	ctor: '::',
@@ -23467,6 +23475,10 @@ var _user$project$Client$columnAttributes = {
 		_0: _mdgriffith$style_elements$Element_Attributes$padding(20),
 		_1: {ctor: '[]'}
 	}
+};
+var _user$project$Client$emptyTableMeta = {
+	title: '(no table selected)',
+	variables: {ctor: '[]'}
 };
 var _user$project$Client$english = {language: 'English', url: ' http://api.scb.se/OV0104/v1/doris/en/ssd'};
 var _user$project$Client$swedish = {language: 'Svenska', url: 'http://api.scb.se/OV0104/v1/doris/sv/ssd'};
@@ -23518,6 +23530,32 @@ var _user$project$Client$urlForLevel = F3(
 				model.siteContext.selected.url,
 				A3(_user$project$Client$pathForLevel, model.levelContexts, level, index)));
 	});
+var _user$project$Client$variableMetaDecoder = A3(
+	_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$required,
+	'valueTexts',
+	_elm_lang$core$Json_Decode$list(_elm_lang$core$Json_Decode$string),
+	A3(
+		_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$required,
+		'values',
+		_elm_lang$core$Json_Decode$list(_elm_lang$core$Json_Decode$string),
+		A3(
+			_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$required,
+			'text',
+			_elm_lang$core$Json_Decode$string,
+			A3(
+				_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$required,
+				'code',
+				_elm_lang$core$Json_Decode$string,
+				_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$decode(_user$project$Types$VariableMeta)))));
+var _user$project$Client$tableMetaDecoder = A3(
+	_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$required,
+	'variables',
+	_elm_lang$core$Json_Decode$list(_user$project$Client$variableMetaDecoder),
+	A3(
+		_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$required,
+		'title',
+		_elm_lang$core$Json_Decode$string,
+		_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$decode(_user$project$Types$TableMeta)));
 var _user$project$Client$levelDecoder = A3(
 	_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$required,
 	'text',
@@ -23531,8 +23569,8 @@ var _user$project$Client$levelDecoder = A3(
 			'id',
 			_elm_lang$core$Json_Decode$string,
 			_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$decode(_user$project$Types$Level))));
-var _user$project$Client$modelWithLevel = F4(
-	function (model, level, index, levels) {
+var _user$project$Client$modelWithTableMeta = F4(
+	function (model, level, index, tableMeta) {
 		var selectedContext = _elm_lang$core$List$head(
 			_elm_lang$core$List$reverse(
 				A2(_elm_lang$core$List$take, index + 1, model.levelContexts)));
@@ -23541,6 +23579,42 @@ var _user$project$Client$modelWithLevel = F4(
 			if (_p1.ctor === 'Just') {
 				return _elm_lang$core$Native_Utils.update(
 					_p1._0,
+					{
+						selected: _elm_lang$core$Maybe$Just(level)
+					});
+			} else {
+				return {
+					index: index,
+					selected: _elm_lang$core$Maybe$Nothing,
+					levels: {ctor: '[]'}
+				};
+			}
+		}();
+		var parentContexts = A2(_elm_lang$core$List$take, index, model.levelContexts);
+		return _elm_lang$core$Native_Utils.update(
+			model,
+			{
+				levelContexts: A2(
+					_elm_lang$core$Basics_ops['++'],
+					parentContexts,
+					{
+						ctor: '::',
+						_0: updatedContext,
+						_1: {ctor: '[]'}
+					}),
+				tableMeta: _elm_lang$core$Maybe$Just(tableMeta)
+			});
+	});
+var _user$project$Client$modelWithLevel = F4(
+	function (model, level, index, levels) {
+		var selectedContext = _elm_lang$core$List$head(
+			_elm_lang$core$List$reverse(
+				A2(_elm_lang$core$List$take, index + 1, model.levelContexts)));
+		var updatedContext = function () {
+			var _p2 = selectedContext;
+			if (_p2.ctor === 'Just') {
+				return _elm_lang$core$Native_Utils.update(
+					_p2._0,
 					{
 						selected: _elm_lang$core$Maybe$Just(level)
 					});
@@ -23568,7 +23642,8 @@ var _user$project$Client$modelWithLevel = F4(
 							_0: newContext,
 							_1: {ctor: '[]'}
 						}
-					})
+					}),
+				tableMeta: _elm_lang$core$Maybe$Nothing
 			});
 	});
 var _user$project$Client$modelWithSite = F3(
@@ -23587,14 +23662,20 @@ var _user$project$Client$modelWithSite = F3(
 					ctor: '::',
 					_0: {index: 0, selected: _elm_lang$core$Maybe$Nothing, levels: levels},
 					_1: {ctor: '[]'}
-				} : {ctor: '[]'}
+				} : {ctor: '[]'},
+				tableMeta: _elm_lang$core$Maybe$Nothing
 			});
 	});
 var _user$project$Client$initialModel = {
 	siteContext: {selected: _user$project$Client$swedish, sites: _user$project$Client$sites},
 	levelContexts: {ctor: '[]'},
+	tableMeta: _elm_lang$core$Maybe$Nothing,
 	latestError: _elm_lang$core$Maybe$Nothing
 };
+var _user$project$Client$TableMetaLoaded = F3(
+	function (a, b, c) {
+		return {ctor: 'TableMetaLoaded', _0: a, _1: b, _2: c};
+	});
 var _user$project$Client$LevelLoaded = F3(
 	function (a, b, c) {
 		return {ctor: 'LevelLoaded', _0: a, _1: b, _2: c};
@@ -23602,13 +23683,24 @@ var _user$project$Client$LevelLoaded = F3(
 var _user$project$Client$loadLevelCmd = F3(
 	function (level, index, model) {
 		var url = A3(_user$project$Client$urlForLevel, model, level, index);
-		return A2(
-			_elm_lang$http$Http$send,
-			A2(_user$project$Client$LevelLoaded, level, index),
-			A2(
-				_elm_lang$http$Http$get,
-				url,
-				_elm_lang$core$Json_Decode$list(_user$project$Client$levelDecoder)));
+		var _p3 = level.type_;
+		switch (_p3) {
+			case 'l':
+				return A2(
+					_elm_lang$http$Http$send,
+					A2(_user$project$Client$LevelLoaded, level, index),
+					A2(
+						_elm_lang$http$Http$get,
+						url,
+						_elm_lang$core$Json_Decode$list(_user$project$Client$levelDecoder)));
+			case 't':
+				return A2(
+					_elm_lang$http$Http$send,
+					A2(_user$project$Client$TableMetaLoaded, level, index),
+					A2(_elm_lang$http$Http$get, url, _user$project$Client$tableMetaDecoder));
+			default:
+				return _elm_lang$core$Platform_Cmd$none;
+		}
 	});
 var _user$project$Client$SelectLevel = F2(
 	function (a, b) {
@@ -23629,19 +23721,19 @@ var _user$project$Client$loadSiteCmd = function (site) {
 };
 var _user$project$Client$update = F2(
 	function (msg, model) {
-		var _p2 = msg;
-		switch (_p2.ctor) {
+		var _p4 = msg;
+		switch (_p4.ctor) {
 			case 'SelectSite':
 				return {
 					ctor: '_Tuple2',
 					_0: model,
-					_1: _user$project$Client$loadSiteCmd(_p2._0)
+					_1: _user$project$Client$loadSiteCmd(_p4._0)
 				};
 			case 'SiteLoaded':
-				if (_p2._1.ctor === 'Ok') {
+				if (_p4._1.ctor === 'Ok') {
 					return {
 						ctor: '_Tuple2',
-						_0: A3(_user$project$Client$modelWithSite, model, _p2._0, _p2._1._0),
+						_0: A3(_user$project$Client$modelWithSite, model, _p4._0, _p4._1._0),
 						_1: _elm_lang$core$Platform_Cmd$none
 					};
 				} else {
@@ -23651,13 +23743,13 @@ var _user$project$Client$update = F2(
 				return {
 					ctor: '_Tuple2',
 					_0: model,
-					_1: A3(_user$project$Client$loadLevelCmd, _p2._0, _p2._1, model)
+					_1: A3(_user$project$Client$loadLevelCmd, _p4._0, _p4._1, model)
 				};
-			default:
-				if (_p2._2.ctor === 'Ok') {
+			case 'LevelLoaded':
+				if (_p4._2.ctor === 'Ok') {
 					return {
 						ctor: '_Tuple2',
-						_0: A4(_user$project$Client$modelWithLevel, model, _p2._0, _p2._1, _p2._2._0),
+						_0: A4(_user$project$Client$modelWithLevel, model, _p4._0, _p4._1, _p4._2._0),
 						_1: _elm_lang$core$Platform_Cmd$none
 					};
 				} else {
@@ -23666,7 +23758,25 @@ var _user$project$Client$update = F2(
 						_0: _elm_lang$core$Native_Utils.update(
 							model,
 							{
-								latestError: _elm_lang$core$Maybe$Just(_p2._2._0)
+								latestError: _elm_lang$core$Maybe$Just(_p4._2._0)
+							}),
+						_1: _elm_lang$core$Platform_Cmd$none
+					};
+				}
+			default:
+				if (_p4._2.ctor === 'Ok') {
+					return {
+						ctor: '_Tuple2',
+						_0: A4(_user$project$Client$modelWithTableMeta, model, _p4._0, _p4._1, _p4._2._0),
+						_1: _elm_lang$core$Platform_Cmd$none
+					};
+				} else {
+					return {
+						ctor: '_Tuple2',
+						_0: _elm_lang$core$Native_Utils.update(
+							model,
+							{
+								latestError: _elm_lang$core$Maybe$Just(_p4._2._0)
 							}),
 						_1: _elm_lang$core$Platform_Cmd$none
 					};
@@ -23696,9 +23806,9 @@ var _user$project$Client$elementFromSite = F2(
 var _user$project$Client$elementFromLevel = F3(
 	function (selected, index, level) {
 		var style = function () {
-			var _p3 = selected;
-			if (_p3.ctor === 'Just') {
-				return _elm_lang$core$Native_Utils.eq(_p3._0, level) ? _user$project$Client$Selected : _user$project$Client$None;
+			var _p5 = selected;
+			if (_p5.ctor === 'Just') {
+				return _elm_lang$core$Native_Utils.eq(_p5._0, level) ? _user$project$Client$Selected : _user$project$Client$None;
 			} else {
 				return _user$project$Client$None;
 			}
@@ -23793,20 +23903,36 @@ var _user$project$Client$view = function (model) {
 		_mdgriffith$style_elements$Element$viewport,
 		_user$project$Client$stylesheet,
 		A3(
-			_mdgriffith$style_elements$Element$row,
+			_mdgriffith$style_elements$Element$column,
 			_user$project$Client$Main,
 			{ctor: '[]'},
 			{
 				ctor: '::',
 				_0: A3(
-					_mdgriffith$style_elements$Element$column,
+					_mdgriffith$style_elements$Element$row,
 					_user$project$Client$Main,
-					_user$project$Client$columnAttributes,
-					A2(
-						_elm_lang$core$List$map,
-						_user$project$Client$elementFromSite(model.siteContext.selected),
-						_user$project$Client$sites)),
-				_1: A2(_elm_lang$core$List$map, _user$project$Client$columnFromLevelContext, model.levelContexts)
+					{ctor: '[]'},
+					{
+						ctor: '::',
+						_0: A3(
+							_mdgriffith$style_elements$Element$column,
+							_user$project$Client$Main,
+							_user$project$Client$columnAttributes,
+							A2(
+								_elm_lang$core$List$map,
+								_user$project$Client$elementFromSite(model.siteContext.selected),
+								_user$project$Client$sites)),
+						_1: A2(_elm_lang$core$List$map, _user$project$Client$columnFromLevelContext, model.levelContexts)
+					}),
+				_1: {
+					ctor: '::',
+					_0: _mdgriffith$style_elements$Element$text(
+						function (_) {
+							return _.title;
+						}(
+							A2(_elm_lang$core$Maybe$withDefault, _user$project$Client$emptyTableMeta, model.tableMeta))),
+					_1: {ctor: '[]'}
+				}
 			}));
 };
 var _user$project$Client$main = _elm_lang$html$Html$program(
@@ -23826,7 +23952,7 @@ var _user$project$Client$main = _elm_lang$html$Html$program(
 var Elm = {};
 Elm['Client'] = Elm['Client'] || {};
 if (typeof _user$project$Client$main !== 'undefined') {
-    _user$project$Client$main(Elm['Client'], 'Client', {"types":{"unions":{"Dict.LeafColor":{"args":[],"tags":{"LBBlack":[],"LBlack":[]}},"Dict.Dict":{"args":["k","v"],"tags":{"RBNode_elm_builtin":["Dict.NColor","k","v","Dict.Dict k v","Dict.Dict k v"],"RBEmpty_elm_builtin":["Dict.LeafColor"]}},"Dict.NColor":{"args":[],"tags":{"BBlack":[],"Red":[],"NBlack":[],"Black":[]}},"Http.Error":{"args":[],"tags":{"BadUrl":["String"],"NetworkError":[],"Timeout":[],"BadStatus":["Http.Response String"],"BadPayload":["String","Http.Response String"]}},"Result.Result":{"args":["error","value"],"tags":{"Ok":["value"],"Err":["error"]}},"Client.Msg":{"args":[],"tags":{"SelectSite":["Types.Site"],"SelectLevel":["Types.Level","Int"],"LevelLoaded":["Types.Level","Int","Result.Result Http.Error (List Types.Level)"],"SiteLoaded":["Types.Site","Result.Result Http.Error (List Types.Level)"]}}},"aliases":{"Http.Response":{"args":["body"],"type":"{ url : String , status : { code : Int, message : String } , headers : Dict.Dict String String , body : body }"},"Types.Site":{"args":[],"type":"{ language : String, url : Types.Url }"},"Types.Url":{"args":[],"type":"String"},"Types.Level":{"args":[],"type":"{ id : String, type_ : String, text : String }"}},"message":"Client.Msg"},"versions":{"elm":"0.18.0"}});
+    _user$project$Client$main(Elm['Client'], 'Client', {"types":{"unions":{"Dict.LeafColor":{"args":[],"tags":{"LBBlack":[],"LBlack":[]}},"Dict.Dict":{"args":["k","v"],"tags":{"RBNode_elm_builtin":["Dict.NColor","k","v","Dict.Dict k v","Dict.Dict k v"],"RBEmpty_elm_builtin":["Dict.LeafColor"]}},"Dict.NColor":{"args":[],"tags":{"BBlack":[],"Red":[],"NBlack":[],"Black":[]}},"Http.Error":{"args":[],"tags":{"BadUrl":["String"],"NetworkError":[],"Timeout":[],"BadStatus":["Http.Response String"],"BadPayload":["String","Http.Response String"]}},"Result.Result":{"args":["error","value"],"tags":{"Ok":["value"],"Err":["error"]}},"Client.Msg":{"args":[],"tags":{"SelectSite":["Types.Site"],"SelectLevel":["Types.Level","Int"],"LevelLoaded":["Types.Level","Int","Result.Result Http.Error (List Types.Level)"],"TableMetaLoaded":["Types.Level","Int","Result.Result Http.Error Types.TableMeta"],"SiteLoaded":["Types.Site","Result.Result Http.Error (List Types.Level)"]}}},"aliases":{"Http.Response":{"args":["body"],"type":"{ url : String , status : { code : Int, message : String } , headers : Dict.Dict String String , body : body }"},"Types.Site":{"args":[],"type":"{ language : String, url : Types.Url }"},"Types.Url":{"args":[],"type":"String"},"Types.Level":{"args":[],"type":"{ id : String, type_ : String, text : String }"},"Types.VariableMeta":{"args":[],"type":"{ code : String , text : String , values : List String , valueTexts : List String }"},"Types.TableMeta":{"args":[],"type":"{ title : String, variables : List Types.VariableMeta }"}},"message":"Client.Msg"},"versions":{"elm":"0.18.0"}});
 }
 
 if (typeof define === "function" && define['amd'])

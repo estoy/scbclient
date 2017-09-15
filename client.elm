@@ -18,6 +18,7 @@ initialModel : Model
 initialModel =
     { siteContext = { selected = swedish, sites = sites }
     , levelContexts = []
+    , tableMeta = Nothing
     , latestError = Nothing
     }
 
@@ -27,19 +28,24 @@ type Msg
     | SiteLoaded Site (Result Http.Error (List Level))
     | SelectLevel Level Int
     | LevelLoaded Level Int (Result Http.Error (List Level))
+    | TableMetaLoaded Level Int (Result Http.Error TableMeta)
 
 
 view : Model -> Html Msg
 view model =
     viewport stylesheet <|
-        row Main
+        column Main
             []
-            ((column Main
-                columnAttributes
-                (List.map (elementFromSite model.siteContext.selected) sites)
-             )
-                :: (List.map columnFromLevelContext model.levelContexts)
-            )
+            [ row Main
+                []
+                ((column Main
+                    columnAttributes
+                    (List.map (elementFromSite model.siteContext.selected) sites)
+                 )
+                    :: (List.map columnFromLevelContext model.levelContexts)
+                )
+            , text <| .title <| Maybe.withDefault emptyTableMeta model.tableMeta
+            ]
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -61,6 +67,12 @@ update msg model =
             ( modelWithLevel model level index levels, Cmd.none )
 
         LevelLoaded _ _ (Err err) ->
+            ( { model | latestError = Just err }, Cmd.none )
+
+        TableMetaLoaded level index (Ok tableMeta) ->
+            ( modelWithTableMeta model level index tableMeta, Cmd.none )
+
+        TableMetaLoaded _ _ (Err err) ->
             ( { model | latestError = Just err }, Cmd.none )
 
 
@@ -130,6 +142,7 @@ modelWithSite model site levels =
                     ]
                 else
                     []
+            , tableMeta = Nothing
         }
 
 
@@ -159,7 +172,36 @@ modelWithLevel model level index levels =
                 Nothing ->
                     { index = index, selected = Nothing, levels = [] }
     in
-        { model | levelContexts = parentContexts ++ [ updatedContext, newContext ] }
+        { model
+            | levelContexts = parentContexts ++ [ updatedContext, newContext ]
+            , tableMeta = Nothing
+        }
+
+
+modelWithTableMeta : Model -> Level -> Int -> TableMeta -> Model
+modelWithTableMeta model level index tableMeta =
+    let
+        parentContexts =
+            List.take index model.levelContexts
+
+        selectedContext =
+            model.levelContexts
+                |> List.take (index + 1)
+                |> List.reverse
+                |> List.head
+
+        updatedContext =
+            case selectedContext of
+                Just ctx ->
+                    { ctx | selected = Just level }
+
+                Nothing ->
+                    { index = index, selected = Nothing, levels = [] }
+    in
+        { model
+            | levelContexts = parentContexts ++ [ updatedContext ]
+            , tableMeta = Just tableMeta
+        }
 
 
 loadSiteCmd : Site -> Cmd Msg
@@ -175,9 +217,19 @@ loadLevelCmd level index model =
         url =
             urlForLevel model level index
     in
-        list levelDecoder
-            |> Http.get url
-            |> Http.send (LevelLoaded level index)
+        case level.type_ of
+            "l" ->
+                list levelDecoder
+                    |> Http.get url
+                    |> Http.send (LevelLoaded level index)
+
+            "t" ->
+                tableMetaDecoder
+                    |> Http.get url
+                    |> Http.send (TableMetaLoaded level index)
+
+            _ ->
+                Cmd.none
 
 
 levelDecoder : Decoder Level
@@ -186,6 +238,22 @@ levelDecoder =
         |> required "id" string
         |> required "type" string
         |> required "text" string
+
+
+tableMetaDecoder : Decoder TableMeta
+tableMetaDecoder =
+    decode TableMeta
+        |> required "title" string
+        |> required "variables" (list variableMetaDecoder)
+
+
+variableMetaDecoder : Decoder VariableMeta
+variableMetaDecoder =
+    decode VariableMeta
+        |> required "code" string
+        |> required "text" string
+        |> required "values" (list string)
+        |> required "valueTexts" (list string)
 
 
 urlForLevel : Model -> Level -> Int -> Url
@@ -230,6 +298,11 @@ swedish =
 english : Site
 english =
     { language = "English", url = " http://api.scb.se/OV0104/v1/doris/en/ssd" }
+
+
+emptyTableMeta : TableMeta
+emptyTableMeta =
+    { title = "(no table selected)", variables = [] }
 
 
 
