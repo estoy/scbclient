@@ -23467,6 +23467,32 @@ var _user$project$Types$VariableMeta = F4(
 		return {code: a, text: b, values: c, valueTexts: d};
 	});
 
+var _user$project$Client$baseStyle = {
+	ctor: '::',
+	_0: _mdgriffith$style_elements$Style_Font$typeface(
+		{
+			ctor: '::',
+			_0: 'helvetica',
+			_1: {
+				ctor: '::',
+				_0: 'arial',
+				_1: {
+					ctor: '::',
+					_0: 'sans-serif',
+					_1: {ctor: '[]'}
+				}
+			}
+		}),
+	_1: {
+		ctor: '::',
+		_0: _mdgriffith$style_elements$Style_Font$size(16),
+		_1: {
+			ctor: '::',
+			_0: _mdgriffith$style_elements$Style_Font$lineHeight(1.3),
+			_1: {ctor: '[]'}
+		}
+	}
+};
 var _user$project$Client$listAttributes = {
 	ctor: '::',
 	_0: _mdgriffith$style_elements$Element_Attributes$spacing(5),
@@ -23804,12 +23830,16 @@ var _user$project$Client$update = F2(
 var _user$project$Client$SelectSite = function (a) {
 	return {ctor: 'SelectSite', _0: a};
 };
+var _user$project$Client$TableTitle = {ctor: 'TableTitle'};
+var _user$project$Client$Table = {ctor: 'Table'};
+var _user$project$Client$Site = {ctor: 'Site'};
 var _user$project$Client$Selected = {ctor: 'Selected'};
 var _user$project$Client$Main = {ctor: 'Main'};
+var _user$project$Client$None = {ctor: 'None'};
 var _user$project$Client$viewVariableMeta = function (variable) {
 	return A3(
 		_mdgriffith$style_elements$Element$row,
-		_user$project$Client$Main,
+		_user$project$Client$Table,
 		{ctor: '[]'},
 		{
 			ctor: '::',
@@ -23818,7 +23848,7 @@ var _user$project$Client$viewVariableMeta = function (variable) {
 				ctor: '::',
 				_0: A3(
 					_mdgriffith$style_elements$Element$column,
-					_user$project$Client$Main,
+					_user$project$Client$None,
 					A2(
 						_elm_lang$core$Basics_ops['++'],
 						{
@@ -23840,20 +23870,20 @@ var _user$project$Client$viewVariableMeta = function (variable) {
 var _user$project$Client$viewVariablesMeta = function (variables) {
 	return A3(
 		_mdgriffith$style_elements$Element$column,
-		_user$project$Client$Main,
+		_user$project$Client$None,
 		_user$project$Client$columnAttributes,
 		A2(_elm_lang$core$List$map, _user$project$Client$viewVariableMeta, variables));
 };
 var _user$project$Client$viewTableMeta = function (meta) {
 	return A3(
 		_mdgriffith$style_elements$Element$column,
-		_user$project$Client$Main,
+		_user$project$Client$Table,
 		_user$project$Client$columnAttributes,
 		{
 			ctor: '::',
 			_0: A3(
 				_mdgriffith$style_elements$Element$row,
-				_user$project$Client$Main,
+				_user$project$Client$None,
 				{
 					ctor: '::',
 					_0: _mdgriffith$style_elements$Element_Attributes$justify,
@@ -23861,10 +23891,11 @@ var _user$project$Client$viewTableMeta = function (meta) {
 				},
 				{
 					ctor: '::',
-					_0: _mdgriffith$style_elements$Element$text(
-						function (_) {
-							return _.title;
-						}(meta)),
+					_0: A3(
+						_mdgriffith$style_elements$Element$el,
+						_user$project$Client$TableTitle,
+						{ctor: '[]'},
+						_mdgriffith$style_elements$Element$text(meta.title)),
 					_1: {
 						ctor: '::',
 						_0: _mdgriffith$style_elements$Element$button(
@@ -23887,7 +23918,6 @@ var _user$project$Client$viewTableMeta = function (meta) {
 			}
 		});
 };
-var _user$project$Client$None = {ctor: 'None'};
 var _user$project$Client$elementFromSite = F2(
 	function (selected, site) {
 		var style = _elm_lang$core$Native_Utils.eq(site, selected) ? _user$project$Client$Selected : _user$project$Client$None;
@@ -23924,9 +23954,15 @@ var _user$project$Client$elementFromLevel = F3(
 			_mdgriffith$style_elements$Element$text(level.text));
 	});
 var _user$project$Client$columnFromLevelContext = function (context) {
+	var style = A2(
+		_elm_lang$core$List$any,
+		function (level) {
+			return _elm_lang$core$Native_Utils.eq(level.type_, 't');
+		},
+		context.levels) ? _user$project$Client$Table : _user$project$Client$Main;
 	return A3(
 		_mdgriffith$style_elements$Element$column,
-		_user$project$Client$Main,
+		style,
 		_user$project$Client$columnAttributes,
 		A2(
 			_elm_lang$core$List$map,
@@ -23945,40 +23981,18 @@ var _user$project$Client$stylesheet = _mdgriffith$style_elements$Style$styleShee
 			_0: A2(
 				_mdgriffith$style_elements$Style$style,
 				_user$project$Client$Main,
-				{
-					ctor: '::',
-					_0: _mdgriffith$style_elements$Style_Color$text(_elm_lang$core$Color$darkCharcoal),
-					_1: {
+				A2(
+					_elm_lang$core$Basics_ops['++'],
+					{
 						ctor: '::',
-						_0: _mdgriffith$style_elements$Style_Color$background(_elm_lang$core$Color$white),
+						_0: _mdgriffith$style_elements$Style_Color$text(_elm_lang$core$Color$darkCharcoal),
 						_1: {
 							ctor: '::',
-							_0: _mdgriffith$style_elements$Style_Font$typeface(
-								{
-									ctor: '::',
-									_0: 'helvetica',
-									_1: {
-										ctor: '::',
-										_0: 'arial',
-										_1: {
-											ctor: '::',
-											_0: 'sans-serif',
-											_1: {ctor: '[]'}
-										}
-									}
-								}),
-							_1: {
-								ctor: '::',
-								_0: _mdgriffith$style_elements$Style_Font$size(16),
-								_1: {
-									ctor: '::',
-									_0: _mdgriffith$style_elements$Style_Font$lineHeight(1.3),
-									_1: {ctor: '[]'}
-								}
-							}
+							_0: _mdgriffith$style_elements$Style_Color$background(_elm_lang$core$Color$lightGrey),
+							_1: {ctor: '[]'}
 						}
-					}
-				}),
+					},
+					_user$project$Client$baseStyle)),
 			_1: {
 				ctor: '::',
 				_0: A2(
@@ -23993,7 +24007,53 @@ var _user$project$Client$stylesheet = _mdgriffith$style_elements$Style$styleShee
 							_1: {ctor: '[]'}
 						}
 					}),
-				_1: {ctor: '[]'}
+				_1: {
+					ctor: '::',
+					_0: A2(
+						_mdgriffith$style_elements$Style$style,
+						_user$project$Client$Site,
+						{
+							ctor: '::',
+							_0: _mdgriffith$style_elements$Style_Color$background(
+								A4(_elm_lang$core$Color$rgba, 186, 196, 238, 1.0)),
+							_1: {ctor: '[]'}
+						}),
+					_1: {
+						ctor: '::',
+						_0: A2(
+							_mdgriffith$style_elements$Style$style,
+							_user$project$Client$Table,
+							A2(
+								_elm_lang$core$Basics_ops['++'],
+								{
+									ctor: '::',
+									_0: _mdgriffith$style_elements$Style_Color$text(_elm_lang$core$Color$darkCharcoal),
+									_1: {
+										ctor: '::',
+										_0: _mdgriffith$style_elements$Style_Color$background(
+											A4(_elm_lang$core$Color$rgba, 231, 214, 166, 1.0)),
+										_1: {ctor: '[]'}
+									}
+								},
+								_user$project$Client$baseStyle)),
+						_1: {
+							ctor: '::',
+							_0: A2(
+								_mdgriffith$style_elements$Style$style,
+								_user$project$Client$TableTitle,
+								{
+									ctor: '::',
+									_0: _mdgriffith$style_elements$Style_Font$size(24),
+									_1: {
+										ctor: '::',
+										_0: _mdgriffith$style_elements$Style_Font$bold,
+										_1: {ctor: '[]'}
+									}
+								}),
+							_1: {ctor: '[]'}
+						}
+					}
+				}
 			}
 		}
 	});
@@ -24012,7 +24072,7 @@ var _user$project$Client$view = function (model) {
 						ctor: '::',
 						_0: A3(
 							_mdgriffith$style_elements$Element$column,
-							_user$project$Client$Main,
+							_user$project$Client$Site,
 							_user$project$Client$columnAttributes,
 							A2(
 								_elm_lang$core$List$map,

@@ -39,7 +39,7 @@ view model =
             Nothing ->
                 row Main
                     []
-                    ((column Main
+                    ((column Site
                         columnAttributes
                         (List.map (elementFromSite model.siteContext.selected) sites)
                      )
@@ -52,11 +52,11 @@ view model =
 
 viewTableMeta : TableMeta -> Element Styles variation Msg
 viewTableMeta meta =
-    column Main
+    column Table
         columnAttributes
-        [ row Main
+        [ row None
             [ justify ]
-            [ text <| .title meta
+            [ el TableTitle [] (text meta.title)
             , button <| el Main [ onClick ToggleTableView ] <| text "X"
             ]
         , viewVariablesMeta meta.variables
@@ -65,16 +65,16 @@ viewTableMeta meta =
 
 viewVariablesMeta : List VariableMeta -> Element Styles variation msg
 viewVariablesMeta variables =
-    column Main columnAttributes <|
+    column None columnAttributes <|
         List.map viewVariableMeta variables
 
 
 viewVariableMeta : VariableMeta -> Element Styles variation msg
 viewVariableMeta variable =
-    row Main
+    row Table
         []
         [ text variable.text
-        , column Main
+        , column None
             ([ yScrollbar, maxHeight (px 150) ] ++ listAttributes)
             (List.map text variable.valueTexts)
         ]
@@ -135,9 +135,19 @@ elementFromSite selected site =
 
 columnFromLevelContext : LevelCtx -> Element Styles variation Msg
 columnFromLevelContext context =
-    column Main
-        columnAttributes
-        (List.map (elementFromLevel context.selected context.index) context.levels)
+    let
+        style =
+            if
+                List.any (\level -> level.type_ == "t") context.levels
+            then
+                Table
+            else
+                Main
+    in
+    
+        column style
+            columnAttributes
+            (List.map (elementFromLevel context.selected context.index) context.levels)
 
 
 elementFromLevel : Maybe Level -> Int -> Level -> Element Styles variation Msg
@@ -348,9 +358,12 @@ columnAttributes : List (Attribute variation msg)
 columnAttributes =
     [ spacing 20, padding 20 ]
 
+
 listAttributes : List (Attribute variation msg)
 listAttributes =
     [ spacing 5, paddingXY 10 0 ]
+
+
 
 -- Styles -------------------------
 
@@ -359,21 +372,39 @@ type Styles
     = None
     | Main
     | Selected
+    | Site
+    | Table
+    | TableTitle
 
+baseStyle : List (Style.Property class variation)
+baseStyle =
+    [Font.typeface [ "helvetica", "arial", "sans-serif" ]
+    , Font.size 16
+    , Font.lineHeight 1.3
+    ]
 
 stylesheet : StyleSheet Styles variation
 stylesheet =
     Style.styleSheet
         [ style None []
         , style Main
-            [ Color.text Color.darkCharcoal
-            , Color.background Color.white
-            , Font.typeface [ "helvetica", "arial", "sans-serif" ]
-            , Font.size 16
-            , Font.lineHeight 1.3
-            ]
+            ( [ Color.text Color.darkCharcoal
+              , Color.background Color.lightGrey
+              ]
+              ++ baseStyle
+            )            
         , style Selected
             [ Color.text Color.white
             , Color.background Color.charcoal
             ]
+        , style Site
+            [ Color.background (Color.rgba 186 196 238 1.0) ]
+        , style Table
+            ( [ Color.text Color.darkCharcoal
+              , Color.background (Color.rgba 231 214 166 1.0)
+              ]
+              ++ baseStyle
+            )
+        , style TableTitle
+            [Font.size 24, Font.bold]
         ]
