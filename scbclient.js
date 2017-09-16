@@ -24005,16 +24005,33 @@ var _user$project$Client$viewTableMeta = function (meta) {
 						_mdgriffith$style_elements$Element$text(meta.title)),
 					_1: {
 						ctor: '::',
-						_0: _mdgriffith$style_elements$Element$button(
-							A3(
-								_mdgriffith$style_elements$Element$el,
-								_user$project$Client$Main,
-								{
+						_0: A3(
+							_mdgriffith$style_elements$Element$row,
+							_user$project$Client$None,
+							{ctor: '[]'},
+							{
+								ctor: '::',
+								_0: _mdgriffith$style_elements$Element$button(
+									A3(
+										_mdgriffith$style_elements$Element$el,
+										_user$project$Client$Main,
+										{ctor: '[]'},
+										_mdgriffith$style_elements$Element$text('Submit'))),
+								_1: {
 									ctor: '::',
-									_0: _mdgriffith$style_elements$Element_Events$onClick(_user$project$Client$ToggleTableView),
+									_0: _mdgriffith$style_elements$Element$button(
+										A3(
+											_mdgriffith$style_elements$Element$el,
+											_user$project$Client$Main,
+											{
+												ctor: '::',
+												_0: _mdgriffith$style_elements$Element_Events$onClick(_user$project$Client$ToggleTableView),
+												_1: {ctor: '[]'}
+											},
+											_mdgriffith$style_elements$Element$text('X'))),
 									_1: {ctor: '[]'}
-								},
-								_mdgriffith$style_elements$Element$text('X'))),
+								}
+							}),
 						_1: {ctor: '[]'}
 					}
 				}),

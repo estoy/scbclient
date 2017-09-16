@@ -60,7 +60,11 @@ viewTableMeta meta =
         [ row None
             [ justify ]
             [ el TableTitle [] <| text meta.title
-            , button <| el Main [ onClick ToggleTableView ] <| text "X"
+            , (row None []
+                [ button <| el Main [] <| text "Submit"
+                , button <| el Main [ onClick ToggleTableView ] <| text "X"
+                ]
+              )
             ]
         , viewVariablesMeta meta.variables
         ]
