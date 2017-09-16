@@ -23462,9 +23462,25 @@ var _user$project$Types$TableMeta = F2(
 	function (a, b) {
 		return {title: a, variables: b};
 	});
-var _user$project$Types$VariableMeta = F4(
+var _user$project$Types$VariableMeta = F3(
+	function (a, b, c) {
+		return {code: a, text: b, values: c};
+	});
+var _user$project$Types$VariableMetaDTO = F4(
 	function (a, b, c, d) {
 		return {code: a, text: b, values: c, valueTexts: d};
+	});
+var _user$project$Types$ValueMeta = F3(
+	function (a, b, c) {
+		return {value: a, text: b, selected: c};
+	});
+
+var _user$project$Utils$mapIf = F2(
+	function (pred, map) {
+		return _elm_lang$core$List$map(
+			function (e) {
+				return pred(e) ? map(e) : e;
+			});
 	});
 
 var _user$project$Client$baseStyle = {
@@ -23565,23 +23581,37 @@ var _user$project$Client$urlForLevel = F3(
 				model.siteContext.selected.url,
 				A3(_user$project$Client$pathForLevel, model.levelContexts, level, index)));
 	});
-var _user$project$Client$variableMetaDecoder = A3(
-	_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$required,
-	'valueTexts',
-	_elm_lang$core$Json_Decode$list(_elm_lang$core$Json_Decode$string),
+var _user$project$Client$prepareValues = function (dto) {
+	var values = A3(
+		_elm_lang$core$List$map2,
+		F2(
+			function (value, text) {
+				return {value: value, text: text, selected: false};
+			}),
+		dto.values,
+		dto.valueTexts);
+	return {code: dto.code, text: dto.text, values: values};
+};
+var _user$project$Client$variableMetaDecoder = A2(
+	_elm_lang$core$Json_Decode$map,
+	_user$project$Client$prepareValues,
 	A3(
 		_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$required,
-		'values',
+		'valueTexts',
 		_elm_lang$core$Json_Decode$list(_elm_lang$core$Json_Decode$string),
 		A3(
 			_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$required,
-			'text',
-			_elm_lang$core$Json_Decode$string,
+			'values',
+			_elm_lang$core$Json_Decode$list(_elm_lang$core$Json_Decode$string),
 			A3(
 				_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$required,
-				'code',
+				'text',
 				_elm_lang$core$Json_Decode$string,
-				_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$decode(_user$project$Types$VariableMeta)))));
+				A3(
+					_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$required,
+					'code',
+					_elm_lang$core$Json_Decode$string,
+					_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$decode(_user$project$Types$VariableMetaDTO))))));
 var _user$project$Client$tableMetaDecoder = A3(
 	_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$required,
 	'variables',
@@ -23604,6 +23634,36 @@ var _user$project$Client$levelDecoder = A3(
 			'id',
 			_elm_lang$core$Json_Decode$string,
 			_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$decode(_user$project$Types$Level))));
+var _user$project$Client$toggleValueForVar = F2(
+	function (value, variable) {
+		var values = A3(
+			_user$project$Utils$mapIf,
+			function (val) {
+				return _elm_lang$core$Native_Utils.eq(val.value, value.value);
+			},
+			function (val) {
+				return _elm_lang$core$Native_Utils.update(
+					val,
+					{selected: !val.selected});
+			},
+			variable.values);
+		return _elm_lang$core$Native_Utils.update(
+			variable,
+			{values: values});
+	});
+var _user$project$Client$toggleValueForTable = F3(
+	function (variable, value, table) {
+		var variables = A3(
+			_user$project$Utils$mapIf,
+			function ($var) {
+				return _elm_lang$core$Native_Utils.eq($var.code, variable.code);
+			},
+			_user$project$Client$toggleValueForVar(value),
+			table.variables);
+		return _elm_lang$core$Native_Utils.update(
+			table,
+			{variables: variables});
+	});
 var _user$project$Client$modelWithTableMeta = F4(
 	function (model, level, index, tableMeta) {
 		var selectedContext = _elm_lang$core$List$head(
@@ -23707,6 +23767,10 @@ var _user$project$Client$initialModel = {
 	tableMeta: _elm_lang$core$Maybe$Nothing,
 	latestError: _elm_lang$core$Maybe$Nothing
 };
+var _user$project$Client$ToggleValue = F2(
+	function (a, b) {
+		return {ctor: 'ToggleValue', _0: a, _1: b};
+	});
 var _user$project$Client$ToggleTableView = {ctor: 'ToggleTableView'};
 var _user$project$Client$TableMetaLoaded = F3(
 	function (a, b, c) {
@@ -23817,7 +23881,7 @@ var _user$project$Client$update = F2(
 						_1: _elm_lang$core$Platform_Cmd$none
 					};
 				}
-			default:
+			case 'ToggleTableView':
 				return {
 					ctor: '_Tuple2',
 					_0: _elm_lang$core$Native_Utils.update(
@@ -23825,6 +23889,22 @@ var _user$project$Client$update = F2(
 						{tableMeta: _elm_lang$core$Maybe$Nothing}),
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
+			default:
+				var _p5 = model.tableMeta;
+				if (_p5.ctor === 'Just') {
+					return {
+						ctor: '_Tuple2',
+						_0: _elm_lang$core$Native_Utils.update(
+							model,
+							{
+								tableMeta: _elm_lang$core$Maybe$Just(
+									A3(_user$project$Client$toggleValueForTable, _p4._0, _p4._1, _p5._0))
+							}),
+						_1: _elm_lang$core$Platform_Cmd$none
+					};
+				} else {
+					return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
+				}
 		}
 	});
 var _user$project$Client$SelectSite = function (a) {
@@ -23838,6 +23918,20 @@ var _user$project$Client$Site = {ctor: 'Site'};
 var _user$project$Client$Selected = {ctor: 'Selected'};
 var _user$project$Client$Main = {ctor: 'Main'};
 var _user$project$Client$None = {ctor: 'None'};
+var _user$project$Client$viewValueMeta = F2(
+	function ($var, val) {
+		var style = val.selected ? _user$project$Client$Selected : _user$project$Client$None;
+		return A3(
+			_mdgriffith$style_elements$Element$el,
+			style,
+			{
+				ctor: '::',
+				_0: _mdgriffith$style_elements$Element_Events$onClick(
+					A2(_user$project$Client$ToggleValue, $var, val)),
+				_1: {ctor: '[]'}
+			},
+			_mdgriffith$style_elements$Element$text(val.text));
+	});
 var _user$project$Client$viewVariableMeta = function (variable) {
 	return A3(
 		_mdgriffith$style_elements$Element$row,
@@ -23872,7 +23966,10 @@ var _user$project$Client$viewVariableMeta = function (variable) {
 							}
 						},
 						_user$project$Client$listAttributes),
-					A2(_elm_lang$core$List$map, _mdgriffith$style_elements$Element$text, variable.valueTexts)),
+					A2(
+						_elm_lang$core$List$map,
+						_user$project$Client$viewValueMeta(variable),
+						variable.values)),
 				_1: {ctor: '[]'}
 			}
 		});
@@ -23945,9 +24042,9 @@ var _user$project$Client$elementFromSite = F2(
 var _user$project$Client$elementFromLevel = F3(
 	function (selected, index, level) {
 		var style = function () {
-			var _p5 = selected;
-			if (_p5.ctor === 'Just') {
-				return _elm_lang$core$Native_Utils.eq(_p5._0, level) ? _user$project$Client$Selected : _user$project$Client$None;
+			var _p6 = selected;
+			if (_p6.ctor === 'Just') {
+				return _elm_lang$core$Native_Utils.eq(_p6._0, level) ? _user$project$Client$Selected : _user$project$Client$None;
 			} else {
 				return _user$project$Client$None;
 			}
@@ -24095,8 +24192,8 @@ var _user$project$Client$view = function (model) {
 		_mdgriffith$style_elements$Element$viewport,
 		_user$project$Client$stylesheet,
 		function () {
-			var _p6 = model.tableMeta;
-			if (_p6.ctor === 'Nothing') {
+			var _p7 = model.tableMeta;
+			if (_p7.ctor === 'Nothing') {
 				return A3(
 					_mdgriffith$style_elements$Element$row,
 					_user$project$Client$Main,
@@ -24114,7 +24211,7 @@ var _user$project$Client$view = function (model) {
 						_1: A2(_elm_lang$core$List$map, _user$project$Client$columnFromLevelContext, model.levelContexts)
 					});
 			} else {
-				return _user$project$Client$viewTableMeta(_p6._0);
+				return _user$project$Client$viewTableMeta(_p7._0);
 			}
 		}());
 };
@@ -24135,7 +24232,7 @@ var _user$project$Client$main = _elm_lang$html$Html$program(
 var Elm = {};
 Elm['Client'] = Elm['Client'] || {};
 if (typeof _user$project$Client$main !== 'undefined') {
-    _user$project$Client$main(Elm['Client'], 'Client', {"types":{"unions":{"Dict.LeafColor":{"args":[],"tags":{"LBBlack":[],"LBlack":[]}},"Dict.Dict":{"args":["k","v"],"tags":{"RBNode_elm_builtin":["Dict.NColor","k","v","Dict.Dict k v","Dict.Dict k v"],"RBEmpty_elm_builtin":["Dict.LeafColor"]}},"Dict.NColor":{"args":[],"tags":{"BBlack":[],"Red":[],"NBlack":[],"Black":[]}},"Http.Error":{"args":[],"tags":{"BadUrl":["String"],"NetworkError":[],"Timeout":[],"BadStatus":["Http.Response String"],"BadPayload":["String","Http.Response String"]}},"Result.Result":{"args":["error","value"],"tags":{"Ok":["value"],"Err":["error"]}},"Client.Msg":{"args":[],"tags":{"SelectSite":["Types.Site"],"SelectLevel":["Types.Level","Int"],"LevelLoaded":["Types.Level","Int","Result.Result Http.Error (List Types.Level)"],"TableMetaLoaded":["Types.Level","Int","Result.Result Http.Error Types.TableMeta"],"SiteLoaded":["Types.Site","Result.Result Http.Error (List Types.Level)"],"ToggleTableView":[]}}},"aliases":{"Http.Response":{"args":["body"],"type":"{ url : String , status : { code : Int, message : String } , headers : Dict.Dict String String , body : body }"},"Types.Site":{"args":[],"type":"{ language : String, url : Types.Url }"},"Types.Url":{"args":[],"type":"String"},"Types.Level":{"args":[],"type":"{ id : String, type_ : String, text : String }"},"Types.VariableMeta":{"args":[],"type":"{ code : String , text : String , values : List String , valueTexts : List String }"},"Types.TableMeta":{"args":[],"type":"{ title : String, variables : List Types.VariableMeta }"}},"message":"Client.Msg"},"versions":{"elm":"0.18.0"}});
+    _user$project$Client$main(Elm['Client'], 'Client', {"types":{"unions":{"Dict.LeafColor":{"args":[],"tags":{"LBBlack":[],"LBlack":[]}},"Dict.Dict":{"args":["k","v"],"tags":{"RBNode_elm_builtin":["Dict.NColor","k","v","Dict.Dict k v","Dict.Dict k v"],"RBEmpty_elm_builtin":["Dict.LeafColor"]}},"Dict.NColor":{"args":[],"tags":{"BBlack":[],"Red":[],"NBlack":[],"Black":[]}},"Http.Error":{"args":[],"tags":{"BadUrl":["String"],"NetworkError":[],"Timeout":[],"BadStatus":["Http.Response String"],"BadPayload":["String","Http.Response String"]}},"Result.Result":{"args":["error","value"],"tags":{"Ok":["value"],"Err":["error"]}},"Client.Msg":{"args":[],"tags":{"SelectSite":["Types.Site"],"SelectLevel":["Types.Level","Int"],"LevelLoaded":["Types.Level","Int","Result.Result Http.Error (List Types.Level)"],"ToggleValue":["Types.VariableMeta","Types.ValueMeta"],"TableMetaLoaded":["Types.Level","Int","Result.Result Http.Error Types.TableMeta"],"SiteLoaded":["Types.Site","Result.Result Http.Error (List Types.Level)"],"ToggleTableView":[]}}},"aliases":{"Http.Response":{"args":["body"],"type":"{ url : String , status : { code : Int, message : String } , headers : Dict.Dict String String , body : body }"},"Types.ValueMeta":{"args":[],"type":"{ value : String, text : String, selected : Bool }"},"Types.Site":{"args":[],"type":"{ language : String, url : Types.Url }"},"Types.Url":{"args":[],"type":"String"},"Types.Level":{"args":[],"type":"{ id : String, type_ : String, text : String }"},"Types.VariableMeta":{"args":[],"type":"{ code : String, text : String, values : List Types.ValueMeta }"},"Types.TableMeta":{"args":[],"type":"{ title : String, variables : List Types.VariableMeta }"}},"message":"Client.Msg"},"versions":{"elm":"0.18.0"}});
 }
 
 if (typeof define === "function" && define['amd'])

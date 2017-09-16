@@ -50,6 +50,20 @@ type alias TableMeta =
 type alias VariableMeta =
     { code : String
     , text : String
+    , values : List ValueMeta
+    }
+
+
+type alias VariableMetaDTO =
+    { code : String
+    , text : String
     , values : List String
     , valueTexts : List String
+    }
+
+
+type alias ValueMeta =
+    { value : String
+    , text : String
+    , selected : Bool
     }

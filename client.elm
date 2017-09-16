@@ -1,6 +1,8 @@
 module Client exposing (..)
 
 import Types exposing (..)
+import Utils exposing (..)
+
 import Json.Decode exposing (string, list, Decoder, at, map, lazy, oneOf, null)
 import Json.Decode.Pipeline exposing (decode, required, requiredAt, custom, optional)
 import Http
@@ -30,6 +32,7 @@ type Msg
     | LevelLoaded Level Int (Result Http.Error (List Level))
     | TableMetaLoaded Level Int (Result Http.Error TableMeta)
     | ToggleTableView
+    | ToggleValue VariableMeta ValueMeta
 
 
 view : Model -> Html Msg
@@ -63,22 +66,32 @@ viewTableMeta meta =
         ]
 
 
-viewVariablesMeta : List VariableMeta -> Element Styles variation msg
+viewVariablesMeta : List VariableMeta -> Element Styles variation Msg
 viewVariablesMeta variables =
     column None columnAttributes <|
         List.map viewVariableMeta variables
 
 
-viewVariableMeta : VariableMeta -> Element Styles variation msg
+viewVariableMeta : VariableMeta -> Element Styles variation Msg
 viewVariableMeta variable =
     row None
         []
         [ el VariableName [paddingRight 10] <| text variable.text
         , column VariableData
             ([ yScrollbar, maxHeight (px 150) ] ++ listAttributes)
-            (List.map text variable.valueTexts)
+            (variable.values
+                |> List.map (viewValueMeta variable)
+            )
         ]
 
+viewValueMeta : VariableMeta -> ValueMeta -> Element Styles variation Msg
+viewValueMeta var val =
+    let
+        style =
+            if val.selected then Selected else None        
+    in
+        el style [onClick (ToggleValue var val)] (text val.text)
+            
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
@@ -109,6 +122,15 @@ update msg model =
 
         ToggleTableView ->
             ( { model | tableMeta = Nothing }, Cmd.none )
+
+        ToggleValue variable value ->
+            case model.tableMeta of
+                Just table ->
+                    ( { model | tableMeta = Just <| toggleValueForTable variable value table }
+                    , Cmd.none
+                    )
+                Nothing ->
+                    ( model, Cmd.none) 
 
 
 main : Program Never Model Msg
@@ -144,7 +166,6 @@ columnFromLevelContext context =
             else
                 Main
     in
-    
         column style
             columnAttributes
             (List.map (elementFromLevel context.selected context.index) context.levels)
@@ -248,6 +269,23 @@ modelWithTableMeta model level index tableMeta =
             , tableMeta = Just tableMeta
         }
 
+toggleValueForTable : VariableMeta -> ValueMeta -> TableMeta -> TableMeta 
+toggleValueForTable variable value table =
+    let
+        variables =
+            table.variables
+                |> mapIf (\var -> var.code == variable.code) (toggleValueForVar value)
+    in
+        { table | variables = variables }
+
+toggleValueForVar : ValueMeta -> VariableMeta -> VariableMeta
+toggleValueForVar value variable =
+    let
+        values = variable.values
+                    |> mapIf (\val -> val.value == value.value)
+                             (\val -> { val | selected = not val.selected})
+    in
+        { variable | values = values }
 
 loadSiteCmd : Site -> Cmd Msg
 loadSiteCmd site =
@@ -294,11 +332,27 @@ tableMetaDecoder =
 
 variableMetaDecoder : Decoder VariableMeta
 variableMetaDecoder =
-    decode VariableMeta
+    decode VariableMetaDTO 
         |> required "code" string
         |> required "text" string
         |> required "values" (list string)
         |> required "valueTexts" (list string)
+        |> Json.Decode.map prepareValues
+
+prepareValues : VariableMetaDTO -> VariableMeta
+prepareValues dto =
+    let
+        values : List ValueMeta
+        values = List.map2 (\value text -> 
+            { value = value,
+            text = text,
+            selected = False})
+            dto.values
+            dto.valueTexts
+    in
+        { code = dto.code,
+        text = dto.text, values = values}
+        
 
 
 urlForLevel : Model -> Level -> Int -> Url
