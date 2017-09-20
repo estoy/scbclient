@@ -71,10 +71,19 @@ type alias ValueMeta =
 
 
 type alias TableData =
-    { data : List Data }
+    { data : List Data
+    , columns : List Column
+    }
 
 
 type alias Data =
     { key : List String
     , values : List String
+    }
+
+
+type alias Column =
+    { code : String
+    , text : String
+    , type_ : String
     }

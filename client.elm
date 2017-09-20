@@ -406,28 +406,19 @@ submitQueryCmd model =
         tableDecoder
             |> Http.post url query
             |> Http.send TableLoaded
-        -- corsPost url (Debug.log "Query: " query) tableDecoder
-        --     |> Http.send TableLoaded
-
--- corsPost : String -> Body -> Decoder a -> Request a
--- corsPost url query decoder =
---     request
---         { method = "POST"
---         , headers =
---             [ Http.header "Access-Control-Allow-Origin" "*"
---             ]
---         , url = url
---         , body = query
---         , expect = (expectJson decoder)
---         , timeout = Nothing
---         , withCredentials = False
---         }
 
 tableDecoder : Decoder TableData
 tableDecoder =
     decode TableData
         |> required "data" (list dataDecoder)
+        |> required "columns" (list columnDecoder)
 
+columnDecoder : Decoder Column
+columnDecoder =
+    decode Column
+        |> required "code" string
+        |> required "text" string
+        |> required "type" string
 
 dataDecoder : Decoder Data
 dataDecoder =
