@@ -7,6 +7,7 @@ type alias Model =
     { siteContext : SiteCtx
     , levelContexts : List LevelCtx
     , tableMeta : Maybe TableMeta
+    , table : Maybe TableData
     , latestError : Maybe Http.Error
     }
 
@@ -66,4 +67,14 @@ type alias ValueMeta =
     { value : String
     , text : String
     , selected : Bool
+    }
+
+
+type alias TableData =
+    { data : List Data }
+
+
+type alias Data =
+    { key : List String
+    , values : List String
     }

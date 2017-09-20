@@ -5,7 +5,7 @@ import Utils exposing (..)
 
 import Json.Decode exposing (string, list, Decoder, at, map, lazy, oneOf, null)
 import Json.Decode.Pipeline exposing (decode, required, requiredAt, custom, optional)
-import Http
+import Http exposing (stringBody, Body, Request, request, expectJson, header)
 import Html exposing (Html)
 import Element exposing (..)
 import Element.Attributes exposing (spacing, padding, paddingRight, paddingXY, justify, yScrollbar, maxHeight, px)
@@ -21,6 +21,7 @@ initialModel =
     { siteContext = { selected = swedish, sites = sites }
     , levelContexts = []
     , tableMeta = Nothing
+    , table = Nothing
     , latestError = Nothing
     }
 
@@ -31,8 +32,11 @@ type Msg
     | SelectLevel Level Int
     | LevelLoaded Level Int (Result Http.Error (List Level))
     | TableMetaLoaded Level Int (Result Http.Error TableMeta)
-    | ToggleTableView
+    | ToggleTableMetaView
+    | ToggleTableDataView
     | ToggleValue VariableMeta ValueMeta
+    | Submit
+    | TableLoaded (Result Http.Error TableData)
 
 
 view : Model -> Html Msg
@@ -45,13 +49,35 @@ view model =
                     ((column Site
                         columnAttributes
                         (List.map (elementFromSite model.siteContext.selected) sites)
-                     )
+                    )
                         :: (List.map columnFromLevelContext model.levelContexts)
                     )
 
             Just meta ->
-                viewTableMeta meta
+                case model.table of
+                    Nothing ->
+                        viewTableMeta meta
+                    Just table ->
+                        viewTable table meta
+                
 
+viewTable : TableData -> TableMeta -> Element Styles variation Msg
+viewTable table meta =
+    column Table
+        columnAttributes
+        [ row None
+            [ justify ]
+            [ el TableTitle [] <| text meta.title
+            , (row None []
+                [button <| el Main [ onClick ToggleTableDataView ] <| text "X"]
+              )
+            ]
+        , viewValues table.data
+        ]
+
+viewValues : List Data -> Element Styles variation Msg
+viewValues data =
+    el None [] <| text <| "Number of data points: " ++ (toString <| List.length data)
 
 viewTableMeta : TableMeta -> Element Styles variation Msg
 viewTableMeta meta =
@@ -61,8 +87,8 @@ viewTableMeta meta =
             [ justify ]
             [ el TableTitle [] <| text meta.title
             , (row None []
-                [ button <| el Main [] <| text "Submit"
-                , button <| el Main [ onClick ToggleTableView ] <| text "X"
+                [ button <| el Main [ onClick Submit ] <| text "Submit"
+                , button <| el Main [ onClick ToggleTableMetaView ] <| text "X"
                 ]
               )
             ]
@@ -106,7 +132,7 @@ update msg model =
         SiteLoaded site (Ok levels) ->
             ( modelWithSite model site levels, Cmd.none )
 
-        SiteLoaded _ (Err _) ->
+        SiteLoaded _ (Err _) -> 
             ( model, Cmd.none )
 
         SelectLevel level index ->
@@ -124,8 +150,11 @@ update msg model =
         TableMetaLoaded _ _ (Err err) ->
             ( { model | latestError = Just err }, Cmd.none )
 
-        ToggleTableView ->
+        ToggleTableMetaView ->
             ( { model | tableMeta = Nothing }, Cmd.none )
+
+        ToggleTableDataView ->
+            ( { model | table = Nothing }, Cmd.none )
 
         ToggleValue variable value ->
             case model.tableMeta of
@@ -134,7 +163,16 @@ update msg model =
                     , Cmd.none
                     )
                 Nothing ->
-                    ( model, Cmd.none) 
+                    ( model, Cmd.none)
+
+        Submit ->
+            ( model, submitQueryCmd model)
+        
+        TableLoaded (Ok table) ->
+            ( { model | table = Just table }, Cmd.none )
+
+        TableLoaded (Err err) ->
+            ( { model | latestError = Just err }, Cmd.none )
 
 
 main : Program Never Model Msg
@@ -357,6 +395,59 @@ prepareValues dto =
         { code = dto.code,
         text = dto.text, values = values}
         
+submitQueryCmd : Model -> Cmd Msg
+submitQueryCmd model =
+    let
+        url =
+            tableUrl model
+        query =
+            tableQuery model
+    in
+        tableDecoder
+            |> Http.post url query
+            |> Http.send TableLoaded
+        -- corsPost url (Debug.log "Query: " query) tableDecoder
+        --     |> Http.send TableLoaded
+
+-- corsPost : String -> Body -> Decoder a -> Request a
+-- corsPost url query decoder =
+--     request
+--         { method = "POST"
+--         , headers =
+--             [ Http.header "Access-Control-Allow-Origin" "*"
+--             ]
+--         , url = url
+--         , body = query
+--         , expect = (expectJson decoder)
+--         , timeout = Nothing
+--         , withCredentials = False
+--         }
+
+tableDecoder : Decoder TableData
+tableDecoder =
+    decode TableData
+        |> required "data" (list dataDecoder)
+
+
+dataDecoder : Decoder Data
+dataDecoder =
+    decode Data
+        |> required "key" (list string)
+        |> required "values" (list string)
+
+tableUrl : Model -> String
+tableUrl model =
+    Debug.log "Url:" (model.siteContext.selected.url ++ pathForTable model.levelContexts)
+
+pathForTable : List LevelCtx -> String
+pathForTable contexts =
+    contexts
+        |> List.map currentId
+        |> List.foldl (\a b -> b ++ "/" ++ a) ""
+
+tableQuery : Model -> Http.Body
+tableQuery model =
+    stringBody "application/json" <| encodeQuery model.tableMeta
 
 
 urlForLevel : Model -> Level -> Int -> Url
@@ -472,3 +563,5 @@ stylesheet =
         , style VariableData
             [Color.background (Color.rgba 239 227 195 1.0)]
         ]
+
+
