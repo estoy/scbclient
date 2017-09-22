@@ -23331,6 +23331,99 @@ var _mdgriffith$style_elements$Element_Events$Options = F2(
 		return {stopPropagation: a, preventDefault: b};
 	});
 
+var _mdgriffith$style_elements$Style_Border$roundBottomLeft = function (x) {
+	return A2(
+		_mdgriffith$style_elements$Style_Internal_Model$Exact,
+		'border-bottom-left-radius',
+		A2(
+			_elm_lang$core$Basics_ops['++'],
+			_elm_lang$core$Basics$toString(x),
+			'px'));
+};
+var _mdgriffith$style_elements$Style_Border$roundBottomRight = function (x) {
+	return A2(
+		_mdgriffith$style_elements$Style_Internal_Model$Exact,
+		'border-bottom-right-radius',
+		A2(
+			_elm_lang$core$Basics_ops['++'],
+			_elm_lang$core$Basics$toString(x),
+			'px'));
+};
+var _mdgriffith$style_elements$Style_Border$roundTopRight = function (x) {
+	return A2(
+		_mdgriffith$style_elements$Style_Internal_Model$Exact,
+		'border-top-right-radius',
+		A2(
+			_elm_lang$core$Basics_ops['++'],
+			_elm_lang$core$Basics$toString(x),
+			'px'));
+};
+var _mdgriffith$style_elements$Style_Border$roundTopLeft = function (x) {
+	return A2(
+		_mdgriffith$style_elements$Style_Internal_Model$Exact,
+		'border-top-left-radius',
+		A2(
+			_elm_lang$core$Basics_ops['++'],
+			_elm_lang$core$Basics$toString(x),
+			'px'));
+};
+var _mdgriffith$style_elements$Style_Border$rounded = function (box) {
+	return A2(
+		_mdgriffith$style_elements$Style_Internal_Model$Exact,
+		'border-radius',
+		A2(
+			_elm_lang$core$Basics_ops['++'],
+			_elm_lang$core$Basics$toString(box),
+			'px'));
+};
+var _mdgriffith$style_elements$Style_Border$dotted = A2(_mdgriffith$style_elements$Style_Internal_Model$Exact, 'border-style', 'dotted');
+var _mdgriffith$style_elements$Style_Border$dashed = A2(_mdgriffith$style_elements$Style_Internal_Model$Exact, 'border-style', 'dashed');
+var _mdgriffith$style_elements$Style_Border$solid = A2(_mdgriffith$style_elements$Style_Internal_Model$Exact, 'border-style', 'solid');
+var _mdgriffith$style_elements$Style_Border$none = A2(_mdgriffith$style_elements$Style_Internal_Model$Exact, 'border-width', '0');
+var _mdgriffith$style_elements$Style_Border$bottom = function (l) {
+	return A2(
+		_mdgriffith$style_elements$Style_Internal_Model$Exact,
+		'border-bottom-width',
+		A2(
+			_elm_lang$core$Basics_ops['++'],
+			_elm_lang$core$Basics$toString(l),
+			'px'));
+};
+var _mdgriffith$style_elements$Style_Border$top = function (l) {
+	return A2(
+		_mdgriffith$style_elements$Style_Internal_Model$Exact,
+		'border-top-width',
+		A2(
+			_elm_lang$core$Basics_ops['++'],
+			_elm_lang$core$Basics$toString(l),
+			'px'));
+};
+var _mdgriffith$style_elements$Style_Border$right = function (l) {
+	return A2(
+		_mdgriffith$style_elements$Style_Internal_Model$Exact,
+		'border-right-width',
+		A2(
+			_elm_lang$core$Basics_ops['++'],
+			_elm_lang$core$Basics$toString(l),
+			'px'));
+};
+var _mdgriffith$style_elements$Style_Border$left = function (l) {
+	return A2(
+		_mdgriffith$style_elements$Style_Internal_Model$Exact,
+		'border-left-width',
+		A2(
+			_elm_lang$core$Basics_ops['++'],
+			_elm_lang$core$Basics$toString(l),
+			'px'));
+};
+var _mdgriffith$style_elements$Style_Border$all = function (v) {
+	return A2(
+		_mdgriffith$style_elements$Style_Internal_Model$Exact,
+		'border-width',
+		_mdgriffith$style_elements$Style_Internal_Render_Value$box(
+			{ctor: '_Tuple4', _0: v, _1: v, _2: v, _3: v}));
+};
+
 var _mdgriffith$style_elements$Style_Color$placeholder = function (clr) {
 	return A2(
 		_mdgriffith$style_elements$Style_Internal_Model$PseudoElement,
@@ -23462,13 +23555,13 @@ var _user$project$Types$TableMeta = F2(
 	function (a, b) {
 		return {title: a, variables: b};
 	});
-var _user$project$Types$VariableMeta = F3(
-	function (a, b, c) {
-		return {code: a, text: b, values: c};
-	});
-var _user$project$Types$VariableMetaDTO = F4(
+var _user$project$Types$VariableMeta = F4(
 	function (a, b, c, d) {
-		return {code: a, text: b, values: c, valueTexts: d};
+		return {code: a, text: b, values: c, time: d};
+	});
+var _user$project$Types$VariableMetaDTO = F5(
+	function (a, b, c, d, e) {
+		return {code: a, text: b, values: c, valueTexts: d, time: e};
 	});
 var _user$project$Types$ValueMeta = F3(
 	function (a, b, c) {
@@ -23478,9 +23571,21 @@ var _user$project$Types$TableData = F2(
 	function (a, b) {
 		return {data: a, columns: b};
 	});
-var _user$project$Types$Data = F2(
+var _user$project$Types$DataDTO = F2(
 	function (a, b) {
 		return {key: a, values: b};
+	});
+var _user$project$Types$Data = F3(
+	function (a, b, c) {
+		return {key: a, time: b, values: c};
+	});
+var _user$project$Types$DataSequence = F2(
+	function (a, b) {
+		return {key: a, points: b};
+	});
+var _user$project$Types$DataPoint = F2(
+	function (a, b) {
+		return {time: a, values: b};
 	});
 var _user$project$Types$Column = F3(
 	function (a, b, c) {
@@ -23579,6 +23684,26 @@ var _user$project$Utils$encodeQuery = function (tableMeta) {
 		return '';
 	}
 };
+var _user$project$Utils$groupBy = F2(
+	function (eq, xs_) {
+		var _p1 = xs_;
+		if (_p1.ctor === '[]') {
+			return {ctor: '[]'};
+		} else {
+			var _p3 = _p1._0;
+			var _p2 = A2(
+				_elm_lang$core$List$partition,
+				eq(_p3),
+				_p1._1);
+			var ys = _p2._0;
+			var zs = _p2._1;
+			return {
+				ctor: '::',
+				_0: {ctor: '::', _0: _p3, _1: ys},
+				_1: A2(_user$project$Utils$groupBy, eq, zs)
+			};
+		}
+	});
 var _user$project$Utils$mapIf = F2(
 	function (pred, map) {
 		return _elm_lang$core$List$map(
@@ -23713,15 +23838,30 @@ var _user$project$Client$tableUrl = function (model) {
 			model.siteContext.selected.url,
 			_user$project$Client$pathForTable(model.levelContexts)));
 };
-var _user$project$Client$dataDecoder = A3(
-	_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$required,
-	'values',
-	_elm_lang$core$Json_Decode$list(_elm_lang$core$Json_Decode$string),
+var _user$project$Client$prepareData = function (dto) {
+	var time = A2(
+		_elm_lang$core$Maybe$withDefault,
+		'',
+		_elm_lang$core$List$head(
+			_elm_lang$core$List$reverse(dto.key)));
+	var key = A2(
+		_elm_lang$core$List$take,
+		_elm_lang$core$List$length(dto.key) - 1,
+		dto.key);
+	return {key: key, time: time, values: dto.values};
+};
+var _user$project$Client$dataDecoder = A2(
+	_elm_lang$core$Json_Decode$map,
+	_user$project$Client$prepareData,
 	A3(
 		_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$required,
-		'key',
+		'values',
 		_elm_lang$core$Json_Decode$list(_elm_lang$core$Json_Decode$string),
-		_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$decode(_user$project$Types$Data)));
+		A3(
+			_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$required,
+			'key',
+			_elm_lang$core$Json_Decode$list(_elm_lang$core$Json_Decode$string),
+			_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$decode(_user$project$Types$DataDTO))));
 var _user$project$Client$columnDecoder = A3(
 	_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$required,
 	'type',
@@ -23753,28 +23893,33 @@ var _user$project$Client$prepareValues = function (dto) {
 			}),
 		dto.values,
 		dto.valueTexts);
-	return {code: dto.code, text: dto.text, values: values};
+	return {code: dto.code, text: dto.text, values: values, time: dto.time};
 };
 var _user$project$Client$variableMetaDecoder = A2(
 	_elm_lang$core$Json_Decode$map,
 	_user$project$Client$prepareValues,
-	A3(
-		_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$required,
-		'valueTexts',
-		_elm_lang$core$Json_Decode$list(_elm_lang$core$Json_Decode$string),
+	A4(
+		_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$optional,
+		'time',
+		_elm_lang$core$Json_Decode$bool,
+		false,
 		A3(
 			_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$required,
-			'values',
+			'valueTexts',
 			_elm_lang$core$Json_Decode$list(_elm_lang$core$Json_Decode$string),
 			A3(
 				_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$required,
-				'text',
-				_elm_lang$core$Json_Decode$string,
+				'values',
+				_elm_lang$core$Json_Decode$list(_elm_lang$core$Json_Decode$string),
 				A3(
 					_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$required,
-					'code',
+					'text',
 					_elm_lang$core$Json_Decode$string,
-					_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$decode(_user$project$Types$VariableMetaDTO))))));
+					A3(
+						_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$required,
+						'code',
+						_elm_lang$core$Json_Decode$string,
+						_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$decode(_user$project$Types$VariableMetaDTO)))))));
 var _user$project$Client$tableMetaDecoder = A3(
 	_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$required,
 	'variables',
@@ -23924,6 +24069,35 @@ var _user$project$Client$modelWithSite = F3(
 				tableMeta: _elm_lang$core$Maybe$Nothing
 			});
 	});
+var _user$project$Client$emptyVariableMeta = A4(
+	_user$project$Types$VariableMeta,
+	'',
+	'',
+	{ctor: '[]'},
+	false);
+var _user$project$Client$mergeSequences = function (group) {
+	var key = A2(
+		_elm_lang$core$Maybe$withDefault,
+		{
+			ctor: '::',
+			_0: '*error*',
+			_1: {ctor: '[]'}
+		},
+		_elm_lang$core$List$head(
+			A2(
+				_elm_lang$core$List$map,
+				function (_) {
+					return _.key;
+				},
+				group)));
+	var points = A2(
+		_elm_lang$core$List$map,
+		function (data) {
+			return A2(_user$project$Types$DataPoint, data.time, data.values);
+		},
+		group);
+	return A2(_user$project$Types$DataSequence, key, points);
+};
 var _user$project$Client$initialModel = {
 	siteContext: {selected: _user$project$Client$swedish, sites: _user$project$Client$sites},
 	levelContexts: {ctor: '[]'},
@@ -24123,6 +24297,34 @@ var _user$project$Client$update = F2(
 var _user$project$Client$SelectSite = function (a) {
 	return {ctor: 'SelectSite', _0: a};
 };
+var _user$project$Client$Box = {ctor: 'Box'};
+var _user$project$Client$viewDataCell = F3(
+	function (rowIndex, columnIndex, value) {
+		return A2(
+			_mdgriffith$style_elements$Element$area,
+			{
+				start: {ctor: '_Tuple2', _0: columnIndex, _1: rowIndex},
+				width: 1,
+				height: 1
+			},
+			A3(
+				_mdgriffith$style_elements$Element$el,
+				_user$project$Client$Box,
+				{
+					ctor: '::',
+					_0: _mdgriffith$style_elements$Element_Attributes$verticalCenter,
+					_1: {ctor: '[]'}
+				},
+				_mdgriffith$style_elements$Element$text(value)));
+	});
+var _user$project$Client$viewDataRow = F2(
+	function (rowIndex, data) {
+		var dimensions = A2(
+			_elm_lang$core$List$indexedMap,
+			_user$project$Client$viewDataCell(rowIndex),
+			data.key);
+		return dimensions;
+	});
 var _user$project$Client$VariableData = {ctor: 'VariableData'};
 var _user$project$Client$VariableName = {ctor: 'VariableName'};
 var _user$project$Client$TableTitle = {ctor: 'TableTitle'};
@@ -24130,19 +24332,87 @@ var _user$project$Client$Table = {ctor: 'Table'};
 var _user$project$Client$Site = {ctor: 'Site'};
 var _user$project$Client$Selected = {ctor: 'Selected'};
 var _user$project$Client$Main = {ctor: 'Main'};
-var _user$project$Client$None = {ctor: 'None'};
-var _user$project$Client$viewValues = function (data) {
-	return A3(
-		_mdgriffith$style_elements$Element$el,
-		_user$project$Client$None,
-		{ctor: '[]'},
-		_mdgriffith$style_elements$Element$text(
+var _user$project$Client$viewValues = F2(
+	function (table, meta) {
+		var dataSeqs = A2(
+			_elm_lang$core$List$map,
+			_user$project$Client$mergeSequences,
 			A2(
-				_elm_lang$core$Basics_ops['++'],
-				'Number of data points: ',
-				_elm_lang$core$Basics$toString(
-					_elm_lang$core$List$length(data)))));
-};
+				_user$project$Utils$groupBy,
+				F2(
+					function (r1, r2) {
+						return _elm_lang$core$Native_Utils.eq(r1.key, r2.key);
+					}),
+				table.data));
+		var rowCount = _elm_lang$core$List$length(dataSeqs);
+		var dataCount = _elm_lang$core$List$length(
+			A2(
+				_elm_lang$core$List$filter,
+				F2(
+					function (x, y) {
+						return _elm_lang$core$Native_Utils.eq(x, y);
+					})('c'),
+				A2(
+					_elm_lang$core$List$map,
+					function (_) {
+						return _.type_;
+					},
+					table.columns)));
+		var dimensionCount = _elm_lang$core$List$length(
+			A2(
+				_elm_lang$core$List$filter,
+				F2(
+					function (x, y) {
+						return _elm_lang$core$Native_Utils.eq(x, y);
+					})('d'),
+				A2(
+					_elm_lang$core$List$map,
+					function (_) {
+						return _.type_;
+					},
+					table.columns)));
+		var timeField = A2(
+			_elm_lang$core$Maybe$withDefault,
+			_user$project$Client$emptyVariableMeta,
+			_elm_lang$core$List$head(
+				A2(
+					_elm_lang$core$List$filter,
+					function (_) {
+						return _.time;
+					},
+					meta.variables)));
+		var timeCount = _elm_lang$core$List$length(
+			A2(
+				_elm_lang$core$List$filter,
+				function (_) {
+					return _.selected;
+				},
+				timeField.values));
+		var columnCount = (timeCount * dataCount) + dimensionCount;
+		return A4(
+			_mdgriffith$style_elements$Element$grid,
+			_user$project$Client$Main,
+			{
+				columns: A2(
+					_elm_lang$core$List$repeat,
+					columnCount,
+					_mdgriffith$style_elements$Element_Attributes$px(100)),
+				rows: A2(
+					_elm_lang$core$List$repeat,
+					rowCount,
+					_mdgriffith$style_elements$Element_Attributes$px(30))
+			},
+			{ctor: '[]'},
+			A3(
+				_elm_lang$core$List$foldr,
+				F2(
+					function (x, y) {
+						return A2(_elm_lang$core$Basics_ops['++'], x, y);
+					}),
+				{ctor: '[]'},
+				A2(_elm_lang$core$List$indexedMap, _user$project$Client$viewDataRow, dataSeqs)));
+	});
+var _user$project$Client$None = {ctor: 'None'};
 var _user$project$Client$viewTable = F2(
 	function (table, meta) {
 		return A3(
@@ -24191,7 +24461,7 @@ var _user$project$Client$viewTable = F2(
 					}),
 				_1: {
 					ctor: '::',
-					_0: _user$project$Client$viewValues(table.data),
+					_0: A2(_user$project$Client$viewValues, table, meta),
 					_1: {ctor: '[]'}
 				}
 			});
@@ -24477,7 +24747,18 @@ var _user$project$Client$stylesheet = _mdgriffith$style_elements$Style$styleShee
 												A4(_elm_lang$core$Color$rgba, 239, 227, 195, 1.0)),
 											_1: {ctor: '[]'}
 										}),
-									_1: {ctor: '[]'}
+									_1: {
+										ctor: '::',
+										_0: A2(
+											_mdgriffith$style_elements$Style$style,
+											_user$project$Client$Box,
+											{
+												ctor: '::',
+												_0: _mdgriffith$style_elements$Style_Border$all(1.0),
+												_1: {ctor: '[]'}
+											}),
+										_1: {ctor: '[]'}
+									}
 								}
 							}
 						}
@@ -24537,7 +24818,7 @@ var _user$project$Client$main = _elm_lang$html$Html$program(
 var Elm = {};
 Elm['Client'] = Elm['Client'] || {};
 if (typeof _user$project$Client$main !== 'undefined') {
-    _user$project$Client$main(Elm['Client'], 'Client', {"types":{"unions":{"Dict.LeafColor":{"args":[],"tags":{"LBBlack":[],"LBlack":[]}},"Dict.Dict":{"args":["k","v"],"tags":{"RBNode_elm_builtin":["Dict.NColor","k","v","Dict.Dict k v","Dict.Dict k v"],"RBEmpty_elm_builtin":["Dict.LeafColor"]}},"Dict.NColor":{"args":[],"tags":{"BBlack":[],"Red":[],"NBlack":[],"Black":[]}},"Http.Error":{"args":[],"tags":{"BadUrl":["String"],"NetworkError":[],"Timeout":[],"BadStatus":["Http.Response String"],"BadPayload":["String","Http.Response String"]}},"Result.Result":{"args":["error","value"],"tags":{"Ok":["value"],"Err":["error"]}},"Client.Msg":{"args":[],"tags":{"ToggleTableMetaView":[],"SelectSite":["Types.Site"],"SelectLevel":["Types.Level","Int"],"TableLoaded":["Result.Result Http.Error Types.TableData"],"LevelLoaded":["Types.Level","Int","Result.Result Http.Error (List Types.Level)"],"ToggleValue":["Types.VariableMeta","Types.ValueMeta"],"TableMetaLoaded":["Types.Level","Int","Result.Result Http.Error Types.TableMeta"],"Submit":[],"SiteLoaded":["Types.Site","Result.Result Http.Error (List Types.Level)"],"ToggleTableDataView":[]}}},"aliases":{"Http.Response":{"args":["body"],"type":"{ url : String , status : { code : Int, message : String } , headers : Dict.Dict String String , body : body }"},"Types.Data":{"args":[],"type":"{ key : List String, values : List String }"},"Types.ValueMeta":{"args":[],"type":"{ value : String, text : String, selected : Bool }"},"Types.Column":{"args":[],"type":"{ code : String, text : String, type_ : String }"},"Types.Site":{"args":[],"type":"{ language : String, url : Types.Url }"},"Types.Url":{"args":[],"type":"String"},"Types.Level":{"args":[],"type":"{ id : String, type_ : String, text : String }"},"Types.TableData":{"args":[],"type":"{ data : List Types.Data, columns : List Types.Column }"},"Types.VariableMeta":{"args":[],"type":"{ code : String, text : String, values : List Types.ValueMeta }"},"Types.TableMeta":{"args":[],"type":"{ title : String, variables : List Types.VariableMeta }"}},"message":"Client.Msg"},"versions":{"elm":"0.18.0"}});
+    _user$project$Client$main(Elm['Client'], 'Client', {"types":{"unions":{"Dict.LeafColor":{"args":[],"tags":{"LBBlack":[],"LBlack":[]}},"Dict.Dict":{"args":["k","v"],"tags":{"RBNode_elm_builtin":["Dict.NColor","k","v","Dict.Dict k v","Dict.Dict k v"],"RBEmpty_elm_builtin":["Dict.LeafColor"]}},"Dict.NColor":{"args":[],"tags":{"BBlack":[],"Red":[],"NBlack":[],"Black":[]}},"Http.Error":{"args":[],"tags":{"BadUrl":["String"],"NetworkError":[],"Timeout":[],"BadStatus":["Http.Response String"],"BadPayload":["String","Http.Response String"]}},"Result.Result":{"args":["error","value"],"tags":{"Ok":["value"],"Err":["error"]}},"Client.Msg":{"args":[],"tags":{"ToggleTableMetaView":[],"SelectSite":["Types.Site"],"SelectLevel":["Types.Level","Int"],"TableLoaded":["Result.Result Http.Error Types.TableData"],"LevelLoaded":["Types.Level","Int","Result.Result Http.Error (List Types.Level)"],"ToggleValue":["Types.VariableMeta","Types.ValueMeta"],"TableMetaLoaded":["Types.Level","Int","Result.Result Http.Error Types.TableMeta"],"Submit":[],"SiteLoaded":["Types.Site","Result.Result Http.Error (List Types.Level)"],"ToggleTableDataView":[]}}},"aliases":{"Http.Response":{"args":["body"],"type":"{ url : String , status : { code : Int, message : String } , headers : Dict.Dict String String , body : body }"},"Types.Data":{"args":[],"type":"{ key : List String, time : String, values : List String }"},"Types.ValueMeta":{"args":[],"type":"{ value : String, text : String, selected : Bool }"},"Types.Column":{"args":[],"type":"{ code : String, text : String, type_ : String }"},"Types.Site":{"args":[],"type":"{ language : String, url : Types.Url }"},"Types.Url":{"args":[],"type":"String"},"Types.Level":{"args":[],"type":"{ id : String, type_ : String, text : String }"},"Types.TableData":{"args":[],"type":"{ data : List Types.Data, columns : List Types.Column }"},"Types.VariableMeta":{"args":[],"type":"{ code : String , text : String , values : List Types.ValueMeta , time : Bool }"},"Types.TableMeta":{"args":[],"type":"{ title : String, variables : List Types.VariableMeta }"}},"message":"Client.Msg"},"versions":{"elm":"0.18.0"}});
 }
 
 if (typeof define === "function" && define['amd'])

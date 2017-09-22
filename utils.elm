@@ -14,6 +14,16 @@ mapIf pred map =
                 e
         )
 
+groupBy : (a -> a -> Bool) -> List a -> List (List a)
+groupBy eq xs_ =
+  case xs_ of
+    [] ->
+        []
+    (x::xs) ->
+        let
+            (ys,zs) = List.partition (eq x) xs
+        in
+            (x::ys)::groupBy eq zs
 
 encodeQuery : Maybe TableMeta -> String
 encodeQuery tableMeta =

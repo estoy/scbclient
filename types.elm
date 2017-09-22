@@ -52,6 +52,7 @@ type alias VariableMeta =
     { code : String
     , text : String
     , values : List ValueMeta
+    , time : Bool
     }
 
 
@@ -60,6 +61,7 @@ type alias VariableMetaDTO =
     , text : String
     , values : List String
     , valueTexts : List String
+    , time : Bool
     }
 
 
@@ -76,8 +78,27 @@ type alias TableData =
     }
 
 
+type alias DataDTO =
+    { key : List String
+    , values : List String
+    }
+
+
 type alias Data =
     { key : List String
+    , time : String
+    , values : List String
+    }
+
+
+type alias DataSequence =
+    { key : List String
+    , points : List DataPoint
+    }
+
+
+type alias DataPoint =
+    { time : String
     , values : List String
     }
 

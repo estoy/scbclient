@@ -3,17 +3,18 @@ module Client exposing (..)
 import Types exposing (..)
 import Utils exposing (..)
 
-import Json.Decode exposing (string, list, Decoder, at, map, lazy, oneOf, null)
+import Json.Decode exposing (string, list, Decoder, at, map, lazy, oneOf, null, bool)
 import Json.Decode.Pipeline exposing (decode, required, requiredAt, custom, optional)
 import Http exposing (stringBody, Body, Request, request, expectJson, header)
 import Html exposing (Html)
 import Element exposing (..)
-import Element.Attributes exposing (spacing, padding, paddingRight, paddingXY, justify, yScrollbar, maxHeight, px)
+import Element.Attributes exposing (verticalCenter, spacing, padding, paddingRight, paddingXY, justify, yScrollbar, maxHeight, px)
 import Element.Events exposing (onClick)
 import Color
 import Style exposing (..)
 import Style.Color as Color
 import Style.Font as Font
+import Style.Border as Border
 
 
 initialModel : Model
@@ -72,12 +73,98 @@ viewTable table meta =
                 [button <| el Main [ onClick ToggleTableDataView ] <| text "X"]
               )
             ]
-        , viewValues table.data
+        , viewValues table meta
         ]
 
-viewValues : List Data -> Element Styles variation Msg
-viewValues data =
-    el None [] <| text <| "Number of data points: " ++ (toString <| List.length data)
+viewValues : TableData -> TableMeta-> Element Styles variation Msg
+viewValues table meta =
+   let
+        timeField : VariableMeta
+        timeField =
+            meta.variables
+                |> List.filter .time
+                |> List.head
+                |> Maybe.withDefault emptyVariableMeta
+        
+        timeCount =
+            timeField.values
+                |> List.filter .selected
+                |> List.length
+
+        dimensionCount =
+            table.columns
+                |> List.map .type_
+                |> List.filter ((==) "d")
+                |> List.length
+
+        dataCount =
+            table.columns
+                |> List.map .type_
+                |> List.filter ((==) "c")
+                |> List.length
+
+        columnCount =
+            timeCount * dataCount + dimensionCount
+
+        dataSeqs : List DataSequence
+        dataSeqs =
+            table.data
+                |> groupBy (\r1 r2 -> r1.key == r2.key)
+                |> List.map mergeSequences
+
+        rowCount =
+            dataSeqs
+                |> List.length
+
+   in
+        grid Main
+            { columns = List.repeat columnCount (px 100)
+            , rows = List.repeat rowCount (px 30)
+            }
+            []
+            (dataSeqs
+                |> List.indexedMap viewDataRow
+                |> List.foldr (++) []
+            )
+
+mergeSequences : List Data -> DataSequence
+mergeSequences group =
+    let
+        points : List DataPoint
+        points =
+            group
+                |> List.map (\data -> DataPoint data.time data.values)
+
+        key =
+            group
+                |> List.map .key
+                |> List.head
+                |> Maybe.withDefault ["*error*"]
+    in
+        DataSequence key points
+
+
+viewDataRow : Int -> DataSequence -> List (Element.OnGrid (Element Styles variation msg))
+viewDataRow rowIndex data =
+    let
+        dimensions : List (Element.OnGrid (Element Styles variation msg))
+        dimensions =
+            data.key
+                |> List.indexedMap (viewDataCell rowIndex)
+    in
+        dimensions
+
+viewDataCell : Int -> Int -> String -> Element.OnGrid (Element Styles variation msg)
+viewDataCell rowIndex columnIndex value =
+    area
+        { start = ( columnIndex, rowIndex )
+        , width = 1
+        , height = 1
+        }
+        (el Box [verticalCenter] (text value))
+
+emptyVariableMeta : VariableMeta
+emptyVariableMeta = VariableMeta "" "" [] False
 
 viewTableMeta : TableMeta -> Element Styles variation Msg
 viewTableMeta meta =
@@ -379,6 +466,7 @@ variableMetaDecoder =
         |> required "text" string
         |> required "values" (list string)
         |> required "valueTexts" (list string)
+        |> optional "time" bool False
         |> Json.Decode.map prepareValues
 
 prepareValues : VariableMetaDTO -> VariableMeta
@@ -392,8 +480,10 @@ prepareValues dto =
             dto.values
             dto.valueTexts
     in
-        { code = dto.code,
-        text = dto.text, values = values}
+        { code = dto.code
+        , text = dto.text
+        , values = values
+        , time = dto.time }
         
 submitQueryCmd : Model -> Cmd Msg
 submitQueryCmd model =
@@ -422,9 +512,28 @@ columnDecoder =
 
 dataDecoder : Decoder Data
 dataDecoder =
-    decode Data
+    decode DataDTO
         |> required "key" (list string)
         |> required "values" (list string)
+        |> Json.Decode.map prepareData
+
+prepareData : DataDTO -> Data
+prepareData dto =
+    let
+        key : List String
+        key = dto.key
+                |> List.take (List.length dto.key - 1)
+
+        time : String
+        time = dto.key
+                |> List.reverse
+                |> List.head
+                |> Maybe.withDefault ""
+    in
+        { key = key
+        , time = time
+        , values = dto.values
+        }
 
 tableUrl : Model -> String
 tableUrl model =
@@ -517,6 +626,7 @@ type Styles
     | TableTitle
     | VariableName
     | VariableData
+    | Box
 
 baseStyle : List (Style.Property class variation)
 baseStyle =
@@ -553,6 +663,8 @@ stylesheet =
             [Font.bold]
         , style VariableData
             [Color.background (Color.rgba 239 227 195 1.0)]
+        , style Box
+            [ Border.all 1.0 ]
         ]
 
 
