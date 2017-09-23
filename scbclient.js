@@ -24654,17 +24654,18 @@ var _user$project$Contexts$elementFromSite = F2(
 			_mdgriffith$style_elements$Element$text(site.language));
 	});
 
-var _user$project$Client$english = {language: 'English', url: ' http://api.scb.se/OV0104/v1/doris/en/ssd'};
-var _user$project$Client$swedish = {language: 'Svenska', url: 'http://api.scb.se/OV0104/v1/doris/sv/ssd'};
-var _user$project$Client$sites = {
+var _user$project$Config$english = {language: 'English', url: ' http://api.scb.se/OV0104/v1/doris/en/ssd'};
+var _user$project$Config$swedish = {language: 'Svenska', url: 'http://api.scb.se/OV0104/v1/doris/sv/ssd'};
+var _user$project$Config$sites = {
 	ctor: '::',
-	_0: _user$project$Client$swedish,
+	_0: _user$project$Config$swedish,
 	_1: {
 		ctor: '::',
-		_0: _user$project$Client$english,
+		_0: _user$project$Config$english,
 		_1: {ctor: '[]'}
 	}
 };
+
 var _user$project$Client$toggleValueForVar = F2(
 	function (value, variable) {
 		var values = A3(
@@ -24936,7 +24937,7 @@ var _user$project$Client$view = function (model) {
 							A2(
 								_elm_lang$core$List$map,
 								_user$project$Contexts$elementFromSite(model.siteContext.selected),
-								_user$project$Client$sites)),
+								_user$project$Config$sites)),
 						_1: A2(_elm_lang$core$List$map, _user$project$Contexts$columnFromLevelContext, model.levelContexts)
 					});
 			} else {
@@ -24951,7 +24952,7 @@ var _user$project$Client$view = function (model) {
 		}());
 };
 var _user$project$Client$initialModel = {
-	siteContext: {selected: _user$project$Client$swedish, sites: _user$project$Client$sites},
+	siteContext: {selected: _user$project$Config$swedish, sites: _user$project$Config$sites},
 	levelContexts: {ctor: '[]'},
 	tableMeta: _elm_lang$core$Maybe$Nothing,
 	table: _elm_lang$core$Maybe$Nothing,
@@ -24962,7 +24963,7 @@ var _user$project$Client$main = _elm_lang$html$Html$program(
 		init: {
 			ctor: '_Tuple2',
 			_0: _user$project$Client$initialModel,
-			_1: _user$project$Api$loadSiteCmd(_user$project$Client$swedish)
+			_1: _user$project$Api$loadSiteCmd(_user$project$Config$swedish)
 		},
 		view: _user$project$Client$view,
 		update: _user$project$Client$update,

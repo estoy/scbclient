@@ -7,6 +7,7 @@ import Attributes exposing (..)
 import Table exposing (..)
 import Api exposing (..)
 import Contexts exposing (..)
+import Config exposing (..)
 import Html exposing (Html)
 import Element exposing (..)
 
@@ -210,19 +211,4 @@ toggleValueForVar value variable =
         { variable | values = values }
 
 
-sites : List Site
-sites =
-    [ swedish
-    , english
-    ]
-
-
-swedish : Site
-swedish =
-    { language = "Svenska", url = "http://api.scb.se/OV0104/v1/doris/sv/ssd" }
-
-
-english : Site
-english =
-    { language = "English", url = " http://api.scb.se/OV0104/v1/doris/en/ssd" }
 
