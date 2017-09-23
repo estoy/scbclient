@@ -24006,6 +24006,7 @@ var _user$project$Styles$baseStyle = {
 var _user$project$Styles$dataBackground = A4(_elm_lang$core$Color$rgba, 239, 227, 195, 1.0);
 var _user$project$Styles$tableBackground = A4(_elm_lang$core$Color$rgba, 231, 214, 166, 1.0);
 var _user$project$Styles$DataGrid = {ctor: 'DataGrid'};
+var _user$project$Styles$HeaderBox = {ctor: 'HeaderBox'};
 var _user$project$Styles$DataBox = {ctor: 'DataBox'};
 var _user$project$Styles$DimBox = {ctor: 'DimBox'};
 var _user$project$Styles$VariableData = {ctor: 'VariableData'};
@@ -24157,7 +24158,7 @@ var _user$project$Styles$stylesheet = _mdgriffith$style_elements$Style$styleShee
 												ctor: '::',
 												_0: A2(
 													_mdgriffith$style_elements$Style$style,
-													_user$project$Styles$DataBox,
+													_user$project$Styles$HeaderBox,
 													{
 														ctor: '::',
 														_0: _mdgriffith$style_elements$Style_Border$all(1.0),
@@ -24166,11 +24167,10 @@ var _user$project$Styles$stylesheet = _mdgriffith$style_elements$Style$styleShee
 															_0: _mdgriffith$style_elements$Style_Font$size(12),
 															_1: {
 																ctor: '::',
-																_0: _mdgriffith$style_elements$Style_Font$lineHeight(1.2),
+																_0: _mdgriffith$style_elements$Style_Font$bold,
 																_1: {
 																	ctor: '::',
-																	_0: _mdgriffith$style_elements$Style_Color$background(
-																		A4(_elm_lang$core$Color$rgba, 186, 196, 238, 1.0)),
+																	_0: _mdgriffith$style_elements$Style_Font$lineHeight(1.2),
 																	_1: {ctor: '[]'}
 																}
 															}
@@ -24180,13 +24180,37 @@ var _user$project$Styles$stylesheet = _mdgriffith$style_elements$Style$styleShee
 													ctor: '::',
 													_0: A2(
 														_mdgriffith$style_elements$Style$style,
-														_user$project$Styles$DataGrid,
+														_user$project$Styles$DataBox,
 														{
 															ctor: '::',
-															_0: _mdgriffith$style_elements$Style_Color$background(_user$project$Styles$dataBackground),
-															_1: {ctor: '[]'}
+															_0: _mdgriffith$style_elements$Style_Border$all(1.0),
+															_1: {
+																ctor: '::',
+																_0: _mdgriffith$style_elements$Style_Font$size(12),
+																_1: {
+																	ctor: '::',
+																	_0: _mdgriffith$style_elements$Style_Font$lineHeight(1.2),
+																	_1: {
+																		ctor: '::',
+																		_0: _mdgriffith$style_elements$Style_Color$background(
+																			A4(_elm_lang$core$Color$rgba, 186, 196, 238, 1.0)),
+																		_1: {ctor: '[]'}
+																	}
+																}
+															}
 														}),
-													_1: {ctor: '[]'}
+													_1: {
+														ctor: '::',
+														_0: A2(
+															_mdgriffith$style_elements$Style$style,
+															_user$project$Styles$DataGrid,
+															{
+																ctor: '::',
+																_0: _mdgriffith$style_elements$Style_Color$background(_user$project$Styles$dataBackground),
+																_1: {ctor: '[]'}
+															}),
+														_1: {ctor: '[]'}
+													}
 												}
 											}
 										}
@@ -24254,7 +24278,7 @@ var _user$project$Table$viewDataPoint = F5(
 			point.values);
 	});
 var _user$project$Table$viewDataRow = F2(
-	function (rowIndex, data) {
+	function (dataRowIndex, data) {
 		var pointSize = A2(
 			_elm_lang$core$Maybe$withDefault,
 			0,
@@ -24268,6 +24292,7 @@ var _user$project$Table$viewDataRow = F2(
 							return _.values;
 						},
 						data.points))));
+		var rowIndex = dataRowIndex + 2;
 		var dimensions = A2(
 			_elm_lang$core$List$indexedMap,
 			_user$project$Table$viewDimensionCell(rowIndex),
@@ -24334,6 +24359,10 @@ var _user$project$Table$lookupKey = F2(
 			seq,
 			{key: translatedKey});
 	});
+var _user$project$Table$viewDimensionHeader = F2(
+	function (columnIndex, $var) {
+		return A4(_user$project$Table$viewCell, _user$project$Styles$HeaderBox, 1, columnIndex, $var.text);
+	});
 var _user$project$Table$viewValues = F2(
 	function (table, meta) {
 		var dataSeqs = A2(
@@ -24348,7 +24377,15 @@ var _user$project$Table$viewValues = F2(
 						return _.key;
 					},
 					table.data)));
-		var rowCount = _elm_lang$core$List$length(dataSeqs);
+		var dataRowCount = _elm_lang$core$List$length(dataSeqs);
+		var dataRows = A3(
+			_elm_lang$core$List$foldr,
+			F2(
+				function (x, y) {
+					return A2(_elm_lang$core$Basics_ops['++'], x, y);
+				}),
+			{ctor: '[]'},
+			A2(_elm_lang$core$List$indexedMap, _user$project$Table$viewDataRow, dataSeqs));
 		var dataCount = _elm_lang$core$List$length(
 			A2(
 				_elm_lang$core$List$filter,
@@ -24375,6 +24412,10 @@ var _user$project$Table$viewValues = F2(
 						return _.type_;
 					},
 					table.columns)));
+		var headerRow = A2(
+			_elm_lang$core$List$indexedMap,
+			_user$project$Table$viewDimensionHeader,
+			A2(_elm_lang$core$List$take, dimensionCount, meta.variables));
 		var timeField = A2(
 			_elm_lang$core$Maybe$withDefault,
 			_user$project$Table$emptyVariableMeta,
@@ -24403,7 +24444,7 @@ var _user$project$Table$viewValues = F2(
 					_mdgriffith$style_elements$Element_Attributes$px(150)),
 				rows: A2(
 					_elm_lang$core$List$repeat,
-					rowCount,
+					2 + dataRowCount,
 					_mdgriffith$style_elements$Element_Attributes$px(34))
 			},
 			{
@@ -24411,14 +24452,7 @@ var _user$project$Table$viewValues = F2(
 				_0: _mdgriffith$style_elements$Element_Attributes$scrollbars,
 				_1: {ctor: '[]'}
 			},
-			A3(
-				_elm_lang$core$List$foldr,
-				F2(
-					function (x, y) {
-						return A2(_elm_lang$core$Basics_ops['++'], x, y);
-					}),
-				{ctor: '[]'},
-				A2(_elm_lang$core$List$indexedMap, _user$project$Table$viewDataRow, dataSeqs)));
+			A2(_elm_lang$core$Basics_ops['++'], headerRow, dataRows));
 	});
 var _user$project$Table$viewTable = F2(
 	function (table, meta) {

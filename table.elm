@@ -69,20 +69,32 @@ viewValues table meta =
                 |> List.map mergeSequences
                 |> List.map (lookupKey meta.variables)
 
-        rowCount =
+        headerRow : List (Element.OnGrid (Element Styles variation msg))
+        headerRow =
+            meta.variables
+                |> List.take dimensionCount
+                |> List.indexedMap viewDimensionHeader
+
+        dataRowCount =
             dataSeqs
                 |> List.length
+
+        dataRows : List (Element.OnGrid (Element Styles variation msg))
+        dataRows =
+            dataSeqs
+                |> List.indexedMap viewDataRow
+                |> List.foldr (++) []
     in
         grid DataGrid
             { columns = List.repeat columnCount (px 150)
-            , rows = List.repeat rowCount (px 34)
+            , rows = List.repeat (2 + dataRowCount) (px 34)
             }
             [ scrollbars ]
-            (dataSeqs
-                |> List.indexedMap viewDataRow
-                |> List.foldr (++) []
-            )
+            (headerRow ++ dataRows)
 
+viewDimensionHeader : Int -> VariableMeta -> Element.OnGrid (Element Styles variation msg)
+viewDimensionHeader columnIndex var =
+    viewCell HeaderBox 1 columnIndex var.text
 
 lookupKey : List VariableMeta -> DataSequence -> DataSequence
 lookupKey variables seq =
@@ -121,8 +133,10 @@ mergeSequences group =
 
 
 viewDataRow : Int -> DataSequence -> List (Element.OnGrid (Element Styles variation msg))
-viewDataRow rowIndex data =
+viewDataRow dataRowIndex data =
     let
+        rowIndex = dataRowIndex + 2
+
         dimensions : List (Element.OnGrid (Element Styles variation msg))
         dimensions =
             data.key

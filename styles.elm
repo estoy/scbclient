@@ -21,6 +21,7 @@ type Styles
     | VariableData
     | DimBox
     | DataBox
+    | HeaderBox
     | DataGrid
 
 
@@ -77,6 +78,12 @@ stylesheet =
         , style DimBox
             [ Border.all 1.0
             , Font.size 12
+            , Font.lineHeight 1.2
+            ]
+        , style HeaderBox
+            [ Border.all 1.0
+            , Font.size 12
+            , Font.bold
             , Font.lineHeight 1.2
             ]
         , style DataBox
