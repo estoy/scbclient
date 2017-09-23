@@ -24363,15 +24363,16 @@ var _user$project$Client$viewDataCell = F3(
 	function (rowIndex, columnIndex, value) {
 		return A4(_user$project$Client$viewCell, _user$project$Client$DataBox, rowIndex, columnIndex, value);
 	});
-var _user$project$Client$viewValue = F6(
-	function (rowIndex, dimensionCount, pointSize, pointIndex, valueIndex, value) {
-		return A3(_user$project$Client$viewDataCell, rowIndex, (dimensionCount + (pointIndex * pointSize)) + valueIndex, value);
+var _user$project$Client$viewValue = F4(
+	function (rowIndex, baseIndex, valueIndex, value) {
+		return A3(_user$project$Client$viewDataCell, rowIndex, baseIndex + valueIndex, value);
 	});
 var _user$project$Client$viewDataPoint = F5(
 	function (rowIndex, dimensionCount, pointSize, pointIndex, point) {
+		var baseIndex = dimensionCount + (pointIndex * pointSize);
 		return A2(
 			_elm_lang$core$List$indexedMap,
-			A4(_user$project$Client$viewValue, rowIndex, dimensionCount, pointSize, pointIndex),
+			A2(_user$project$Client$viewValue, rowIndex, baseIndex),
 			point.values);
 	});
 var _user$project$Client$DimBox = {ctor: 'DimBox'};

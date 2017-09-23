@@ -191,14 +191,18 @@ viewDataRow rowIndex data =
 
 viewDataPoint : Int -> Int -> Int -> Int -> DataPoint -> List (Element.OnGrid (Element Styles variation msg))
 viewDataPoint rowIndex dimensionCount pointSize pointIndex point =
-    point.values
-        |> List.indexedMap (viewValue rowIndex dimensionCount pointSize pointIndex)
+    let
+        baseIndex =
+            dimensionCount + pointIndex * pointSize
+    in    
+        point.values
+            |> List.indexedMap (viewValue rowIndex baseIndex)
                                         
-viewValue : Int -> Int -> Int -> Int -> Int -> String -> Element.OnGrid (Element Styles variation msg)
-viewValue rowIndex dimensionCount pointSize pointIndex valueIndex value =
+viewValue : Int -> Int -> Int  -> String -> Element.OnGrid (Element Styles variation msg)
+viewValue rowIndex baseIndex valueIndex value =
     viewDataCell
         rowIndex 
-        (dimensionCount + pointIndex * pointSize + valueIndex)
+        (baseIndex + valueIndex)
         value
 
 viewDimensionCell : Int -> Int -> String -> Element.OnGrid (Element Styles variation msg)
