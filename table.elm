@@ -1,4 +1,4 @@
-module Table exposing (..)
+module Table exposing (viewTable, viewTableMeta)
 
 import Types exposing (..)
 import Utils exposing (..)
@@ -183,3 +183,46 @@ viewCell style rowIndex columnIndex value =
 emptyVariableMeta : VariableMeta
 emptyVariableMeta =
     VariableMeta "" "" [] False
+
+viewTableMeta : TableMeta -> Element Styles variation Msg
+viewTableMeta meta =
+    column Table
+        columnAttributes
+        [ row None
+            [ justify ]
+            [ el TableTitle [] <| text meta.title
+            , (row None []
+                [ button <| el Main [ onClick Submit ] <| text "Submit"
+                , button <| el Main [ onClick ToggleTableMetaView ] <| text "X"
+                ]
+              )
+            ]
+        , viewVariablesMeta meta.variables
+        ]
+
+
+viewVariablesMeta : List VariableMeta -> Element Styles variation Msg
+viewVariablesMeta variables =
+    column None columnAttributes <|
+        List.map viewVariableMeta variables
+
+
+viewVariableMeta : VariableMeta -> Element Styles variation Msg
+viewVariableMeta variable =
+    row None
+        []
+        [ el VariableName [paddingRight 10] <| text variable.text
+        , column VariableData
+            ([ yScrollbar, maxHeight (px 150) ] ++ listAttributes)
+            (variable.values
+                |> List.map (viewValueMeta variable)
+            )
+        ]
+
+viewValueMeta : VariableMeta -> ValueMeta -> Element Styles variation Msg
+viewValueMeta var val =
+    let
+        style =
+            if val.selected then Selected else None        
+    in
+        el style [onClick (ToggleValue var val)] (text val.text)

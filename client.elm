@@ -5,15 +5,10 @@ import Utils exposing (..)
 import Styles exposing (..)
 import Attributes exposing (..)
 import Table exposing (..)
-
-import Json.Decode exposing (string, list, Decoder, at, map, lazy, oneOf, null, bool)
-import Json.Decode.Pipeline exposing (decode, required, requiredAt, custom, optional)
-import Http exposing (stringBody, Body, Request, request, expectJson, header)
+import Api exposing (..)
 import Html exposing (Html)
 import Element exposing (..)
-import Element.Attributes exposing (verticalCenter, spacing, padding, paddingRight, paddingXY, justify, yScrollbar, scrollbars, maxHeight, px)
 import Element.Events exposing (onClick)
-
 
 
 initialModel : Model
@@ -36,7 +31,7 @@ view model =
                     ((column Styles.Site
                         columnAttributes
                         (List.map (elementFromSite model.siteContext.selected) sites)
-                    )
+                     )
                         :: (List.map columnFromLevelContext model.levelContexts)
                     )
 
@@ -44,54 +39,10 @@ view model =
                 case model.table of
                     Nothing ->
                         viewTableMeta meta
+
                     Just table ->
                         viewTable table meta
-                
 
-
-viewTableMeta : TableMeta -> Element Styles variation Msg
-viewTableMeta meta =
-    column Table
-        columnAttributes
-        [ row None
-            [ justify ]
-            [ el TableTitle [] <| text meta.title
-            , (row None []
-                [ button <| el Main [ onClick Submit ] <| text "Submit"
-                , button <| el Main [ onClick ToggleTableMetaView ] <| text "X"
-                ]
-              )
-            ]
-        , viewVariablesMeta meta.variables
-        ]
-
-
-viewVariablesMeta : List VariableMeta -> Element Styles variation Msg
-viewVariablesMeta variables =
-    column None columnAttributes <|
-        List.map viewVariableMeta variables
-
-
-viewVariableMeta : VariableMeta -> Element Styles variation Msg
-viewVariableMeta variable =
-    row None
-        []
-        [ el VariableName [paddingRight 10] <| text variable.text
-        , column VariableData
-            ([ yScrollbar, maxHeight (px 150) ] ++ listAttributes)
-            (variable.values
-                |> List.map (viewValueMeta variable)
-            )
-        ]
-
-viewValueMeta : VariableMeta -> ValueMeta -> Element Styles variation Msg
-viewValueMeta var val =
-    let
-        style =
-            if val.selected then Selected else None        
-    in
-        el style [onClick (ToggleValue var val)] (text val.text)
-            
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
@@ -102,7 +53,7 @@ update msg model =
         SiteLoaded site (Ok levels) ->
             ( modelWithSite model site levels, Cmd.none )
 
-        SiteLoaded _ (Err _) -> 
+        SiteLoaded _ (Err _) ->
             ( model, Cmd.none )
 
         SelectLevel level index ->
@@ -132,12 +83,13 @@ update msg model =
                     ( { model | tableMeta = Just <| toggleValueForTable variable value table }
                     , Cmd.none
                     )
+
                 Nothing ->
-                    ( model, Cmd.none)
+                    ( model, Cmd.none )
 
         Submit ->
-            ( model, submitQueryCmd model)
-        
+            ( model, submitQueryCmd model )
+
         TableLoaded (Ok table) ->
             ( { model | table = Just table }, Cmd.none )
 
@@ -171,9 +123,7 @@ columnFromLevelContext : LevelCtx -> Element Styles variation Msg
 columnFromLevelContext context =
     let
         style =
-            if
-                List.any (\level -> level.type_ == "t") context.levels
-            then
+            if List.any (\level -> level.type_ == "t") context.levels then
                 Table
             else
                 Main
@@ -281,7 +231,8 @@ modelWithTableMeta model level index tableMeta =
             , tableMeta = Just tableMeta
         }
 
-toggleValueForTable : VariableMeta -> ValueMeta -> TableMeta -> TableMeta 
+
+toggleValueForTable : VariableMeta -> ValueMeta -> TableMeta -> TableMeta
 toggleValueForTable variable value table =
     let
         variables =
@@ -290,174 +241,16 @@ toggleValueForTable variable value table =
     in
         { table | variables = variables }
 
+
 toggleValueForVar : ValueMeta -> VariableMeta -> VariableMeta
 toggleValueForVar value variable =
     let
-        values = variable.values
-                    |> mapIf (\val -> val.value == value.value)
-                             (\val -> { val | selected = not val.selected})
+        values =
+            variable.values
+                |> mapIf (\val -> val.value == value.value)
+                    (\val -> { val | selected = not val.selected })
     in
         { variable | values = values }
-
-loadSiteCmd : Site -> Cmd Msg
-loadSiteCmd site =
-    list levelDecoder
-        |> Http.get site.url
-        |> Http.send (SiteLoaded site)
-
-
-loadLevelCmd : Level -> Int -> Model -> Cmd Msg
-loadLevelCmd level index model =
-    let
-        url =
-            urlForLevel model level index
-    in
-        case level.type_ of
-            "l" ->
-                list levelDecoder
-                    |> Http.get url
-                    |> Http.send (LevelLoaded level index)
-
-            "t" ->
-                tableMetaDecoder
-                    |> Http.get url
-                    |> Http.send (TableMetaLoaded level index)
-
-            _ ->
-                Cmd.none
-
-
-levelDecoder : Decoder Level
-levelDecoder =
-    decode Level
-        |> required "id" string
-        |> required "type" string
-        |> required "text" string
-
-
-tableMetaDecoder : Decoder TableMeta
-tableMetaDecoder =
-    decode TableMeta
-        |> required "title" string
-        |> required "variables" (list variableMetaDecoder)
-
-
-variableMetaDecoder : Decoder VariableMeta
-variableMetaDecoder =
-    decode VariableMetaDTO 
-        |> required "code" string
-        |> required "text" string
-        |> required "values" (list string)
-        |> required "valueTexts" (list string)
-        |> optional "time" bool False
-        |> Json.Decode.map prepareValues
-
-prepareValues : VariableMetaDTO -> VariableMeta
-prepareValues dto =
-    let
-        values : List ValueMeta
-        values = List.map2 (\value text -> 
-            { value = value,
-            text = text,
-            selected = False})
-            dto.values
-            dto.valueTexts
-    in
-        { code = dto.code
-        , text = dto.text
-        , values = values
-        , time = dto.time }
-        
-submitQueryCmd : Model -> Cmd Msg
-submitQueryCmd model =
-    let
-        url =
-            tableUrl model
-        query =
-            tableQuery model
-    in
-        tableDecoder
-            |> Http.post url query
-            |> Http.send TableLoaded
-
-tableDecoder : Decoder TableData
-tableDecoder =
-    decode TableData
-        |> required "data" (list dataDecoder)
-        |> required "columns" (list columnDecoder)
-
-columnDecoder : Decoder Column
-columnDecoder =
-    decode Column
-        |> required "code" string
-        |> required "text" string
-        |> required "type" string
-
-dataDecoder : Decoder Data
-dataDecoder =
-    decode DataDTO
-        |> required "key" (list string)
-        |> required "values" (list string)
-        |> Json.Decode.map prepareData
-
-prepareData : DataDTO -> Data
-prepareData dto =
-    let
-        key : List String
-        key = dto.key
-                |> List.take (List.length dto.key - 1)
-
-        time : String
-        time = dto.key
-                |> List.reverse
-                |> List.head
-                |> Maybe.withDefault ""
-    in
-        { key = key
-        , time = time
-        , values = dto.values
-        }
-
-tableUrl : Model -> String
-tableUrl model =
-    Debug.log "Url:" (model.siteContext.selected.url ++ pathForTable model.levelContexts)
-
-pathForTable : List LevelCtx -> String
-pathForTable contexts =
-    contexts
-        |> List.map currentId
-        |> List.foldl (\a b -> b ++ "/" ++ a) ""
-
-tableQuery : Model -> Http.Body
-tableQuery model =
-    stringBody "application/json" <| encodeQuery model.tableMeta
-
-
-urlForLevel : Model -> Level -> Int -> Url
-urlForLevel model level index =
-    Debug.log "Url:" (model.siteContext.selected.url ++ pathForLevel model.levelContexts level index)
-
-
-pathForLevel : List LevelCtx -> Level -> Int -> String
-pathForLevel contexts level index =
-    let
-        parentPath =
-            contexts
-                |> List.take (index)
-                |> List.map currentId
-                |> List.foldl (\a b -> b ++ "/" ++ a) ""
-    in
-        parentPath ++ "/" ++ level.id
-
-
-currentId : LevelCtx -> String
-currentId ctx =
-    case ctx.selected of
-        Just level ->
-            level.id
-
-        option2 ->
-            ""
 
 
 sites : List Site
@@ -480,6 +273,3 @@ english =
 emptyTableMeta : TableMeta
 emptyTableMeta =
     { title = "(no table selected)", variables = [] }
-
-
-
