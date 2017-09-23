@@ -235,4 +235,4 @@ viewCell style rowIndex columnIndex value width =
 
 emptyVariableMeta : VariableMeta
 emptyVariableMeta =
-    VariableMeta "" "" [] False
+    VariableMeta "" "" [] False False

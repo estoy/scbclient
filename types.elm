@@ -14,6 +14,7 @@ type Msg
     | ToggleValue VariableMeta ValueMeta
     | Submit
     | TableLoaded (Result Http.Error TableData)
+    | ToggleSort VariableMeta
 
 
 type alias Model =
@@ -66,6 +67,7 @@ type alias VariableMeta =
     , text : String
     , values : List ValueMeta
     , time : Bool
+    , sorted : Bool
     }
 
 

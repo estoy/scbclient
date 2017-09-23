@@ -1,4 +1,4 @@
-module TableMeta exposing (viewTableMeta, toggleValueForTable, modelWithTableMeta)
+module TableMeta exposing (viewTableMeta, toggleValueForTable, modelWithTableMeta, toggleVariableSort)
 
 import Types exposing (..)
 import Styles exposing (..)
@@ -8,8 +8,8 @@ import Attributes exposing (columnAttributes, listAttributes)
 
 -- External ------
 
-import Element exposing (Element, text, button, el, column, row)
-import Element.Attributes exposing (paddingRight, justify, yScrollbar, maxHeight, px)
+import Element exposing (Element, text, button, el, column, row, checkbox)
+import Element.Attributes exposing (paddingRight, paddingLeft, justify, yScrollbar, maxHeight, px)
 import Element.Events exposing (onClick)
 
 
@@ -42,15 +42,23 @@ viewVariablesMeta variables =
 
 viewVariableMeta : VariableMeta -> Element Styles variation Msg
 viewVariableMeta variable =
-    row None
-        []
-        [ el VariableName [ paddingRight 10 ] <| text variable.text
-        , column VariableData
-            ([ yScrollbar, maxHeight (px 150) ] ++ listAttributes)
-            (variable.values
-                |> List.map (viewValueMeta variable)
-            )
-        ]
+    let
+        values =
+            if variable.sorted then
+                List.sortBy .text variable.values
+            else
+                variable.values  
+    in
+        row None
+            []
+            [ el VariableName [ paddingRight 10 ] <| text variable.text
+            , column VariableData
+                ([ yScrollbar, maxHeight (px 150) ] ++ listAttributes)
+                (values
+                    |> List.map (viewValueMeta variable)
+                )
+            , checkbox variable.sorted None [paddingLeft 10, onClick (ToggleSort variable)] <| el None [paddingLeft 5] <| text "sort"
+            ]
 
 
 viewValueMeta : VariableMeta -> ValueMeta -> Element Styles variation Msg
@@ -114,3 +122,16 @@ toggleValueForVar value variable =
                     (\val -> { val | selected = not val.selected })
     in
         { variable | values = values }
+
+toggleVariableSort : VariableMeta -> TableMeta -> TableMeta
+toggleVariableSort variable table =
+    let
+        variables =
+            table.variables
+                |> mapIf (\var -> var.code == variable.code) toggleSort
+    in
+        { table | variables = variables }
+
+toggleSort : VariableMeta -> VariableMeta
+toggleSort variable =
+    { variable | sorted = not variable.sorted }

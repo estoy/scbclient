@@ -84,6 +84,7 @@ prepareValues dto =
         , text = dto.text
         , values = values
         , time = dto.time
+        , sorted = False
         }
 
 

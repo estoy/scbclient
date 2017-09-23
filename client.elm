@@ -4,7 +4,7 @@ import Types exposing (..)
 import Styles exposing (..)
 import Attributes exposing (columnAttributes)
 import Table exposing (viewTable)
-import TableMeta exposing (viewTableMeta, toggleValueForTable, modelWithTableMeta)
+import TableMeta exposing (viewTableMeta, toggleValueForTable, modelWithTableMeta, toggleVariableSort)
 import Api exposing (loadSiteCmd, loadLevelCmd, submitQueryCmd)
 import Contexts exposing (elementFromSite, columnFromLevelContext, modelWithSite, modelWithLevel)
 import Config exposing (..)
@@ -100,6 +100,16 @@ update msg model =
 
         TableLoaded (Err err) ->
             ( { model | latestError = Just err }, Cmd.none )
+
+        ToggleSort variable ->
+           case model.tableMeta of
+                Just table ->
+                    ( { model | tableMeta = Just <| toggleVariableSort variable table }
+                    , Cmd.none
+                    )
+
+                Nothing ->
+                    ( model, Cmd.none )
 
 
 main : Program Never Model Msg

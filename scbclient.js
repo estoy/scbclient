@@ -23555,9 +23555,9 @@ var _user$project$Types$TableMeta = F2(
 	function (a, b) {
 		return {title: a, variables: b};
 	});
-var _user$project$Types$VariableMeta = F4(
-	function (a, b, c, d) {
-		return {code: a, text: b, values: c, time: d};
+var _user$project$Types$VariableMeta = F5(
+	function (a, b, c, d, e) {
+		return {code: a, text: b, values: c, time: d, sorted: e};
 	});
 var _user$project$Types$VariableMetaDTO = F5(
 	function (a, b, c, d, e) {
@@ -23591,6 +23591,9 @@ var _user$project$Types$Column = F3(
 	function (a, b, c) {
 		return {code: a, text: b, type_: c};
 	});
+var _user$project$Types$ToggleSort = function (a) {
+	return {ctor: 'ToggleSort', _0: a};
+};
 var _user$project$Types$TableLoaded = function (a) {
 	return {ctor: 'TableLoaded', _0: a};
 };
@@ -23877,7 +23880,7 @@ var _user$project$Api$prepareValues = function (dto) {
 			}),
 		dto.values,
 		dto.valueTexts);
-	return {code: dto.code, text: dto.text, values: values, time: dto.time};
+	return {code: dto.code, text: dto.text, values: values, time: dto.time, sorted: false};
 };
 var _user$project$Api$variableMetaDecoder = A2(
 	_elm_lang$core$Json_Decode$map,
@@ -24224,11 +24227,12 @@ var _user$project$Styles$stylesheet = _mdgriffith$style_elements$Style$styleShee
 		}
 	});
 
-var _user$project$Table$emptyVariableMeta = A4(
+var _user$project$Table$emptyVariableMeta = A5(
 	_user$project$Types$VariableMeta,
 	'',
 	'',
 	{ctor: '[]'},
+	false,
 	false);
 var _user$project$Table$viewCell = F5(
 	function (style, rowIndex, columnIndex, value, width) {
@@ -24536,6 +24540,24 @@ var _user$project$Table$viewTable = F2(
 			});
 	});
 
+var _user$project$TableMeta$toggleSort = function (variable) {
+	return _elm_lang$core$Native_Utils.update(
+		variable,
+		{sorted: !variable.sorted});
+};
+var _user$project$TableMeta$toggleVariableSort = F2(
+	function (variable, table) {
+		var variables = A3(
+			_user$project$Utils$mapIf,
+			function ($var) {
+				return _elm_lang$core$Native_Utils.eq($var.code, variable.code);
+			},
+			_user$project$TableMeta$toggleSort,
+			table.variables);
+		return _elm_lang$core$Native_Utils.update(
+			table,
+			{variables: variables});
+	});
 var _user$project$TableMeta$toggleValueForVar = F2(
 	function (value, variable) {
 		var values = A3(
@@ -24617,6 +24639,12 @@ var _user$project$TableMeta$viewValueMeta = F2(
 			_mdgriffith$style_elements$Element$text(val.text));
 	});
 var _user$project$TableMeta$viewVariableMeta = function (variable) {
+	var values = variable.sorted ? A2(
+		_elm_lang$core$List$sortBy,
+		function (_) {
+			return _.text;
+		},
+		variable.values) : variable.values;
 	return A3(
 		_mdgriffith$style_elements$Element$row,
 		_user$project$Styles$None,
@@ -24653,8 +24681,34 @@ var _user$project$TableMeta$viewVariableMeta = function (variable) {
 					A2(
 						_elm_lang$core$List$map,
 						_user$project$TableMeta$viewValueMeta(variable),
-						variable.values)),
-				_1: {ctor: '[]'}
+						values)),
+				_1: {
+					ctor: '::',
+					_0: A4(
+						_mdgriffith$style_elements$Element$checkbox,
+						variable.sorted,
+						_user$project$Styles$None,
+						{
+							ctor: '::',
+							_0: _mdgriffith$style_elements$Element_Attributes$paddingLeft(10),
+							_1: {
+								ctor: '::',
+								_0: _mdgriffith$style_elements$Element_Events$onClick(
+									_user$project$Types$ToggleSort(variable)),
+								_1: {ctor: '[]'}
+							}
+						},
+						A3(
+							_mdgriffith$style_elements$Element$el,
+							_user$project$Styles$None,
+							{
+								ctor: '::',
+								_0: _mdgriffith$style_elements$Element_Attributes$paddingLeft(5),
+								_1: {ctor: '[]'}
+							},
+							_mdgriffith$style_elements$Element$text('sort'))),
+					_1: {ctor: '[]'}
+				}
 			}
 		});
 };
@@ -24956,7 +25010,7 @@ var _user$project$Client$update = F2(
 					_0: model,
 					_1: _user$project$Api$submitQueryCmd(model)
 				};
-			default:
+			case 'TableLoaded':
 				if (_p0._0.ctor === 'Ok') {
 					return {
 						ctor: '_Tuple2',
@@ -24978,6 +25032,22 @@ var _user$project$Client$update = F2(
 						_1: _elm_lang$core$Platform_Cmd$none
 					};
 				}
+			default:
+				var _p2 = model.tableMeta;
+				if (_p2.ctor === 'Just') {
+					return {
+						ctor: '_Tuple2',
+						_0: _elm_lang$core$Native_Utils.update(
+							model,
+							{
+								tableMeta: _elm_lang$core$Maybe$Just(
+									A2(_user$project$TableMeta$toggleVariableSort, _p0._0, _p2._0))
+							}),
+						_1: _elm_lang$core$Platform_Cmd$none
+					};
+				} else {
+					return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
+				}
 		}
 	});
 var _user$project$Client$view = function (model) {
@@ -24985,8 +25055,8 @@ var _user$project$Client$view = function (model) {
 		_mdgriffith$style_elements$Element$viewport,
 		_user$project$Styles$stylesheet,
 		function () {
-			var _p2 = model.tableMeta;
-			if (_p2.ctor === 'Nothing') {
+			var _p3 = model.tableMeta;
+			if (_p3.ctor === 'Nothing') {
 				return A3(
 					_mdgriffith$style_elements$Element$row,
 					_user$project$Styles$Main,
@@ -25004,12 +25074,12 @@ var _user$project$Client$view = function (model) {
 						_1: A2(_elm_lang$core$List$map, _user$project$Contexts$columnFromLevelContext, model.levelContexts)
 					});
 			} else {
-				var _p4 = _p2._0;
-				var _p3 = model.table;
-				if (_p3.ctor === 'Nothing') {
-					return _user$project$TableMeta$viewTableMeta(_p4);
+				var _p5 = _p3._0;
+				var _p4 = model.table;
+				if (_p4.ctor === 'Nothing') {
+					return _user$project$TableMeta$viewTableMeta(_p5);
 				} else {
-					return A2(_user$project$Table$viewTable, _p3._0, _p4);
+					return A2(_user$project$Table$viewTable, _p4._0, _p5);
 				}
 			}
 		}());
@@ -25038,7 +25108,7 @@ var _user$project$Client$main = _elm_lang$html$Html$program(
 var Elm = {};
 Elm['Client'] = Elm['Client'] || {};
 if (typeof _user$project$Client$main !== 'undefined') {
-    _user$project$Client$main(Elm['Client'], 'Client', {"types":{"unions":{"Dict.LeafColor":{"args":[],"tags":{"LBBlack":[],"LBlack":[]}},"Dict.Dict":{"args":["k","v"],"tags":{"RBNode_elm_builtin":["Dict.NColor","k","v","Dict.Dict k v","Dict.Dict k v"],"RBEmpty_elm_builtin":["Dict.LeafColor"]}},"Types.Msg":{"args":[],"tags":{"ToggleTableMetaView":[],"SelectSite":["Types.Site"],"SelectLevel":["Types.Level","Int"],"TableLoaded":["Result.Result Http.Error Types.TableData"],"LevelLoaded":["Types.Level","Int","Result.Result Http.Error (List Types.Level)"],"ToggleValue":["Types.VariableMeta","Types.ValueMeta"],"TableMetaLoaded":["Types.Level","Int","Result.Result Http.Error Types.TableMeta"],"Submit":[],"SiteLoaded":["Types.Site","Result.Result Http.Error (List Types.Level)"],"ToggleTableDataView":[]}},"Dict.NColor":{"args":[],"tags":{"BBlack":[],"Red":[],"NBlack":[],"Black":[]}},"Http.Error":{"args":[],"tags":{"BadUrl":["String"],"NetworkError":[],"Timeout":[],"BadStatus":["Http.Response String"],"BadPayload":["String","Http.Response String"]}},"Result.Result":{"args":["error","value"],"tags":{"Ok":["value"],"Err":["error"]}}},"aliases":{"Http.Response":{"args":["body"],"type":"{ url : String , status : { code : Int, message : String } , headers : Dict.Dict String String , body : body }"},"Types.Data":{"args":[],"type":"{ key : List String, time : String, values : List String }"},"Types.ValueMeta":{"args":[],"type":"{ value : String, text : String, selected : Bool }"},"Types.Column":{"args":[],"type":"{ code : String, text : String, type_ : String }"},"Types.Site":{"args":[],"type":"{ language : String, url : Types.Url }"},"Types.Url":{"args":[],"type":"String"},"Types.Level":{"args":[],"type":"{ id : String, type_ : String, text : String }"},"Types.TableData":{"args":[],"type":"{ data : List Types.Data, columns : List Types.Column }"},"Types.VariableMeta":{"args":[],"type":"{ code : String , text : String , values : List Types.ValueMeta , time : Bool }"},"Types.TableMeta":{"args":[],"type":"{ title : String, variables : List Types.VariableMeta }"}},"message":"Types.Msg"},"versions":{"elm":"0.18.0"}});
+    _user$project$Client$main(Elm['Client'], 'Client', {"types":{"unions":{"Dict.LeafColor":{"args":[],"tags":{"LBBlack":[],"LBlack":[]}},"Dict.Dict":{"args":["k","v"],"tags":{"RBNode_elm_builtin":["Dict.NColor","k","v","Dict.Dict k v","Dict.Dict k v"],"RBEmpty_elm_builtin":["Dict.LeafColor"]}},"Types.Msg":{"args":[],"tags":{"ToggleTableMetaView":[],"SelectSite":["Types.Site"],"SelectLevel":["Types.Level","Int"],"TableLoaded":["Result.Result Http.Error Types.TableData"],"LevelLoaded":["Types.Level","Int","Result.Result Http.Error (List Types.Level)"],"ToggleValue":["Types.VariableMeta","Types.ValueMeta"],"TableMetaLoaded":["Types.Level","Int","Result.Result Http.Error Types.TableMeta"],"Submit":[],"SiteLoaded":["Types.Site","Result.Result Http.Error (List Types.Level)"],"ToggleSort":["Types.VariableMeta"],"ToggleTableDataView":[]}},"Dict.NColor":{"args":[],"tags":{"BBlack":[],"Red":[],"NBlack":[],"Black":[]}},"Http.Error":{"args":[],"tags":{"BadUrl":["String"],"NetworkError":[],"Timeout":[],"BadStatus":["Http.Response String"],"BadPayload":["String","Http.Response String"]}},"Result.Result":{"args":["error","value"],"tags":{"Ok":["value"],"Err":["error"]}}},"aliases":{"Http.Response":{"args":["body"],"type":"{ url : String , status : { code : Int, message : String } , headers : Dict.Dict String String , body : body }"},"Types.Data":{"args":[],"type":"{ key : List String, time : String, values : List String }"},"Types.ValueMeta":{"args":[],"type":"{ value : String, text : String, selected : Bool }"},"Types.Column":{"args":[],"type":"{ code : String, text : String, type_ : String }"},"Types.Site":{"args":[],"type":"{ language : String, url : Types.Url }"},"Types.Url":{"args":[],"type":"String"},"Types.Level":{"args":[],"type":"{ id : String, type_ : String, text : String }"},"Types.TableData":{"args":[],"type":"{ data : List Types.Data, columns : List Types.Column }"},"Types.VariableMeta":{"args":[],"type":"{ code : String , text : String , values : List Types.ValueMeta , time : Bool , sorted : Bool }"},"Types.TableMeta":{"args":[],"type":"{ title : String, variables : List Types.VariableMeta }"}},"message":"Types.Msg"},"versions":{"elm":"0.18.0"}});
 }
 
 if (typeof define === "function" && define['amd'])
