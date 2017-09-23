@@ -122,7 +122,7 @@ viewValues table meta =
             { columns = List.repeat columnCount (px 150)
             , rows = List.repeat rowCount (px 34)
             }
-            []
+            [scrollbars]
             (dataSeqs
                 |> List.indexedMap viewDataRow
                 |> List.foldr (++) []

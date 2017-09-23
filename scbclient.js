@@ -24482,7 +24482,11 @@ var _user$project$Client$viewValues = F2(
 					rowCount,
 					_mdgriffith$style_elements$Element_Attributes$px(34))
 			},
-			{ctor: '[]'},
+			{
+				ctor: '::',
+				_0: _mdgriffith$style_elements$Element_Attributes$scrollbars,
+				_1: {ctor: '[]'}
+			},
 			A3(
 				_elm_lang$core$List$foldr,
 				F2(
