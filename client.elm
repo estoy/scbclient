@@ -8,7 +8,7 @@ import Json.Decode.Pipeline exposing (decode, required, requiredAt, custom, opti
 import Http exposing (stringBody, Body, Request, request, expectJson, header)
 import Html exposing (Html)
 import Element exposing (..)
-import Element.Attributes exposing (verticalCenter, spacing, padding, paddingRight, paddingXY, justify, yScrollbar, maxHeight, px)
+import Element.Attributes exposing (verticalCenter, spacing, padding, paddingRight, paddingXY, justify, yScrollbar, scrollbars, maxHeight, px)
 import Element.Events exposing (onClick)
 import Color
 import Style exposing (..)
@@ -119,8 +119,8 @@ viewValues table meta =
 
    in
         grid DataGrid
-            { columns = List.repeat columnCount (px 100)
-            , rows = List.repeat rowCount (px 30)
+            { columns = List.repeat columnCount (px 150)
+            , rows = List.repeat rowCount (px 34)
             }
             []
             (dataSeqs
@@ -179,7 +179,7 @@ viewDataCell rowIndex columnIndex value =
         , width = 1
         , height = 1
         }
-        (el Box [verticalCenter] (text value))
+        (el Box [verticalCenter, scrollbars, padding 2] (text value))
 
 emptyVariableMeta : VariableMeta
 emptyVariableMeta = VariableMeta "" "" [] False

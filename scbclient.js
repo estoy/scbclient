@@ -24341,7 +24341,15 @@ var _user$project$Client$viewDataCell = F3(
 				{
 					ctor: '::',
 					_0: _mdgriffith$style_elements$Element_Attributes$verticalCenter,
-					_1: {ctor: '[]'}
+					_1: {
+						ctor: '::',
+						_0: _mdgriffith$style_elements$Element_Attributes$scrollbars,
+						_1: {
+							ctor: '::',
+							_0: _mdgriffith$style_elements$Element_Attributes$padding(2),
+							_1: {ctor: '[]'}
+						}
+					}
 				},
 				_mdgriffith$style_elements$Element$text(value)));
 	});
@@ -24420,11 +24428,11 @@ var _user$project$Client$viewValues = F2(
 				columns: A2(
 					_elm_lang$core$List$repeat,
 					columnCount,
-					_mdgriffith$style_elements$Element_Attributes$px(100)),
+					_mdgriffith$style_elements$Element_Attributes$px(150)),
 				rows: A2(
 					_elm_lang$core$List$repeat,
 					rowCount,
-					_mdgriffith$style_elements$Element_Attributes$px(30))
+					_mdgriffith$style_elements$Element_Attributes$px(34))
 			},
 			{ctor: '[]'},
 			A3(
