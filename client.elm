@@ -118,7 +118,7 @@ viewValues table meta =
                 |> List.length
 
    in
-        grid Main
+        grid DataGrid
             { columns = List.repeat columnCount (px 100)
             , rows = List.repeat rowCount (px 30)
             }
@@ -645,6 +645,10 @@ type Styles
     | VariableName
     | VariableData
     | Box
+    | DataGrid
+
+tableBackground = Color.rgba 231 214 166 1.0
+dataBackground = Color.rgba 239 227 195 1.0
 
 baseStyle : List (Style.Property class variation)
 baseStyle =
@@ -671,7 +675,7 @@ stylesheet =
             [ Color.background (Color.rgba 186 196 238 1.0) ]
         , style Table
             ( [ Color.text Color.darkCharcoal
-              , Color.background (Color.rgba 231 214 166 1.0)
+              , Color.background tableBackground
               ]
               ++ baseStyle
             )
@@ -680,9 +684,14 @@ stylesheet =
         , style VariableName
             [Font.bold]
         , style VariableData
-            [Color.background (Color.rgba 239 227 195 1.0)]
+            [Color.background dataBackground]
         , style Box
-            [ Border.all 1.0 ]
+            [ Border.all 1.0
+            , Font.size 12
+            , Font.lineHeight 1.2
+            ]
+        , style DataGrid
+            [ Color.background dataBackground ]
         ]
 
 

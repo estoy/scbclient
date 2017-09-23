@@ -23738,6 +23738,8 @@ var _user$project$Client$baseStyle = {
 		}
 	}
 };
+var _user$project$Client$dataBackground = A4(_elm_lang$core$Color$rgba, 239, 227, 195, 1.0);
+var _user$project$Client$tableBackground = A4(_elm_lang$core$Color$rgba, 231, 214, 166, 1.0);
 var _user$project$Client$listAttributes = {
 	ctor: '::',
 	_0: _mdgriffith$style_elements$Element_Attributes$spacing(5),
@@ -24322,6 +24324,7 @@ var _user$project$Client$update = F2(
 var _user$project$Client$SelectSite = function (a) {
 	return {ctor: 'SelectSite', _0: a};
 };
+var _user$project$Client$DataGrid = {ctor: 'DataGrid'};
 var _user$project$Client$Box = {ctor: 'Box'};
 var _user$project$Client$viewDataCell = F3(
 	function (rowIndex, columnIndex, value) {
@@ -24350,13 +24353,6 @@ var _user$project$Client$viewDataRow = F2(
 			data.key);
 		return dimensions;
 	});
-var _user$project$Client$VariableData = {ctor: 'VariableData'};
-var _user$project$Client$VariableName = {ctor: 'VariableName'};
-var _user$project$Client$TableTitle = {ctor: 'TableTitle'};
-var _user$project$Client$Table = {ctor: 'Table'};
-var _user$project$Client$Site = {ctor: 'Site'};
-var _user$project$Client$Selected = {ctor: 'Selected'};
-var _user$project$Client$Main = {ctor: 'Main'};
 var _user$project$Client$viewValues = F2(
 	function (table, meta) {
 		var dataSeqs = A2(
@@ -24419,7 +24415,7 @@ var _user$project$Client$viewValues = F2(
 		var columnCount = (timeCount * dataCount) + dimensionCount;
 		return A4(
 			_mdgriffith$style_elements$Element$grid,
-			_user$project$Client$Main,
+			_user$project$Client$DataGrid,
 			{
 				columns: A2(
 					_elm_lang$core$List$repeat,
@@ -24440,6 +24436,13 @@ var _user$project$Client$viewValues = F2(
 				{ctor: '[]'},
 				A2(_elm_lang$core$List$indexedMap, _user$project$Client$viewDataRow, dataSeqs)));
 	});
+var _user$project$Client$VariableData = {ctor: 'VariableData'};
+var _user$project$Client$VariableName = {ctor: 'VariableName'};
+var _user$project$Client$TableTitle = {ctor: 'TableTitle'};
+var _user$project$Client$Table = {ctor: 'Table'};
+var _user$project$Client$Site = {ctor: 'Site'};
+var _user$project$Client$Selected = {ctor: 'Selected'};
+var _user$project$Client$Main = {ctor: 'Main'};
 var _user$project$Client$None = {ctor: 'None'};
 var _user$project$Client$viewTable = F2(
 	function (table, meta) {
@@ -24734,8 +24737,7 @@ var _user$project$Client$stylesheet = _mdgriffith$style_elements$Style$styleShee
 									_0: _mdgriffith$style_elements$Style_Color$text(_elm_lang$core$Color$darkCharcoal),
 									_1: {
 										ctor: '::',
-										_0: _mdgriffith$style_elements$Style_Color$background(
-											A4(_elm_lang$core$Color$rgba, 231, 214, 166, 1.0)),
+										_0: _mdgriffith$style_elements$Style_Color$background(_user$project$Client$tableBackground),
 										_1: {ctor: '[]'}
 									}
 								},
@@ -24771,8 +24773,7 @@ var _user$project$Client$stylesheet = _mdgriffith$style_elements$Style$styleShee
 										_user$project$Client$VariableData,
 										{
 											ctor: '::',
-											_0: _mdgriffith$style_elements$Style_Color$background(
-												A4(_elm_lang$core$Color$rgba, 239, 227, 195, 1.0)),
+											_0: _mdgriffith$style_elements$Style_Color$background(_user$project$Client$dataBackground),
 											_1: {ctor: '[]'}
 										}),
 									_1: {
@@ -24783,9 +24784,28 @@ var _user$project$Client$stylesheet = _mdgriffith$style_elements$Style$styleShee
 											{
 												ctor: '::',
 												_0: _mdgriffith$style_elements$Style_Border$all(1.0),
-												_1: {ctor: '[]'}
+												_1: {
+													ctor: '::',
+													_0: _mdgriffith$style_elements$Style_Font$size(12),
+													_1: {
+														ctor: '::',
+														_0: _mdgriffith$style_elements$Style_Font$lineHeight(1.2),
+														_1: {ctor: '[]'}
+													}
+												}
 											}),
-										_1: {ctor: '[]'}
+										_1: {
+											ctor: '::',
+											_0: A2(
+												_mdgriffith$style_elements$Style$style,
+												_user$project$Client$DataGrid,
+												{
+													ctor: '::',
+													_0: _mdgriffith$style_elements$Style_Color$background(_user$project$Client$dataBackground),
+													_1: {ctor: '[]'}
+												}),
+											_1: {ctor: '[]'}
+										}
 									}
 								}
 							}
