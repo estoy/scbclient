@@ -24098,6 +24098,31 @@ var _user$project$Client$mergeSequences = function (group) {
 		group);
 	return A2(_user$project$Types$DataSequence, key, points);
 };
+var _user$project$Client$lookupVariable = F2(
+	function (meta, $var) {
+		return A2(
+			_elm_lang$core$Maybe$withDefault,
+			'*error*',
+			_elm_lang$core$List$head(
+				A2(
+					_elm_lang$core$List$map,
+					function (_) {
+						return _.text;
+					},
+					A2(
+						_elm_lang$core$List$filter,
+						function (val) {
+							return _elm_lang$core$Native_Utils.eq(val.value, $var);
+						},
+						meta.values))));
+	});
+var _user$project$Client$lookupKey = F2(
+	function (variables, seq) {
+		var translatedKey = A3(_elm_lang$core$List$map2, _user$project$Client$lookupVariable, variables, seq.key);
+		return _elm_lang$core$Native_Utils.update(
+			seq,
+			{key: translatedKey});
+	});
 var _user$project$Client$initialModel = {
 	siteContext: {selected: _user$project$Client$swedish, sites: _user$project$Client$sites},
 	levelContexts: {ctor: '[]'},
@@ -24336,14 +24361,17 @@ var _user$project$Client$viewValues = F2(
 	function (table, meta) {
 		var dataSeqs = A2(
 			_elm_lang$core$List$map,
-			_user$project$Client$mergeSequences,
+			_user$project$Client$lookupKey(meta.variables),
 			A2(
-				_user$project$Utils$groupBy,
-				F2(
-					function (r1, r2) {
-						return _elm_lang$core$Native_Utils.eq(r1.key, r2.key);
-					}),
-				table.data));
+				_elm_lang$core$List$map,
+				_user$project$Client$mergeSequences,
+				A2(
+					_user$project$Utils$groupBy,
+					F2(
+						function (r1, r2) {
+							return _elm_lang$core$Native_Utils.eq(r1.key, r2.key);
+						}),
+					table.data)));
 		var rowCount = _elm_lang$core$List$length(dataSeqs);
 		var dataCount = _elm_lang$core$List$length(
 			A2(

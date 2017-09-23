@@ -111,6 +111,7 @@ viewValues table meta =
             table.data
                 |> groupBy (\r1 r2 -> r1.key == r2.key)
                 |> List.map mergeSequences
+                |> List.map (lookupKey meta.variables)
 
         rowCount =
             dataSeqs
@@ -126,6 +127,23 @@ viewValues table meta =
                 |> List.indexedMap viewDataRow
                 |> List.foldr (++) []
             )
+
+lookupKey : List VariableMeta -> DataSequence -> DataSequence
+lookupKey variables seq =
+    let
+        translatedKey : List String
+        translatedKey =
+            List.map2 lookupVariable variables seq.key
+    in
+        { seq | key = translatedKey }
+
+lookupVariable : VariableMeta -> String -> String
+lookupVariable meta var =
+    meta.values
+        |> List.filter (\val -> val.value == var)
+        |> List.map .text
+        |> List.head
+        |> Maybe.withDefault "*error*"
 
 mergeSequences : List Data -> DataSequence
 mergeSequences group =
