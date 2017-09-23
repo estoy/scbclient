@@ -9,29 +9,52 @@ import Attributes exposing (columnAttributes, listAttributes)
 -- External ------
 
 import Element exposing (Element, text, button, el, column, row, checkbox)
-import Element.Attributes exposing (paddingRight, paddingLeft, justify, yScrollbar, maxHeight, px)
+import Element.Attributes exposing (spacing, disabled, paddingRight, paddingLeft, justify, yScrollbar, maxHeight, px)
 import Element.Events exposing (onClick)
 
 
 -- View -------
 
 
-viewTableMeta : TableMeta -> Element Styles variation Msg
+viewTableMeta : TableMeta -> Element Styles Styles Msg
 viewTableMeta meta =
-    column Table
-        columnAttributes
-        [ row None
-            [ justify ]
-            [ el TableTitle [] <| text meta.title
-            , (row None
-                []
-                [ button <| el Main [ onClick Submit ] <| text "Submit"
-                , button <| el Main [ onClick ToggleTableMetaView ] <| text "X"
+    let
+        completeSelection =
+            meta.variables
+                |> List.all hasSelection
+        
+        buttonStyle =
+            if completeSelection then
+                Main
+            else
+                Disabled
+    in
+        column Table
+            columnAttributes
+            [ row None
+                [ justify]
+                [ el TableTitle [] <| text meta.title
+                , (row None
+                    [spacing 5]
+                    [ button <|
+                        el buttonStyle
+                            [ onClick Submit
+                            , disabled (not completeSelection)
+                            ]
+                        <|
+                            text "Submit"
+                    , button <| el Main [ onClick ToggleTableMetaView ] <| text "X"
+                    ]
+                  )
                 ]
-              )
+            , viewVariablesMeta meta.variables
             ]
-        , viewVariablesMeta meta.variables
-        ]
+
+
+hasSelection : VariableMeta -> Bool
+hasSelection var =
+    var.values
+        |> List.any .selected
 
 
 viewVariablesMeta : List VariableMeta -> Element Styles variation Msg
@@ -47,7 +70,7 @@ viewVariableMeta variable =
             if variable.sorted then
                 List.sortBy .text variable.values
             else
-                variable.values  
+                variable.values
     in
         row None
             []
@@ -57,7 +80,7 @@ viewVariableMeta variable =
                 (values
                     |> List.map (viewValueMeta variable)
                 )
-            , checkbox variable.sorted None [paddingLeft 10, onClick (ToggleSort variable)] <| el None [paddingLeft 5] <| text "sort"
+            , checkbox variable.sorted None [ paddingLeft 10, onClick (ToggleSort variable) ] <| el None [ paddingLeft 5 ] <| text "sort"
             ]
 
 
@@ -123,6 +146,7 @@ toggleValueForVar value variable =
     in
         { variable | values = values }
 
+
 toggleVariableSort : VariableMeta -> TableMeta -> TableMeta
 toggleVariableSort variable table =
     let
@@ -131,6 +155,7 @@ toggleVariableSort variable table =
                 |> mapIf (\var -> var.code == variable.code) toggleSort
     in
         { table | variables = variables }
+
 
 toggleSort : VariableMeta -> VariableMeta
 toggleSort variable =

@@ -12,6 +12,7 @@ import Style.Border as Border
 type Styles
     = None
     | Main
+    | Disabled
     | Selected
     | Deselected
     | Site
@@ -48,6 +49,12 @@ stylesheet =
         , style Main
             ([ Color.text Color.darkCharcoal
              , Color.background Color.lightGrey
+             ]
+                ++ baseStyle
+            )
+            , style Disabled
+            ([ Color.text Color.lightCharcoal
+             , Color.background Color.lightGray
              ]
                 ++ baseStyle
             )
