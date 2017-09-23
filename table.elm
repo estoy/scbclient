@@ -42,9 +42,13 @@ viewValues table meta =
                 |> List.head
                 |> Maybe.withDefault emptyVariableMeta
 
-        timeCount =
+        timeValues : List ValueMeta
+        timeValues =
             timeField.values
                 |> List.filter .selected
+
+        timeCount =
+            timeValues
                 |> List.length
 
         dimensionCount =
@@ -57,7 +61,6 @@ viewValues table meta =
         dataColumns =
             table.columns
                 |> List.filter (\c -> c.type_ == "c")
-        
 
         dataCount =
             dataColumns
@@ -86,6 +89,12 @@ viewValues table meta =
                 |> List.foldr (++) []
                 |> List.indexedMap (viewDataHeader dimensionCount)
 
+        timeHeaders : List (Element.OnGrid (Element Styles variation msg))
+        timeHeaders =
+            timeValues
+                |> List.map .text
+                |> List.indexedMap (viewTimeHeader dataCount dimensionCount)
+
         dataRowCount =
             dataSeqs
                 |> List.length
@@ -101,17 +110,24 @@ viewValues table meta =
             , rows = List.repeat (2 + dataRowCount) (px 34)
             }
             [ scrollbars ]
-            (dimensionHeaders ++ dataHeaders ++ dataRows)
+            (dimensionHeaders ++ dataHeaders ++ timeHeaders ++ dataRows)
+
+
+viewTimeHeader : Int -> Int -> Int -> String -> Element.OnGrid (Element Styles variation msg)
+viewTimeHeader width baseIndex columnIndex text =
+    viewCell HeaderBox 0 (baseIndex + columnIndex * width) text width
 
 viewDataHeader : Int -> Int -> Column -> Element.OnGrid (Element Styles variation msg)
 viewDataHeader baseIndex columnIndex column =
-     viewCell HeaderBox 1 (baseIndex +columnIndex) column.text 
+    viewCell HeaderBox 1 (baseIndex + columnIndex) column.text 1
+
 
 viewDimensionHeader : Int -> VariableMeta -> Element.OnGrid (Element Styles variation msg)
 viewDimensionHeader columnIndex var =
-    viewCell HeaderBox 1 columnIndex var.text
+    viewCell HeaderBox 1 columnIndex var.text 1
 
-lookupKey : List VariableMeta ->  DataSequence -> DataSequence
+
+lookupKey : List VariableMeta -> DataSequence -> DataSequence
 lookupKey variables seq =
     let
         translatedKey : List String
@@ -150,7 +166,8 @@ mergeSequences group =
 viewDataRow : Int -> DataSequence -> List (Element.OnGrid (Element Styles variation msg))
 viewDataRow dataRowIndex data =
     let
-        rowIndex = dataRowIndex + 2
+        rowIndex =
+            dataRowIndex + 2
 
         dimensions : List (Element.OnGrid (Element Styles variation msg))
         dimensions =
@@ -198,19 +215,19 @@ viewValue rowIndex baseIndex valueIndex value =
 
 viewDimensionCell : Int -> Int -> String -> Element.OnGrid (Element Styles variation msg)
 viewDimensionCell rowIndex columnIndex value =
-    viewCell DimBox rowIndex columnIndex value
+    viewCell DimBox rowIndex columnIndex value 1
 
 
 viewDataCell : Int -> Int -> String -> Element.OnGrid (Element Styles variation msg)
 viewDataCell rowIndex columnIndex value =
-    viewCell DataBox rowIndex columnIndex value
+    viewCell DataBox rowIndex columnIndex value 1
 
 
-viewCell : Styles -> Int -> Int -> String -> Element.OnGrid (Element Styles variation msg)
-viewCell style rowIndex columnIndex value =
+viewCell : Styles -> Int -> Int -> String -> Int -> Element.OnGrid (Element Styles variation msg)
+viewCell style rowIndex columnIndex value width =
     area
         { start = ( columnIndex, rowIndex )
-        , width = 1
+        , width = width
         , height = 1
         }
         (el style [ verticalCenter, scrollbars, padding 2 ] (text value))

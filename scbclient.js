@@ -24230,13 +24230,13 @@ var _user$project$Table$emptyVariableMeta = A4(
 	'',
 	{ctor: '[]'},
 	false);
-var _user$project$Table$viewCell = F4(
-	function (style, rowIndex, columnIndex, value) {
+var _user$project$Table$viewCell = F5(
+	function (style, rowIndex, columnIndex, value, width) {
 		return A2(
 			_mdgriffith$style_elements$Element$area,
 			{
 				start: {ctor: '_Tuple2', _0: columnIndex, _1: rowIndex},
-				width: 1,
+				width: width,
 				height: 1
 			},
 			A3(
@@ -24259,11 +24259,11 @@ var _user$project$Table$viewCell = F4(
 	});
 var _user$project$Table$viewDataCell = F3(
 	function (rowIndex, columnIndex, value) {
-		return A4(_user$project$Table$viewCell, _user$project$Styles$DataBox, rowIndex, columnIndex, value);
+		return A5(_user$project$Table$viewCell, _user$project$Styles$DataBox, rowIndex, columnIndex, value, 1);
 	});
 var _user$project$Table$viewDimensionCell = F3(
 	function (rowIndex, columnIndex, value) {
-		return A4(_user$project$Table$viewCell, _user$project$Styles$DimBox, rowIndex, columnIndex, value);
+		return A5(_user$project$Table$viewCell, _user$project$Styles$DimBox, rowIndex, columnIndex, value, 1);
 	});
 var _user$project$Table$viewValue = F4(
 	function (rowIndex, baseIndex, valueIndex, value) {
@@ -24361,11 +24361,15 @@ var _user$project$Table$lookupKey = F2(
 	});
 var _user$project$Table$viewDimensionHeader = F2(
 	function (columnIndex, $var) {
-		return A4(_user$project$Table$viewCell, _user$project$Styles$HeaderBox, 1, columnIndex, $var.text);
+		return A5(_user$project$Table$viewCell, _user$project$Styles$HeaderBox, 1, columnIndex, $var.text, 1);
 	});
 var _user$project$Table$viewDataHeader = F3(
 	function (baseIndex, columnIndex, column) {
-		return A4(_user$project$Table$viewCell, _user$project$Styles$HeaderBox, 1, baseIndex + columnIndex, column.text);
+		return A5(_user$project$Table$viewCell, _user$project$Styles$HeaderBox, 1, baseIndex + columnIndex, column.text, 1);
+	});
+var _user$project$Table$viewTimeHeader = F4(
+	function (width, baseIndex, columnIndex, text) {
+		return A5(_user$project$Table$viewCell, _user$project$Styles$HeaderBox, 0, baseIndex + (columnIndex * width), text, width);
 	});
 var _user$project$Table$viewValues = F2(
 	function (table, meta) {
@@ -24424,13 +24428,13 @@ var _user$project$Table$viewValues = F2(
 						return _.time;
 					},
 					meta.variables)));
-		var timeCount = _elm_lang$core$List$length(
-			A2(
-				_elm_lang$core$List$filter,
-				function (_) {
-					return _.selected;
-				},
-				timeField.values));
+		var timeValues = A2(
+			_elm_lang$core$List$filter,
+			function (_) {
+				return _.selected;
+			},
+			timeField.values);
+		var timeCount = _elm_lang$core$List$length(timeValues);
 		var columnCount = (timeCount * dataCount) + dimensionCount;
 		var dataHeaders = A2(
 			_elm_lang$core$List$indexedMap,
@@ -24443,6 +24447,15 @@ var _user$project$Table$viewValues = F2(
 					}),
 				{ctor: '[]'},
 				A2(_elm_lang$core$List$repeat, timeCount, dataColumns)));
+		var timeHeaders = A2(
+			_elm_lang$core$List$indexedMap,
+			A2(_user$project$Table$viewTimeHeader, dataCount, dimensionCount),
+			A2(
+				_elm_lang$core$List$map,
+				function (_) {
+					return _.text;
+				},
+				timeValues));
 		return A4(
 			_mdgriffith$style_elements$Element$grid,
 			_user$project$Styles$DataGrid,
@@ -24464,7 +24477,10 @@ var _user$project$Table$viewValues = F2(
 			A2(
 				_elm_lang$core$Basics_ops['++'],
 				dimensionHeaders,
-				A2(_elm_lang$core$Basics_ops['++'], dataHeaders, dataRows)));
+				A2(
+					_elm_lang$core$Basics_ops['++'],
+					dataHeaders,
+					A2(_elm_lang$core$Basics_ops['++'], timeHeaders, dataRows))));
 	});
 var _user$project$Table$viewTable = F2(
 	function (table, meta) {
