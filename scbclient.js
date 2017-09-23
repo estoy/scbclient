@@ -24602,10 +24602,58 @@ var _user$project$Table$viewTable = F2(
 			});
 	});
 
-var _user$project$Client$emptyTableMeta = {
-	title: '(no table selected)',
-	variables: {ctor: '[]'}
+var _user$project$Contexts$elementFromLevel = F3(
+	function (selected, index, level) {
+		var style = function () {
+			var _p0 = selected;
+			if (_p0.ctor === 'Just') {
+				return _elm_lang$core$Native_Utils.eq(_p0._0, level) ? _user$project$Styles$Selected : _user$project$Styles$Deselected;
+			} else {
+				return _user$project$Styles$Deselected;
+			}
+		}();
+		return A3(
+			_mdgriffith$style_elements$Element$el,
+			style,
+			{
+				ctor: '::',
+				_0: _mdgriffith$style_elements$Element_Events$onClick(
+					A2(_user$project$Types$SelectLevel, level, index)),
+				_1: {ctor: '[]'}
+			},
+			_mdgriffith$style_elements$Element$text(level.text));
+	});
+var _user$project$Contexts$columnFromLevelContext = function (context) {
+	var style = A2(
+		_elm_lang$core$List$any,
+		function (level) {
+			return _elm_lang$core$Native_Utils.eq(level.type_, 't');
+		},
+		context.levels) ? _user$project$Styles$Table : _user$project$Styles$Main;
+	return A3(
+		_mdgriffith$style_elements$Element$column,
+		style,
+		_user$project$Attributes$columnAttributes,
+		A2(
+			_elm_lang$core$List$map,
+			A2(_user$project$Contexts$elementFromLevel, context.selected, context.index),
+			context.levels));
 };
+var _user$project$Contexts$elementFromSite = F2(
+	function (selected, site) {
+		var style = _elm_lang$core$Native_Utils.eq(site, selected) ? _user$project$Styles$Selected : _user$project$Styles$Deselected;
+		return A3(
+			_mdgriffith$style_elements$Element$el,
+			style,
+			{
+				ctor: '::',
+				_0: _mdgriffith$style_elements$Element_Events$onClick(
+					_user$project$Types$SelectSite(site)),
+				_1: {ctor: '[]'}
+			},
+			_mdgriffith$style_elements$Element$text(site.language));
+	});
+
 var _user$project$Client$english = {language: 'English', url: ' http://api.scb.se/OV0104/v1/doris/en/ssd'};
 var _user$project$Client$swedish = {language: 'Svenska', url: 'http://api.scb.se/OV0104/v1/doris/sv/ssd'};
 var _user$project$Client$sites = {
@@ -24744,72 +24792,21 @@ var _user$project$Client$modelWithSite = F3(
 				tableMeta: _elm_lang$core$Maybe$Nothing
 			});
 	});
-var _user$project$Client$elementFromLevel = F3(
-	function (selected, index, level) {
-		var style = function () {
-			var _p2 = selected;
-			if (_p2.ctor === 'Just') {
-				return _elm_lang$core$Native_Utils.eq(_p2._0, level) ? _user$project$Styles$Selected : _user$project$Styles$Deselected;
-			} else {
-				return _user$project$Styles$Deselected;
-			}
-		}();
-		return A3(
-			_mdgriffith$style_elements$Element$el,
-			style,
-			{
-				ctor: '::',
-				_0: _mdgriffith$style_elements$Element_Events$onClick(
-					A2(_user$project$Types$SelectLevel, level, index)),
-				_1: {ctor: '[]'}
-			},
-			_mdgriffith$style_elements$Element$text(level.text));
-	});
-var _user$project$Client$columnFromLevelContext = function (context) {
-	var style = A2(
-		_elm_lang$core$List$any,
-		function (level) {
-			return _elm_lang$core$Native_Utils.eq(level.type_, 't');
-		},
-		context.levels) ? _user$project$Styles$Table : _user$project$Styles$Main;
-	return A3(
-		_mdgriffith$style_elements$Element$column,
-		style,
-		_user$project$Attributes$columnAttributes,
-		A2(
-			_elm_lang$core$List$map,
-			A2(_user$project$Client$elementFromLevel, context.selected, context.index),
-			context.levels));
-};
-var _user$project$Client$elementFromSite = F2(
-	function (selected, site) {
-		var style = _elm_lang$core$Native_Utils.eq(site, selected) ? _user$project$Styles$Selected : _user$project$Styles$Deselected;
-		return A3(
-			_mdgriffith$style_elements$Element$el,
-			style,
-			{
-				ctor: '::',
-				_0: _mdgriffith$style_elements$Element_Events$onClick(
-					_user$project$Types$SelectSite(site)),
-				_1: {ctor: '[]'}
-			},
-			_mdgriffith$style_elements$Element$text(site.language));
-	});
 var _user$project$Client$update = F2(
 	function (msg, model) {
-		var _p3 = msg;
-		switch (_p3.ctor) {
+		var _p2 = msg;
+		switch (_p2.ctor) {
 			case 'SelectSite':
 				return {
 					ctor: '_Tuple2',
 					_0: model,
-					_1: _user$project$Api$loadSiteCmd(_p3._0)
+					_1: _user$project$Api$loadSiteCmd(_p2._0)
 				};
 			case 'SiteLoaded':
-				if (_p3._1.ctor === 'Ok') {
+				if (_p2._1.ctor === 'Ok') {
 					return {
 						ctor: '_Tuple2',
-						_0: A3(_user$project$Client$modelWithSite, model, _p3._0, _p3._1._0),
+						_0: A3(_user$project$Client$modelWithSite, model, _p2._0, _p2._1._0),
 						_1: _elm_lang$core$Platform_Cmd$none
 					};
 				} else {
@@ -24819,13 +24816,13 @@ var _user$project$Client$update = F2(
 				return {
 					ctor: '_Tuple2',
 					_0: model,
-					_1: A3(_user$project$Api$loadLevelCmd, _p3._0, _p3._1, model)
+					_1: A3(_user$project$Api$loadLevelCmd, _p2._0, _p2._1, model)
 				};
 			case 'LevelLoaded':
-				if (_p3._2.ctor === 'Ok') {
+				if (_p2._2.ctor === 'Ok') {
 					return {
 						ctor: '_Tuple2',
-						_0: A4(_user$project$Client$modelWithLevel, model, _p3._0, _p3._1, _p3._2._0),
+						_0: A4(_user$project$Client$modelWithLevel, model, _p2._0, _p2._1, _p2._2._0),
 						_1: _elm_lang$core$Platform_Cmd$none
 					};
 				} else {
@@ -24834,16 +24831,16 @@ var _user$project$Client$update = F2(
 						_0: _elm_lang$core$Native_Utils.update(
 							model,
 							{
-								latestError: _elm_lang$core$Maybe$Just(_p3._2._0)
+								latestError: _elm_lang$core$Maybe$Just(_p2._2._0)
 							}),
 						_1: _elm_lang$core$Platform_Cmd$none
 					};
 				}
 			case 'TableMetaLoaded':
-				if (_p3._2.ctor === 'Ok') {
+				if (_p2._2.ctor === 'Ok') {
 					return {
 						ctor: '_Tuple2',
-						_0: A4(_user$project$Client$modelWithTableMeta, model, _p3._0, _p3._1, _p3._2._0),
+						_0: A4(_user$project$Client$modelWithTableMeta, model, _p2._0, _p2._1, _p2._2._0),
 						_1: _elm_lang$core$Platform_Cmd$none
 					};
 				} else {
@@ -24852,7 +24849,7 @@ var _user$project$Client$update = F2(
 						_0: _elm_lang$core$Native_Utils.update(
 							model,
 							{
-								latestError: _elm_lang$core$Maybe$Just(_p3._2._0)
+								latestError: _elm_lang$core$Maybe$Just(_p2._2._0)
 							}),
 						_1: _elm_lang$core$Platform_Cmd$none
 					};
@@ -24874,15 +24871,15 @@ var _user$project$Client$update = F2(
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
 			case 'ToggleValue':
-				var _p4 = model.tableMeta;
-				if (_p4.ctor === 'Just') {
+				var _p3 = model.tableMeta;
+				if (_p3.ctor === 'Just') {
 					return {
 						ctor: '_Tuple2',
 						_0: _elm_lang$core$Native_Utils.update(
 							model,
 							{
 								tableMeta: _elm_lang$core$Maybe$Just(
-									A3(_user$project$Client$toggleValueForTable, _p3._0, _p3._1, _p4._0))
+									A3(_user$project$Client$toggleValueForTable, _p2._0, _p2._1, _p3._0))
 							}),
 						_1: _elm_lang$core$Platform_Cmd$none
 					};
@@ -24896,13 +24893,13 @@ var _user$project$Client$update = F2(
 					_1: _user$project$Api$submitQueryCmd(model)
 				};
 			default:
-				if (_p3._0.ctor === 'Ok') {
+				if (_p2._0.ctor === 'Ok') {
 					return {
 						ctor: '_Tuple2',
 						_0: _elm_lang$core$Native_Utils.update(
 							model,
 							{
-								table: _elm_lang$core$Maybe$Just(_p3._0._0)
+								table: _elm_lang$core$Maybe$Just(_p2._0._0)
 							}),
 						_1: _elm_lang$core$Platform_Cmd$none
 					};
@@ -24912,7 +24909,7 @@ var _user$project$Client$update = F2(
 						_0: _elm_lang$core$Native_Utils.update(
 							model,
 							{
-								latestError: _elm_lang$core$Maybe$Just(_p3._0._0)
+								latestError: _elm_lang$core$Maybe$Just(_p2._0._0)
 							}),
 						_1: _elm_lang$core$Platform_Cmd$none
 					};
@@ -24924,8 +24921,8 @@ var _user$project$Client$view = function (model) {
 		_mdgriffith$style_elements$Element$viewport,
 		_user$project$Styles$stylesheet,
 		function () {
-			var _p5 = model.tableMeta;
-			if (_p5.ctor === 'Nothing') {
+			var _p4 = model.tableMeta;
+			if (_p4.ctor === 'Nothing') {
 				return A3(
 					_mdgriffith$style_elements$Element$row,
 					_user$project$Styles$Main,
@@ -24938,17 +24935,17 @@ var _user$project$Client$view = function (model) {
 							_user$project$Attributes$columnAttributes,
 							A2(
 								_elm_lang$core$List$map,
-								_user$project$Client$elementFromSite(model.siteContext.selected),
+								_user$project$Contexts$elementFromSite(model.siteContext.selected),
 								_user$project$Client$sites)),
-						_1: A2(_elm_lang$core$List$map, _user$project$Client$columnFromLevelContext, model.levelContexts)
+						_1: A2(_elm_lang$core$List$map, _user$project$Contexts$columnFromLevelContext, model.levelContexts)
 					});
 			} else {
-				var _p7 = _p5._0;
-				var _p6 = model.table;
-				if (_p6.ctor === 'Nothing') {
-					return _user$project$Table$viewTableMeta(_p7);
+				var _p6 = _p4._0;
+				var _p5 = model.table;
+				if (_p5.ctor === 'Nothing') {
+					return _user$project$Table$viewTableMeta(_p6);
 				} else {
-					return A2(_user$project$Table$viewTable, _p6._0, _p7);
+					return A2(_user$project$Table$viewTable, _p5._0, _p6);
 				}
 			}
 		}());
