@@ -24370,10 +24370,24 @@ var _user$project$Client$viewDimensionCell = F3(
 	});
 var _user$project$Client$viewDataRow = F2(
 	function (rowIndex, data) {
+		var pointSize = A2(
+			_elm_lang$core$Maybe$withDefault,
+			0,
+			_elm_lang$core$List$head(
+				A2(
+					_elm_lang$core$List$map,
+					_elm_lang$core$List$length,
+					A2(
+						_elm_lang$core$List$map,
+						function (_) {
+							return _.values;
+						},
+						data.points))));
 		var dimensions = A2(
 			_elm_lang$core$List$indexedMap,
 			_user$project$Client$viewDimensionCell(rowIndex),
 			data.key);
+		var dimCount = _elm_lang$core$List$length(dimensions);
 		var values = A3(
 			_elm_lang$core$List$foldr,
 			F2(
@@ -24389,11 +24403,7 @@ var _user$project$Client$viewDataRow = F2(
 							_elm_lang$core$List$indexedMap,
 							F2(
 								function (vindex, value) {
-									return A3(
-										_user$project$Client$viewDataCell,
-										rowIndex,
-										(_elm_lang$core$List$length(dimensions) + (pindex * _elm_lang$core$List$length(point.values))) + vindex,
-										value);
+									return A3(_user$project$Client$viewDataCell, rowIndex, (dimCount + (pindex * pointSize)) + vindex, value);
 								}),
 							point.values);
 					}),

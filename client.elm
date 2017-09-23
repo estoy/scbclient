@@ -170,13 +170,23 @@ viewDataRow rowIndex data =
             data.key
                 |> List.indexedMap (viewDimensionCell rowIndex)
 
+        dimCount : Int
+        dimCount = List.length dimensions
+
+        pointSize : Int
+        pointSize = data.points
+                        |> List.map .values
+                        |> List.map List.length
+                        |> List.head
+                        |> Maybe.withDefault 0
+
         values : List (Element.OnGrid (Element Styles variation msg))
         values =
             data.points
                 |> List.indexedMap (\pindex point ->
                         List.indexedMap (\vindex value -> viewDataCell
                                                             rowIndex 
-                                                            ((List.length dimensions) + pindex * (List.length point.values) + vindex)
+                                                            (dimCount + pindex * pointSize + vindex)
                                                             value
                                         )
                                         point.values
