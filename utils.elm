@@ -1,7 +1,11 @@
-module Utils exposing (..)
+module Utils exposing (mapIf, groupBy, encodeQuery)
 
 import Types exposing (..)
-import Json.Encode exposing (..)
+
+
+-- External ----------
+
+import Json.Encode exposing (encode, object, string, list, Value)
 
 
 mapIf : (a -> Bool) -> (a -> a) -> List a -> List a

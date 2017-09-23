@@ -1,7 +1,9 @@
-module Attributes exposing (..)
+module Attributes exposing (columnAttributes, listAttributes)
+
+-- External ------
 
 import Element exposing (Attribute)
-import Element.Attributes exposing (verticalCenter, spacing, padding, paddingRight, paddingXY, justify, yScrollbar, scrollbars, maxHeight, px)
+import Element.Attributes exposing (spacing, padding, paddingXY)
 
 
 columnAttributes : List (Attribute variation msg)

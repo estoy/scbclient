@@ -1,9 +1,13 @@
-module Contexts exposing (..)
+module Contexts exposing (elementFromSite, columnFromLevelContext, modelWithSite, modelWithLevel)
 
 import Types exposing (..)
 import Styles exposing (..)
-import Attributes exposing (..)
-import Element exposing (..)
+import Attributes exposing (columnAttributes)
+
+
+-- External ----
+
+import Element exposing (text, el, column, Element)
 import Element.Events exposing (onClick)
 
 
@@ -104,4 +108,3 @@ modelWithLevel model level index levels =
             | levelContexts = parentContexts ++ [ updatedContext, newContext ]
             , tableMeta = Nothing
         }
-

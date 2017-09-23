@@ -1,9 +1,13 @@
 module Table exposing (viewTable, viewTableMeta, toggleValueForTable, modelWithTableMeta)
 
 import Types exposing (..)
-import Utils exposing (..)
 import Styles exposing (..)
-import Attributes exposing (..)
+import Utils exposing (groupBy, mapIf)
+import Attributes exposing (columnAttributes, listAttributes)
+
+
+-- External ------
+
 import Element exposing (..)
 import Element.Attributes exposing (verticalCenter, spacing, padding, paddingRight, paddingXY, justify, yScrollbar, scrollbars, maxHeight, px)
 import Element.Events exposing (onClick)
@@ -184,6 +188,7 @@ emptyVariableMeta : VariableMeta
 emptyVariableMeta =
     VariableMeta "" "" [] False
 
+
 viewTableMeta : TableMeta -> Element Styles variation Msg
 viewTableMeta meta =
     column Table
@@ -191,7 +196,8 @@ viewTableMeta meta =
         [ row None
             [ justify ]
             [ el TableTitle [] <| text meta.title
-            , (row None []
+            , (row None
+                []
                 [ button <| el Main [ onClick Submit ] <| text "Submit"
                 , button <| el Main [ onClick ToggleTableMetaView ] <| text "X"
                 ]
@@ -211,7 +217,7 @@ viewVariableMeta : VariableMeta -> Element Styles variation Msg
 viewVariableMeta variable =
     row None
         []
-        [ el VariableName [paddingRight 10] <| text variable.text
+        [ el VariableName [ paddingRight 10 ] <| text variable.text
         , column VariableData
             ([ yScrollbar, maxHeight (px 150) ] ++ listAttributes)
             (variable.values
@@ -219,14 +225,17 @@ viewVariableMeta variable =
             )
         ]
 
+
 viewValueMeta : VariableMeta -> ValueMeta -> Element Styles variation Msg
 viewValueMeta var val =
     let
         style =
-            if val.selected then Selected else None        
+            if val.selected then
+                Selected
+            else
+                None
     in
-        el style [onClick (ToggleValue var val)] (text val.text)
-
+        el style [ onClick (ToggleValue var val) ] (text val.text)
 
 
 modelWithTableMeta : Model -> Level -> Int -> TableMeta -> Model

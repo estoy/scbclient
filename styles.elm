@@ -1,5 +1,7 @@
 module Styles exposing (..)
 
+-- External ------
+
 import Color
 import Style exposing (..)
 import Style.Color as Color

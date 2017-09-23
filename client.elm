@@ -2,13 +2,17 @@ module Client exposing (..)
 
 import Types exposing (..)
 import Styles exposing (..)
-import Attributes exposing (..)
-import Table exposing (..)
-import Api exposing (..)
-import Contexts exposing (..)
+import Attributes exposing (columnAttributes)
+import Table exposing (viewTable, viewTableMeta, toggleValueForTable, modelWithTableMeta)
+import Api exposing (loadSiteCmd, loadLevelCmd, submitQueryCmd)
+import Contexts exposing (elementFromSite, columnFromLevelContext, modelWithSite, modelWithLevel)
 import Config exposing (..)
+
+
+-- External
+
 import Html exposing (Html)
-import Element exposing (..)
+import Element exposing (viewport, row, column)
 
 
 initialModel : Model

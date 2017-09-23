@@ -1,11 +1,15 @@
 module Api exposing (loadSiteCmd, loadLevelCmd, submitQueryCmd)
 
 import Types exposing (..)
-import Utils exposing (..)
+import Utils exposing (encodeQuery)
 
-import Json.Decode exposing (string, list, Decoder, at, map, lazy, oneOf, null, bool)
-import Json.Decode.Pipeline exposing (decode, required, requiredAt, custom, optional)
-import Http exposing (stringBody, Body, Request, request, expectJson, header)
+
+-- External ------
+
+import Json.Decode exposing (string, list, bool, Decoder)
+import Json.Decode.Pipeline exposing (decode, required, optional)
+import Http exposing (stringBody)
+
 
 loadSiteCmd : Site -> Cmd Msg
 loadSiteCmd site =
@@ -52,7 +56,7 @@ tableMetaDecoder =
 
 variableMetaDecoder : Decoder VariableMeta
 variableMetaDecoder =
-    decode VariableMetaDTO 
+    decode VariableMetaDTO
         |> required "code" string
         |> required "text" string
         |> required "values" (list string)
@@ -60,27 +64,35 @@ variableMetaDecoder =
         |> optional "time" bool False
         |> Json.Decode.map prepareValues
 
+
 prepareValues : VariableMetaDTO -> VariableMeta
 prepareValues dto =
     let
         values : List ValueMeta
-        values = List.map2 (\value text -> 
-            { value = value,
-            text = text,
-            selected = False})
-            dto.values
-            dto.valueTexts
+        values =
+            List.map2
+                (\value text ->
+                    { value = value
+                    , text = text
+                    , selected = False
+                    }
+                )
+                dto.values
+                dto.valueTexts
     in
         { code = dto.code
         , text = dto.text
         , values = values
-        , time = dto.time }
-        
+        , time = dto.time
+        }
+
+
 submitQueryCmd : Model -> Cmd Msg
 submitQueryCmd model =
     let
         url =
             tableUrl model
+
         query =
             tableQuery model
     in
@@ -88,11 +100,13 @@ submitQueryCmd model =
             |> Http.post url query
             |> Http.send TableLoaded
 
+
 tableDecoder : Decoder TableData
 tableDecoder =
     decode TableData
         |> required "data" (list dataDecoder)
         |> required "columns" (list columnDecoder)
+
 
 columnDecoder : Decoder Column
 columnDecoder =
@@ -101,6 +115,7 @@ columnDecoder =
         |> required "text" string
         |> required "type" string
 
+
 dataDecoder : Decoder Data
 dataDecoder =
     decode DataDTO
@@ -108,15 +123,18 @@ dataDecoder =
         |> required "values" (list string)
         |> Json.Decode.map prepareData
 
+
 prepareData : DataDTO -> Data
 prepareData dto =
     let
         key : List String
-        key = dto.key
+        key =
+            dto.key
                 |> List.take (List.length dto.key - 1)
 
         time : String
-        time = dto.key
+        time =
+            dto.key
                 |> List.reverse
                 |> List.head
                 |> Maybe.withDefault ""
@@ -126,15 +144,18 @@ prepareData dto =
         , values = dto.values
         }
 
+
 tableUrl : Model -> String
 tableUrl model =
     Debug.log "Url:" (model.siteContext.selected.url ++ pathForTable model.levelContexts)
+
 
 pathForTable : List LevelCtx -> String
 pathForTable contexts =
     contexts
         |> List.map currentId
         |> List.foldl (\a b -> b ++ "/" ++ a) ""
+
 
 tableQuery : Model -> Http.Body
 tableQuery model =
