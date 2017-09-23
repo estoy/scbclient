@@ -2,6 +2,7 @@ module Types exposing (..)
 
 import Http
 
+
 type Msg
     = SelectSite Site
     | SiteLoaded Site (Result Http.Error (List Level))
@@ -13,6 +14,7 @@ type Msg
     | ToggleValue VariableMeta ValueMeta
     | Submit
     | TableLoaded (Result Http.Error TableData)
+
 
 type alias Model =
     { siteContext : SiteCtx
