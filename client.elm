@@ -2,6 +2,9 @@ module Client exposing (..)
 
 import Types exposing (..)
 import Utils exposing (..)
+import Styles exposing (..)
+import Attributes exposing (..)
+import Table exposing (..)
 
 import Json.Decode exposing (string, list, Decoder, at, map, lazy, oneOf, null, bool)
 import Json.Decode.Pipeline exposing (decode, required, requiredAt, custom, optional)
@@ -10,11 +13,7 @@ import Html exposing (Html)
 import Element exposing (..)
 import Element.Attributes exposing (verticalCenter, spacing, padding, paddingRight, paddingXY, justify, yScrollbar, scrollbars, maxHeight, px)
 import Element.Events exposing (onClick)
-import Color
-import Style exposing (..)
-import Style.Color as Color
-import Style.Font as Font
-import Style.Border as Border
+
 
 
 initialModel : Model
@@ -27,19 +26,6 @@ initialModel =
     }
 
 
-type Msg
-    = SelectSite Site
-    | SiteLoaded Site (Result Http.Error (List Level))
-    | SelectLevel Level Int
-    | LevelLoaded Level Int (Result Http.Error (List Level))
-    | TableMetaLoaded Level Int (Result Http.Error TableMeta)
-    | ToggleTableMetaView
-    | ToggleTableDataView
-    | ToggleValue VariableMeta ValueMeta
-    | Submit
-    | TableLoaded (Result Http.Error TableData)
-
-
 view : Model -> Html Msg
 view model =
     viewport stylesheet <|
@@ -47,7 +33,7 @@ view model =
             Nothing ->
                 row Main
                     []
-                    ((column Site
+                    ((column Styles.Site
                         columnAttributes
                         (List.map (elementFromSite model.siteContext.selected) sites)
                     )
@@ -62,168 +48,6 @@ view model =
                         viewTable table meta
                 
 
-viewTable : TableData -> TableMeta -> Element Styles variation Msg
-viewTable table meta =
-    column Table
-        columnAttributes
-        [ row None
-            [ justify ]
-            [ el TableTitle [] <| text meta.title
-            , (row None []
-                [button <| el Main [ onClick ToggleTableDataView ] <| text "X"]
-              )
-            ]
-        , viewValues table meta
-        ]
-
-viewValues : TableData -> TableMeta-> Element Styles variation Msg
-viewValues table meta =
-   let
-        timeField : VariableMeta
-        timeField =
-            meta.variables
-                |> List.filter .time
-                |> List.head
-                |> Maybe.withDefault emptyVariableMeta
-        
-        timeCount =
-            timeField.values
-                |> List.filter .selected
-                |> List.length
-
-        dimensionCount =
-            table.columns
-                |> List.map .type_
-                |> List.filter ((==) "d")
-                |> List.length
-
-        dataCount =
-            table.columns
-                |> List.map .type_
-                |> List.filter ((==) "c")
-                |> List.length
-
-        columnCount =
-            timeCount * dataCount + dimensionCount
-
-        dataSeqs : List DataSequence
-        dataSeqs =
-            table.data
-                |> groupBy .key
-                |> List.map mergeSequences
-                |> List.map (lookupKey meta.variables)
-
-        rowCount =
-            dataSeqs
-                |> List.length
-
-   in
-        grid DataGrid
-            { columns = List.repeat columnCount (px 150)
-            , rows = List.repeat rowCount (px 34)
-            }
-            [scrollbars]
-            (dataSeqs
-                |> List.indexedMap viewDataRow
-                |> List.foldr (++) []
-            )
-
-lookupKey : List VariableMeta -> DataSequence -> DataSequence
-lookupKey variables seq =
-    let
-        translatedKey : List String
-        translatedKey =
-            List.map2 lookupVariable variables seq.key
-    in
-        { seq | key = translatedKey }
-
-lookupVariable : VariableMeta -> String -> String
-lookupVariable meta var =
-    meta.values
-        |> List.filter (\val -> val.value == var)
-        |> List.map .text
-        |> List.head
-        |> Maybe.withDefault "*error*"
-
-mergeSequences : List Data -> DataSequence
-mergeSequences group =
-    let
-        points : List DataPoint
-        points =
-            group
-                |> List.map (\data -> DataPoint data.time data.values)
-
-        key =
-            group
-                |> List.map .key
-                |> List.head
-                |> Maybe.withDefault ["*error*"]
-    in
-        DataSequence key points
-
-
-viewDataRow : Int -> DataSequence -> List (Element.OnGrid (Element Styles variation msg))
-viewDataRow rowIndex data =
-    let
-        dimensions : List (Element.OnGrid (Element Styles variation msg))
-        dimensions =
-            data.key
-                |> List.indexedMap (viewDimensionCell rowIndex)
-
-        dimCount : Int
-        dimCount = List.length dimensions
-
-        pointSize : Int
-        pointSize = data.points
-                        |> List.map .values
-                        |> List.map List.length
-                        |> List.head
-                        |> Maybe.withDefault 0
-
-        values : List (Element.OnGrid (Element Styles variation msg))
-        values =
-            data.points
-                |> List.indexedMap (viewDataPoint rowIndex dimCount pointSize)
-                |> List.foldr (++) []
-    in
-        dimensions ++ values
-
-
-viewDataPoint : Int -> Int -> Int -> Int -> DataPoint -> List (Element.OnGrid (Element Styles variation msg))
-viewDataPoint rowIndex dimensionCount pointSize pointIndex point =
-    let
-        baseIndex =
-            dimensionCount + pointIndex * pointSize
-    in    
-        point.values
-            |> List.indexedMap (viewValue rowIndex baseIndex)
-                                        
-viewValue : Int -> Int -> Int  -> String -> Element.OnGrid (Element Styles variation msg)
-viewValue rowIndex baseIndex valueIndex value =
-    viewDataCell
-        rowIndex 
-        (baseIndex + valueIndex)
-        value
-
-viewDimensionCell : Int -> Int -> String -> Element.OnGrid (Element Styles variation msg)
-viewDimensionCell rowIndex columnIndex value =
-    viewCell DimBox rowIndex columnIndex value
-
-viewDataCell : Int -> Int -> String -> Element.OnGrid (Element Styles variation msg)
-viewDataCell rowIndex columnIndex value =
-    viewCell DataBox rowIndex columnIndex value
-
-viewCell : Styles -> Int -> Int -> String -> Element.OnGrid (Element Styles variation msg)
-viewCell style rowIndex columnIndex value =
-    area
-        { start = ( columnIndex, rowIndex )
-        , width = 1
-        , height = 1
-        }
-        (el style [verticalCenter, scrollbars, padding 2] (text value))
-
-emptyVariableMeta : VariableMeta
-emptyVariableMeta = VariableMeta "" "" [] False
 
 viewTableMeta : TableMeta -> Element Styles variation Msg
 viewTableMeta meta =
@@ -657,95 +481,5 @@ emptyTableMeta : TableMeta
 emptyTableMeta =
     { title = "(no table selected)", variables = [] }
 
-
-
--- Layout ------------------------
-
-
-columnAttributes : List (Attribute variation msg)
-columnAttributes =
-    [ spacing 20, padding 20 ]
-
-
-listAttributes : List (Attribute variation msg)
-listAttributes =
-    [ spacing 5, paddingXY 10 0 ]
-
-
-
--- Styles -------------------------
-
-
-type Styles
-    = None
-    | Main
-    | Selected
-    | Deselected
-    | Site
-    | Table
-    | TableTitle
-    | VariableName
-    | VariableData
-    | DimBox
-    | DataBox
-    | DataGrid
-
-tableBackground = Color.rgba 231 214 166 1.0
-dataBackground = Color.rgba 239 227 195 1.0
-
-baseStyle : List (Style.Property class variation)
-baseStyle =
-    [Font.typeface [ "helvetica", "arial", "sans-serif" ]
-    , Font.size 16
-    , Font.lineHeight 1.3
-    ]
-
-stylesheet : StyleSheet Styles variation
-stylesheet =
-    Style.styleSheet
-        [ style None []
-        , style Main
-            ( [ Color.text Color.darkCharcoal
-              , Color.background Color.lightGrey
-              ]
-              ++ baseStyle
-            )            
-        , style Selected
-            [ Color.text Color.white
-            , Color.background Color.charcoal
-            , cursor "pointer"
-            ]
-        , style Deselected
-            [ cursor "pointer"
-            ]
-        , style Site
-            [ Color.background (Color.rgba 186 196 238 1.0) ]
-        , style Table
-            ( [ Color.text Color.darkCharcoal
-              , Color.background tableBackground
-              ]
-              ++ baseStyle
-            )
-        , style TableTitle
-            [Font.size 24, Font.bold]
-        , style VariableName
-            [Font.bold]
-        , style VariableData
-            [Color.background dataBackground
-            , cursor "pointer"]
-        , style DimBox
-            [ Border.all 1.0
-            , Font.size 12
-            , Font.lineHeight 1.2
-            ]
-        , style DataBox
-            [ Border.all 1.0
-            , Font.size 12
-            , Font.lineHeight 1.2
-            , Color.background (Color.rgba 186 196 238 1.0)
-            ]
-        , style DataGrid
-            [ Color.background dataBackground ]
-        ]
 
 
