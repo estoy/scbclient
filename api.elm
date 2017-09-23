@@ -1,4 +1,4 @@
-module Api exposing (..)
+module Api exposing (loadSiteCmd, loadLevelCmd, submitQueryCmd)
 
 import Types exposing (..)
 import Utils exposing (..)

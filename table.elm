@@ -1,4 +1,4 @@
-module Table exposing (viewTable, viewTableMeta)
+module Table exposing (viewTable, viewTableMeta, toggleValueForTable, modelWithTableMeta)
 
 import Types exposing (..)
 import Utils exposing (..)
@@ -226,3 +226,51 @@ viewValueMeta var val =
             if val.selected then Selected else None        
     in
         el style [onClick (ToggleValue var val)] (text val.text)
+
+
+
+modelWithTableMeta : Model -> Level -> Int -> TableMeta -> Model
+modelWithTableMeta model level index tableMeta =
+    let
+        parentContexts =
+            List.take index model.levelContexts
+
+        selectedContext =
+            model.levelContexts
+                |> List.take (index + 1)
+                |> List.reverse
+                |> List.head
+
+        updatedContext =
+            case selectedContext of
+                Just ctx ->
+                    { ctx | selected = Just level }
+
+                Nothing ->
+                    { index = index, selected = Nothing, levels = [] }
+    in
+        { model
+            | levelContexts = parentContexts ++ [ updatedContext ]
+            , tableMeta = Just tableMeta
+        }
+
+
+toggleValueForTable : VariableMeta -> ValueMeta -> TableMeta -> TableMeta
+toggleValueForTable variable value table =
+    let
+        variables =
+            table.variables
+                |> mapIf (\var -> var.code == variable.code) (toggleValueForVar value)
+    in
+        { table | variables = variables }
+
+
+toggleValueForVar : ValueMeta -> VariableMeta -> VariableMeta
+toggleValueForVar value variable =
+    let
+        values =
+            variable.values
+                |> mapIf (\val -> val.value == value.value)
+                    (\val -> { val | selected = not val.selected })
+    in
+        { variable | values = values }

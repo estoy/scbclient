@@ -48,3 +48,60 @@ elementFromLevel selected index level =
                     Deselected
     in
         el style [ onClick <| SelectLevel level index ] (text level.text)
+
+
+modelWithSite : Model -> Site -> List Level -> Model
+modelWithSite model site levels =
+    let
+        oldSiteContext =
+            model.siteContext
+
+        oldLevelContexts =
+            model.levelContexts
+    in
+        { model
+            | siteContext = { oldSiteContext | selected = site }
+            , levelContexts =
+                if List.length levels > 0 then
+                    [ { index = 0
+                      , selected = Nothing
+                      , levels = levels
+                      }
+                    ]
+                else
+                    []
+            , tableMeta = Nothing
+        }
+
+
+modelWithLevel : Model -> Level -> Int -> List Level -> Model
+modelWithLevel model level index levels =
+    let
+        parentContexts =
+            List.take index model.levelContexts
+
+        newContext =
+            { index = index + 1
+            , selected = Nothing
+            , levels = levels
+            }
+
+        selectedContext =
+            model.levelContexts
+                |> List.take (index + 1)
+                |> List.reverse
+                |> List.head
+
+        updatedContext =
+            case selectedContext of
+                Just ctx ->
+                    { ctx | selected = Just level }
+
+                Nothing ->
+                    { index = index, selected = Nothing, levels = [] }
+    in
+        { model
+            | levelContexts = parentContexts ++ [ updatedContext, newContext ]
+            , tableMeta = Nothing
+        }
+
