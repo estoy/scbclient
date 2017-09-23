@@ -24083,6 +24083,33 @@ var _user$project$Client$emptyVariableMeta = A4(
 	'',
 	{ctor: '[]'},
 	false);
+var _user$project$Client$viewCell = F4(
+	function (style, rowIndex, columnIndex, value) {
+		return A2(
+			_mdgriffith$style_elements$Element$area,
+			{
+				start: {ctor: '_Tuple2', _0: columnIndex, _1: rowIndex},
+				width: 1,
+				height: 1
+			},
+			A3(
+				_mdgriffith$style_elements$Element$el,
+				style,
+				{
+					ctor: '::',
+					_0: _mdgriffith$style_elements$Element_Attributes$verticalCenter,
+					_1: {
+						ctor: '::',
+						_0: _mdgriffith$style_elements$Element_Attributes$scrollbars,
+						_1: {
+							ctor: '::',
+							_0: _mdgriffith$style_elements$Element_Attributes$padding(2),
+							_1: {ctor: '[]'}
+						}
+					}
+				},
+				_mdgriffith$style_elements$Element$text(value)));
+	});
 var _user$project$Client$mergeSequences = function (group) {
 	var key = A2(
 		_elm_lang$core$Maybe$withDefault,
@@ -24331,41 +24358,47 @@ var _user$project$Client$SelectSite = function (a) {
 	return {ctor: 'SelectSite', _0: a};
 };
 var _user$project$Client$DataGrid = {ctor: 'DataGrid'};
-var _user$project$Client$Box = {ctor: 'Box'};
+var _user$project$Client$DataBox = {ctor: 'DataBox'};
 var _user$project$Client$viewDataCell = F3(
 	function (rowIndex, columnIndex, value) {
-		return A2(
-			_mdgriffith$style_elements$Element$area,
-			{
-				start: {ctor: '_Tuple2', _0: columnIndex, _1: rowIndex},
-				width: 1,
-				height: 1
-			},
-			A3(
-				_mdgriffith$style_elements$Element$el,
-				_user$project$Client$Box,
-				{
-					ctor: '::',
-					_0: _mdgriffith$style_elements$Element_Attributes$verticalCenter,
-					_1: {
-						ctor: '::',
-						_0: _mdgriffith$style_elements$Element_Attributes$scrollbars,
-						_1: {
-							ctor: '::',
-							_0: _mdgriffith$style_elements$Element_Attributes$padding(2),
-							_1: {ctor: '[]'}
-						}
-					}
-				},
-				_mdgriffith$style_elements$Element$text(value)));
+		return A4(_user$project$Client$viewCell, _user$project$Client$DataBox, rowIndex, columnIndex, value);
+	});
+var _user$project$Client$DimBox = {ctor: 'DimBox'};
+var _user$project$Client$viewDimensionCell = F3(
+	function (rowIndex, columnIndex, value) {
+		return A4(_user$project$Client$viewCell, _user$project$Client$DimBox, rowIndex, columnIndex, value);
 	});
 var _user$project$Client$viewDataRow = F2(
 	function (rowIndex, data) {
 		var dimensions = A2(
 			_elm_lang$core$List$indexedMap,
-			_user$project$Client$viewDataCell(rowIndex),
+			_user$project$Client$viewDimensionCell(rowIndex),
 			data.key);
-		return dimensions;
+		var values = A3(
+			_elm_lang$core$List$foldr,
+			F2(
+				function (x, y) {
+					return A2(_elm_lang$core$Basics_ops['++'], x, y);
+				}),
+			{ctor: '[]'},
+			A2(
+				_elm_lang$core$List$indexedMap,
+				F2(
+					function (pindex, point) {
+						return A2(
+							_elm_lang$core$List$indexedMap,
+							F2(
+								function (vindex, value) {
+									return A3(
+										_user$project$Client$viewDataCell,
+										rowIndex,
+										(_elm_lang$core$List$length(dimensions) + (pindex * _elm_lang$core$List$length(point.values))) + vindex,
+										value);
+								}),
+							point.values);
+					}),
+				data.points));
+		return A2(_elm_lang$core$Basics_ops['++'], dimensions, values);
 	});
 var _user$project$Client$viewValues = F2(
 	function (table, meta) {
@@ -24793,7 +24826,7 @@ var _user$project$Client$stylesheet = _mdgriffith$style_elements$Style$styleShee
 										ctor: '::',
 										_0: A2(
 											_mdgriffith$style_elements$Style$style,
-											_user$project$Client$Box,
+											_user$project$Client$DimBox,
 											{
 												ctor: '::',
 												_0: _mdgriffith$style_elements$Style_Border$all(1.0),
@@ -24811,13 +24844,37 @@ var _user$project$Client$stylesheet = _mdgriffith$style_elements$Style$styleShee
 											ctor: '::',
 											_0: A2(
 												_mdgriffith$style_elements$Style$style,
-												_user$project$Client$DataGrid,
+												_user$project$Client$DataBox,
 												{
 													ctor: '::',
-													_0: _mdgriffith$style_elements$Style_Color$background(_user$project$Client$dataBackground),
-													_1: {ctor: '[]'}
+													_0: _mdgriffith$style_elements$Style_Border$all(1.0),
+													_1: {
+														ctor: '::',
+														_0: _mdgriffith$style_elements$Style_Font$size(12),
+														_1: {
+															ctor: '::',
+															_0: _mdgriffith$style_elements$Style_Font$lineHeight(1.2),
+															_1: {
+																ctor: '::',
+																_0: _mdgriffith$style_elements$Style_Color$background(
+																	A4(_elm_lang$core$Color$rgba, 186, 196, 238, 1.0)),
+																_1: {ctor: '[]'}
+															}
+														}
+													}
 												}),
-											_1: {ctor: '[]'}
+											_1: {
+												ctor: '::',
+												_0: A2(
+													_mdgriffith$style_elements$Style$style,
+													_user$project$Client$DataGrid,
+													{
+														ctor: '::',
+														_0: _mdgriffith$style_elements$Style_Color$background(_user$project$Client$dataBackground),
+														_1: {ctor: '[]'}
+													}),
+												_1: {ctor: '[]'}
+											}
 										}
 									}
 								}

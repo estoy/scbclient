@@ -168,18 +168,39 @@ viewDataRow rowIndex data =
         dimensions : List (Element.OnGrid (Element Styles variation msg))
         dimensions =
             data.key
-                |> List.indexedMap (viewDataCell rowIndex)
+                |> List.indexedMap (viewDimensionCell rowIndex)
+
+        values : List (Element.OnGrid (Element Styles variation msg))
+        values =
+            data.points
+                |> List.indexedMap (\pindex point ->
+                        List.indexedMap (\vindex value -> viewDataCell
+                                                            rowIndex 
+                                                            ((List.length dimensions) + pindex * (List.length point.values) + vindex)
+                                                            value
+                                        )
+                                        point.values
+                                    )
+                |> List.foldr (++) []
     in
-        dimensions
+        dimensions ++ values
+
+viewDimensionCell : Int -> Int -> String -> Element.OnGrid (Element Styles variation msg)
+viewDimensionCell rowIndex columnIndex value =
+    viewCell DimBox rowIndex columnIndex value
 
 viewDataCell : Int -> Int -> String -> Element.OnGrid (Element Styles variation msg)
 viewDataCell rowIndex columnIndex value =
+    viewCell DataBox rowIndex columnIndex value
+
+viewCell : Styles -> Int -> Int -> String -> Element.OnGrid (Element Styles variation msg)
+viewCell style rowIndex columnIndex value =
     area
         { start = ( columnIndex, rowIndex )
         , width = 1
         , height = 1
         }
-        (el Box [verticalCenter, scrollbars, padding 2] (text value))
+        (el style [verticalCenter, scrollbars, padding 2] (text value))
 
 emptyVariableMeta : VariableMeta
 emptyVariableMeta = VariableMeta "" "" [] False
@@ -644,7 +665,8 @@ type Styles
     | TableTitle
     | VariableName
     | VariableData
-    | Box
+    | DimBox
+    | DataBox
     | DataGrid
 
 tableBackground = Color.rgba 231 214 166 1.0
@@ -685,10 +707,16 @@ stylesheet =
             [Font.bold]
         , style VariableData
             [Color.background dataBackground]
-        , style Box
+        , style DimBox
             [ Border.all 1.0
             , Font.size 12
             , Font.lineHeight 1.2
+            ]
+        , style DataBox
+            [ Border.all 1.0
+            , Font.size 12
+            , Font.lineHeight 1.2
+            , Color.background (Color.rgba 186 196 238 1.0)
             ]
         , style DataGrid
             [ Color.background dataBackground ]
