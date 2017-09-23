@@ -14,26 +14,34 @@ mapIf pred map =
                 e
         )
 
-groupBy : (a -> a -> Bool) -> List a -> List (List a)
-groupBy eq xs_ =
-  case xs_ of
-    [] ->
-        []
-    (x::xs) ->
-        let
-            (ys,zs) = List.partition (eq x) xs
-        in
-            (x::ys)::groupBy eq zs
+
+groupBy : (a -> b) -> List a -> List (List a)
+groupBy key xs_ =
+    let
+        eq =
+            \x y -> (key x) == (key y)
+    in
+        case xs_ of
+            [] ->
+                []
+
+            x :: xs ->
+                let
+                    ( ys, zs ) =
+                        List.partition (eq x) xs
+                in
+                    (x :: ys) :: groupBy key zs
+
 
 encodeQuery : Maybe TableMeta -> String
 encodeQuery tableMeta =
     case tableMeta of
         Just table ->
             encode 2 <|
-            object
-                [ ( "query", query table )
-                , ( "response", object [ ( "format", string "json" ) ] )
-                ]
+                object
+                    [ ( "query", query table )
+                    , ( "response", object [ ( "format", string "json" ) ] )
+                    ]
 
         Nothing ->
             ""

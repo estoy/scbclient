@@ -109,7 +109,7 @@ viewValues table meta =
         dataSeqs : List DataSequence
         dataSeqs =
             table.data
-                |> groupBy (\r1 r2 -> r1.key == r2.key)
+                |> groupBy .key
                 |> List.map mergeSequences
                 |> List.map (lookupKey meta.variables)
 

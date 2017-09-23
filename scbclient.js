@@ -23685,7 +23685,13 @@ var _user$project$Utils$encodeQuery = function (tableMeta) {
 	}
 };
 var _user$project$Utils$groupBy = F2(
-	function (eq, xs_) {
+	function (key, xs_) {
+		var eq = F2(
+			function (x, y) {
+				return _elm_lang$core$Native_Utils.eq(
+					key(x),
+					key(y));
+			});
 		var _p1 = xs_;
 		if (_p1.ctor === '[]') {
 			return {ctor: '[]'};
@@ -23700,7 +23706,7 @@ var _user$project$Utils$groupBy = F2(
 			return {
 				ctor: '::',
 				_0: {ctor: '::', _0: _p3, _1: ys},
-				_1: A2(_user$project$Utils$groupBy, eq, zs)
+				_1: A2(_user$project$Utils$groupBy, key, zs)
 			};
 		}
 	});
@@ -24371,10 +24377,9 @@ var _user$project$Client$viewValues = F2(
 				_user$project$Client$mergeSequences,
 				A2(
 					_user$project$Utils$groupBy,
-					F2(
-						function (r1, r2) {
-							return _elm_lang$core$Native_Utils.eq(r1.key, r2.key);
-						}),
+					function (_) {
+						return _.key;
+					},
 					table.data)));
 		var rowCount = _elm_lang$core$List$length(dataSeqs);
 		var dataCount = _elm_lang$core$List$length(
