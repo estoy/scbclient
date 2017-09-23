@@ -24200,134 +24200,6 @@ var _user$project$Styles$stylesheet = _mdgriffith$style_elements$Style$styleShee
 		}
 	});
 
-var _user$project$Table$viewValueMeta = F2(
-	function ($var, val) {
-		var style = val.selected ? _user$project$Styles$Selected : _user$project$Styles$None;
-		return A3(
-			_mdgriffith$style_elements$Element$el,
-			style,
-			{
-				ctor: '::',
-				_0: _mdgriffith$style_elements$Element_Events$onClick(
-					A2(_user$project$Types$ToggleValue, $var, val)),
-				_1: {ctor: '[]'}
-			},
-			_mdgriffith$style_elements$Element$text(val.text));
-	});
-var _user$project$Table$viewVariableMeta = function (variable) {
-	return A3(
-		_mdgriffith$style_elements$Element$row,
-		_user$project$Styles$None,
-		{ctor: '[]'},
-		{
-			ctor: '::',
-			_0: A3(
-				_mdgriffith$style_elements$Element$el,
-				_user$project$Styles$VariableName,
-				{
-					ctor: '::',
-					_0: _mdgriffith$style_elements$Element_Attributes$paddingRight(10),
-					_1: {ctor: '[]'}
-				},
-				_mdgriffith$style_elements$Element$text(variable.text)),
-			_1: {
-				ctor: '::',
-				_0: A3(
-					_mdgriffith$style_elements$Element$column,
-					_user$project$Styles$VariableData,
-					A2(
-						_elm_lang$core$Basics_ops['++'],
-						{
-							ctor: '::',
-							_0: _mdgriffith$style_elements$Element_Attributes$yScrollbar,
-							_1: {
-								ctor: '::',
-								_0: _mdgriffith$style_elements$Element_Attributes$maxHeight(
-									_mdgriffith$style_elements$Element_Attributes$px(150)),
-								_1: {ctor: '[]'}
-							}
-						},
-						_user$project$Attributes$listAttributes),
-					A2(
-						_elm_lang$core$List$map,
-						_user$project$Table$viewValueMeta(variable),
-						variable.values)),
-				_1: {ctor: '[]'}
-			}
-		});
-};
-var _user$project$Table$viewVariablesMeta = function (variables) {
-	return A3(
-		_mdgriffith$style_elements$Element$column,
-		_user$project$Styles$None,
-		_user$project$Attributes$columnAttributes,
-		A2(_elm_lang$core$List$map, _user$project$Table$viewVariableMeta, variables));
-};
-var _user$project$Table$viewTableMeta = function (meta) {
-	return A3(
-		_mdgriffith$style_elements$Element$column,
-		_user$project$Styles$Table,
-		_user$project$Attributes$columnAttributes,
-		{
-			ctor: '::',
-			_0: A3(
-				_mdgriffith$style_elements$Element$row,
-				_user$project$Styles$None,
-				{
-					ctor: '::',
-					_0: _mdgriffith$style_elements$Element_Attributes$justify,
-					_1: {ctor: '[]'}
-				},
-				{
-					ctor: '::',
-					_0: A3(
-						_mdgriffith$style_elements$Element$el,
-						_user$project$Styles$TableTitle,
-						{ctor: '[]'},
-						_mdgriffith$style_elements$Element$text(meta.title)),
-					_1: {
-						ctor: '::',
-						_0: A3(
-							_mdgriffith$style_elements$Element$row,
-							_user$project$Styles$None,
-							{ctor: '[]'},
-							{
-								ctor: '::',
-								_0: _mdgriffith$style_elements$Element$button(
-									A3(
-										_mdgriffith$style_elements$Element$el,
-										_user$project$Styles$Main,
-										{
-											ctor: '::',
-											_0: _mdgriffith$style_elements$Element_Events$onClick(_user$project$Types$Submit),
-											_1: {ctor: '[]'}
-										},
-										_mdgriffith$style_elements$Element$text('Submit'))),
-								_1: {
-									ctor: '::',
-									_0: _mdgriffith$style_elements$Element$button(
-										A3(
-											_mdgriffith$style_elements$Element$el,
-											_user$project$Styles$Main,
-											{
-												ctor: '::',
-												_0: _mdgriffith$style_elements$Element_Events$onClick(_user$project$Types$ToggleTableMetaView),
-												_1: {ctor: '[]'}
-											},
-											_mdgriffith$style_elements$Element$text('X'))),
-									_1: {ctor: '[]'}
-								}
-							}),
-						_1: {ctor: '[]'}
-					}
-				}),
-			_1: {
-				ctor: '::',
-				_0: _user$project$Table$viewVariablesMeta(meta.variables),
-				_1: {ctor: '[]'}
-			}
-		});
-};
 var _user$project$Table$emptyVariableMeta = A4(
 	_user$project$Types$VariableMeta,
 	'',
@@ -24602,12 +24474,268 @@ var _user$project$Table$viewTable = F2(
 			});
 	});
 
+var _user$project$TableMeta$toggleValueForVar = F2(
+	function (value, variable) {
+		var values = A3(
+			_user$project$Utils$mapIf,
+			function (val) {
+				return _elm_lang$core$Native_Utils.eq(val.value, value.value);
+			},
+			function (val) {
+				return _elm_lang$core$Native_Utils.update(
+					val,
+					{selected: !val.selected});
+			},
+			variable.values);
+		return _elm_lang$core$Native_Utils.update(
+			variable,
+			{values: values});
+	});
+var _user$project$TableMeta$toggleValueForTable = F3(
+	function (variable, value, table) {
+		var variables = A3(
+			_user$project$Utils$mapIf,
+			function ($var) {
+				return _elm_lang$core$Native_Utils.eq($var.code, variable.code);
+			},
+			_user$project$TableMeta$toggleValueForVar(value),
+			table.variables);
+		return _elm_lang$core$Native_Utils.update(
+			table,
+			{variables: variables});
+	});
+var _user$project$TableMeta$modelWithTableMeta = F4(
+	function (model, level, index, tableMeta) {
+		var selectedContext = _elm_lang$core$List$head(
+			_elm_lang$core$List$reverse(
+				A2(_elm_lang$core$List$take, index + 1, model.levelContexts)));
+		var updatedContext = function () {
+			var _p0 = selectedContext;
+			if (_p0.ctor === 'Just') {
+				return _elm_lang$core$Native_Utils.update(
+					_p0._0,
+					{
+						selected: _elm_lang$core$Maybe$Just(level)
+					});
+			} else {
+				return {
+					index: index,
+					selected: _elm_lang$core$Maybe$Nothing,
+					levels: {ctor: '[]'}
+				};
+			}
+		}();
+		var parentContexts = A2(_elm_lang$core$List$take, index, model.levelContexts);
+		return _elm_lang$core$Native_Utils.update(
+			model,
+			{
+				levelContexts: A2(
+					_elm_lang$core$Basics_ops['++'],
+					parentContexts,
+					{
+						ctor: '::',
+						_0: updatedContext,
+						_1: {ctor: '[]'}
+					}),
+				tableMeta: _elm_lang$core$Maybe$Just(tableMeta)
+			});
+	});
+var _user$project$TableMeta$viewValueMeta = F2(
+	function ($var, val) {
+		var style = val.selected ? _user$project$Styles$Selected : _user$project$Styles$None;
+		return A3(
+			_mdgriffith$style_elements$Element$el,
+			style,
+			{
+				ctor: '::',
+				_0: _mdgriffith$style_elements$Element_Events$onClick(
+					A2(_user$project$Types$ToggleValue, $var, val)),
+				_1: {ctor: '[]'}
+			},
+			_mdgriffith$style_elements$Element$text(val.text));
+	});
+var _user$project$TableMeta$viewVariableMeta = function (variable) {
+	return A3(
+		_mdgriffith$style_elements$Element$row,
+		_user$project$Styles$None,
+		{ctor: '[]'},
+		{
+			ctor: '::',
+			_0: A3(
+				_mdgriffith$style_elements$Element$el,
+				_user$project$Styles$VariableName,
+				{
+					ctor: '::',
+					_0: _mdgriffith$style_elements$Element_Attributes$paddingRight(10),
+					_1: {ctor: '[]'}
+				},
+				_mdgriffith$style_elements$Element$text(variable.text)),
+			_1: {
+				ctor: '::',
+				_0: A3(
+					_mdgriffith$style_elements$Element$column,
+					_user$project$Styles$VariableData,
+					A2(
+						_elm_lang$core$Basics_ops['++'],
+						{
+							ctor: '::',
+							_0: _mdgriffith$style_elements$Element_Attributes$yScrollbar,
+							_1: {
+								ctor: '::',
+								_0: _mdgriffith$style_elements$Element_Attributes$maxHeight(
+									_mdgriffith$style_elements$Element_Attributes$px(150)),
+								_1: {ctor: '[]'}
+							}
+						},
+						_user$project$Attributes$listAttributes),
+					A2(
+						_elm_lang$core$List$map,
+						_user$project$TableMeta$viewValueMeta(variable),
+						variable.values)),
+				_1: {ctor: '[]'}
+			}
+		});
+};
+var _user$project$TableMeta$viewVariablesMeta = function (variables) {
+	return A3(
+		_mdgriffith$style_elements$Element$column,
+		_user$project$Styles$None,
+		_user$project$Attributes$columnAttributes,
+		A2(_elm_lang$core$List$map, _user$project$TableMeta$viewVariableMeta, variables));
+};
+var _user$project$TableMeta$viewTableMeta = function (meta) {
+	return A3(
+		_mdgriffith$style_elements$Element$column,
+		_user$project$Styles$Table,
+		_user$project$Attributes$columnAttributes,
+		{
+			ctor: '::',
+			_0: A3(
+				_mdgriffith$style_elements$Element$row,
+				_user$project$Styles$None,
+				{
+					ctor: '::',
+					_0: _mdgriffith$style_elements$Element_Attributes$justify,
+					_1: {ctor: '[]'}
+				},
+				{
+					ctor: '::',
+					_0: A3(
+						_mdgriffith$style_elements$Element$el,
+						_user$project$Styles$TableTitle,
+						{ctor: '[]'},
+						_mdgriffith$style_elements$Element$text(meta.title)),
+					_1: {
+						ctor: '::',
+						_0: A3(
+							_mdgriffith$style_elements$Element$row,
+							_user$project$Styles$None,
+							{ctor: '[]'},
+							{
+								ctor: '::',
+								_0: _mdgriffith$style_elements$Element$button(
+									A3(
+										_mdgriffith$style_elements$Element$el,
+										_user$project$Styles$Main,
+										{
+											ctor: '::',
+											_0: _mdgriffith$style_elements$Element_Events$onClick(_user$project$Types$Submit),
+											_1: {ctor: '[]'}
+										},
+										_mdgriffith$style_elements$Element$text('Submit'))),
+								_1: {
+									ctor: '::',
+									_0: _mdgriffith$style_elements$Element$button(
+										A3(
+											_mdgriffith$style_elements$Element$el,
+											_user$project$Styles$Main,
+											{
+												ctor: '::',
+												_0: _mdgriffith$style_elements$Element_Events$onClick(_user$project$Types$ToggleTableMetaView),
+												_1: {ctor: '[]'}
+											},
+											_mdgriffith$style_elements$Element$text('X'))),
+									_1: {ctor: '[]'}
+								}
+							}),
+						_1: {ctor: '[]'}
+					}
+				}),
+			_1: {
+				ctor: '::',
+				_0: _user$project$TableMeta$viewVariablesMeta(meta.variables),
+				_1: {ctor: '[]'}
+			}
+		});
+};
+
+var _user$project$Contexts$modelWithLevel = F4(
+	function (model, level, index, levels) {
+		var selectedContext = _elm_lang$core$List$head(
+			_elm_lang$core$List$reverse(
+				A2(_elm_lang$core$List$take, index + 1, model.levelContexts)));
+		var updatedContext = function () {
+			var _p0 = selectedContext;
+			if (_p0.ctor === 'Just') {
+				return _elm_lang$core$Native_Utils.update(
+					_p0._0,
+					{
+						selected: _elm_lang$core$Maybe$Just(level)
+					});
+			} else {
+				return {
+					index: index,
+					selected: _elm_lang$core$Maybe$Nothing,
+					levels: {ctor: '[]'}
+				};
+			}
+		}();
+		var newContext = {index: index + 1, selected: _elm_lang$core$Maybe$Nothing, levels: levels};
+		var parentContexts = A2(_elm_lang$core$List$take, index, model.levelContexts);
+		return _elm_lang$core$Native_Utils.update(
+			model,
+			{
+				levelContexts: A2(
+					_elm_lang$core$Basics_ops['++'],
+					parentContexts,
+					{
+						ctor: '::',
+						_0: updatedContext,
+						_1: {
+							ctor: '::',
+							_0: newContext,
+							_1: {ctor: '[]'}
+						}
+					}),
+				tableMeta: _elm_lang$core$Maybe$Nothing
+			});
+	});
+var _user$project$Contexts$modelWithSite = F3(
+	function (model, site, levels) {
+		var oldLevelContexts = model.levelContexts;
+		var oldSiteContext = model.siteContext;
+		return _elm_lang$core$Native_Utils.update(
+			model,
+			{
+				siteContext: _elm_lang$core$Native_Utils.update(
+					oldSiteContext,
+					{selected: site}),
+				levelContexts: (_elm_lang$core$Native_Utils.cmp(
+					_elm_lang$core$List$length(levels),
+					0) > 0) ? {
+					ctor: '::',
+					_0: {index: 0, selected: _elm_lang$core$Maybe$Nothing, levels: levels},
+					_1: {ctor: '[]'}
+				} : {ctor: '[]'},
+				tableMeta: _elm_lang$core$Maybe$Nothing
+			});
+	});
 var _user$project$Contexts$elementFromLevel = F3(
 	function (selected, index, level) {
 		var style = function () {
-			var _p0 = selected;
-			if (_p0.ctor === 'Just') {
-				return _elm_lang$core$Native_Utils.eq(_p0._0, level) ? _user$project$Styles$Selected : _user$project$Styles$Deselected;
+			var _p1 = selected;
+			if (_p1.ctor === 'Just') {
+				return _elm_lang$core$Native_Utils.eq(_p1._0, level) ? _user$project$Styles$Selected : _user$project$Styles$Deselected;
 			} else {
 				return _user$project$Styles$Deselected;
 			}
@@ -24666,148 +24794,21 @@ var _user$project$Config$sites = {
 	}
 };
 
-var _user$project$Client$toggleValueForVar = F2(
-	function (value, variable) {
-		var values = A3(
-			_user$project$Utils$mapIf,
-			function (val) {
-				return _elm_lang$core$Native_Utils.eq(val.value, value.value);
-			},
-			function (val) {
-				return _elm_lang$core$Native_Utils.update(
-					val,
-					{selected: !val.selected});
-			},
-			variable.values);
-		return _elm_lang$core$Native_Utils.update(
-			variable,
-			{values: values});
-	});
-var _user$project$Client$toggleValueForTable = F3(
-	function (variable, value, table) {
-		var variables = A3(
-			_user$project$Utils$mapIf,
-			function ($var) {
-				return _elm_lang$core$Native_Utils.eq($var.code, variable.code);
-			},
-			_user$project$Client$toggleValueForVar(value),
-			table.variables);
-		return _elm_lang$core$Native_Utils.update(
-			table,
-			{variables: variables});
-	});
-var _user$project$Client$modelWithTableMeta = F4(
-	function (model, level, index, tableMeta) {
-		var selectedContext = _elm_lang$core$List$head(
-			_elm_lang$core$List$reverse(
-				A2(_elm_lang$core$List$take, index + 1, model.levelContexts)));
-		var updatedContext = function () {
-			var _p0 = selectedContext;
-			if (_p0.ctor === 'Just') {
-				return _elm_lang$core$Native_Utils.update(
-					_p0._0,
-					{
-						selected: _elm_lang$core$Maybe$Just(level)
-					});
-			} else {
-				return {
-					index: index,
-					selected: _elm_lang$core$Maybe$Nothing,
-					levels: {ctor: '[]'}
-				};
-			}
-		}();
-		var parentContexts = A2(_elm_lang$core$List$take, index, model.levelContexts);
-		return _elm_lang$core$Native_Utils.update(
-			model,
-			{
-				levelContexts: A2(
-					_elm_lang$core$Basics_ops['++'],
-					parentContexts,
-					{
-						ctor: '::',
-						_0: updatedContext,
-						_1: {ctor: '[]'}
-					}),
-				tableMeta: _elm_lang$core$Maybe$Just(tableMeta)
-			});
-	});
-var _user$project$Client$modelWithLevel = F4(
-	function (model, level, index, levels) {
-		var selectedContext = _elm_lang$core$List$head(
-			_elm_lang$core$List$reverse(
-				A2(_elm_lang$core$List$take, index + 1, model.levelContexts)));
-		var updatedContext = function () {
-			var _p1 = selectedContext;
-			if (_p1.ctor === 'Just') {
-				return _elm_lang$core$Native_Utils.update(
-					_p1._0,
-					{
-						selected: _elm_lang$core$Maybe$Just(level)
-					});
-			} else {
-				return {
-					index: index,
-					selected: _elm_lang$core$Maybe$Nothing,
-					levels: {ctor: '[]'}
-				};
-			}
-		}();
-		var newContext = {index: index + 1, selected: _elm_lang$core$Maybe$Nothing, levels: levels};
-		var parentContexts = A2(_elm_lang$core$List$take, index, model.levelContexts);
-		return _elm_lang$core$Native_Utils.update(
-			model,
-			{
-				levelContexts: A2(
-					_elm_lang$core$Basics_ops['++'],
-					parentContexts,
-					{
-						ctor: '::',
-						_0: updatedContext,
-						_1: {
-							ctor: '::',
-							_0: newContext,
-							_1: {ctor: '[]'}
-						}
-					}),
-				tableMeta: _elm_lang$core$Maybe$Nothing
-			});
-	});
-var _user$project$Client$modelWithSite = F3(
-	function (model, site, levels) {
-		var oldLevelContexts = model.levelContexts;
-		var oldSiteContext = model.siteContext;
-		return _elm_lang$core$Native_Utils.update(
-			model,
-			{
-				siteContext: _elm_lang$core$Native_Utils.update(
-					oldSiteContext,
-					{selected: site}),
-				levelContexts: (_elm_lang$core$Native_Utils.cmp(
-					_elm_lang$core$List$length(levels),
-					0) > 0) ? {
-					ctor: '::',
-					_0: {index: 0, selected: _elm_lang$core$Maybe$Nothing, levels: levels},
-					_1: {ctor: '[]'}
-				} : {ctor: '[]'},
-				tableMeta: _elm_lang$core$Maybe$Nothing
-			});
-	});
 var _user$project$Client$update = F2(
 	function (msg, model) {
-		var _p2 = msg;
-		switch (_p2.ctor) {
+		var _p0 = msg;
+		switch (_p0.ctor) {
 			case 'SelectSite':
 				return {
 					ctor: '_Tuple2',
 					_0: model,
-					_1: _user$project$Api$loadSiteCmd(_p2._0)
+					_1: _user$project$Api$loadSiteCmd(_p0._0)
 				};
 			case 'SiteLoaded':
-				if (_p2._1.ctor === 'Ok') {
+				if (_p0._1.ctor === 'Ok') {
 					return {
 						ctor: '_Tuple2',
-						_0: A3(_user$project$Client$modelWithSite, model, _p2._0, _p2._1._0),
+						_0: A3(_user$project$Contexts$modelWithSite, model, _p0._0, _p0._1._0),
 						_1: _elm_lang$core$Platform_Cmd$none
 					};
 				} else {
@@ -24817,13 +24818,13 @@ var _user$project$Client$update = F2(
 				return {
 					ctor: '_Tuple2',
 					_0: model,
-					_1: A3(_user$project$Api$loadLevelCmd, _p2._0, _p2._1, model)
+					_1: A3(_user$project$Api$loadLevelCmd, _p0._0, _p0._1, model)
 				};
 			case 'LevelLoaded':
-				if (_p2._2.ctor === 'Ok') {
+				if (_p0._2.ctor === 'Ok') {
 					return {
 						ctor: '_Tuple2',
-						_0: A4(_user$project$Client$modelWithLevel, model, _p2._0, _p2._1, _p2._2._0),
+						_0: A4(_user$project$Contexts$modelWithLevel, model, _p0._0, _p0._1, _p0._2._0),
 						_1: _elm_lang$core$Platform_Cmd$none
 					};
 				} else {
@@ -24832,16 +24833,16 @@ var _user$project$Client$update = F2(
 						_0: _elm_lang$core$Native_Utils.update(
 							model,
 							{
-								latestError: _elm_lang$core$Maybe$Just(_p2._2._0)
+								latestError: _elm_lang$core$Maybe$Just(_p0._2._0)
 							}),
 						_1: _elm_lang$core$Platform_Cmd$none
 					};
 				}
 			case 'TableMetaLoaded':
-				if (_p2._2.ctor === 'Ok') {
+				if (_p0._2.ctor === 'Ok') {
 					return {
 						ctor: '_Tuple2',
-						_0: A4(_user$project$Client$modelWithTableMeta, model, _p2._0, _p2._1, _p2._2._0),
+						_0: A4(_user$project$TableMeta$modelWithTableMeta, model, _p0._0, _p0._1, _p0._2._0),
 						_1: _elm_lang$core$Platform_Cmd$none
 					};
 				} else {
@@ -24850,7 +24851,7 @@ var _user$project$Client$update = F2(
 						_0: _elm_lang$core$Native_Utils.update(
 							model,
 							{
-								latestError: _elm_lang$core$Maybe$Just(_p2._2._0)
+								latestError: _elm_lang$core$Maybe$Just(_p0._2._0)
 							}),
 						_1: _elm_lang$core$Platform_Cmd$none
 					};
@@ -24872,15 +24873,15 @@ var _user$project$Client$update = F2(
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
 			case 'ToggleValue':
-				var _p3 = model.tableMeta;
-				if (_p3.ctor === 'Just') {
+				var _p1 = model.tableMeta;
+				if (_p1.ctor === 'Just') {
 					return {
 						ctor: '_Tuple2',
 						_0: _elm_lang$core$Native_Utils.update(
 							model,
 							{
 								tableMeta: _elm_lang$core$Maybe$Just(
-									A3(_user$project$Client$toggleValueForTable, _p2._0, _p2._1, _p3._0))
+									A3(_user$project$TableMeta$toggleValueForTable, _p0._0, _p0._1, _p1._0))
 							}),
 						_1: _elm_lang$core$Platform_Cmd$none
 					};
@@ -24894,13 +24895,13 @@ var _user$project$Client$update = F2(
 					_1: _user$project$Api$submitQueryCmd(model)
 				};
 			default:
-				if (_p2._0.ctor === 'Ok') {
+				if (_p0._0.ctor === 'Ok') {
 					return {
 						ctor: '_Tuple2',
 						_0: _elm_lang$core$Native_Utils.update(
 							model,
 							{
-								table: _elm_lang$core$Maybe$Just(_p2._0._0)
+								table: _elm_lang$core$Maybe$Just(_p0._0._0)
 							}),
 						_1: _elm_lang$core$Platform_Cmd$none
 					};
@@ -24910,7 +24911,7 @@ var _user$project$Client$update = F2(
 						_0: _elm_lang$core$Native_Utils.update(
 							model,
 							{
-								latestError: _elm_lang$core$Maybe$Just(_p2._0._0)
+								latestError: _elm_lang$core$Maybe$Just(_p0._0._0)
 							}),
 						_1: _elm_lang$core$Platform_Cmd$none
 					};
@@ -24922,8 +24923,8 @@ var _user$project$Client$view = function (model) {
 		_mdgriffith$style_elements$Element$viewport,
 		_user$project$Styles$stylesheet,
 		function () {
-			var _p4 = model.tableMeta;
-			if (_p4.ctor === 'Nothing') {
+			var _p2 = model.tableMeta;
+			if (_p2.ctor === 'Nothing') {
 				return A3(
 					_mdgriffith$style_elements$Element$row,
 					_user$project$Styles$Main,
@@ -24941,12 +24942,12 @@ var _user$project$Client$view = function (model) {
 						_1: A2(_elm_lang$core$List$map, _user$project$Contexts$columnFromLevelContext, model.levelContexts)
 					});
 			} else {
-				var _p6 = _p4._0;
-				var _p5 = model.table;
-				if (_p5.ctor === 'Nothing') {
-					return _user$project$Table$viewTableMeta(_p6);
+				var _p4 = _p2._0;
+				var _p3 = model.table;
+				if (_p3.ctor === 'Nothing') {
+					return _user$project$TableMeta$viewTableMeta(_p4);
 				} else {
-					return A2(_user$project$Table$viewTable, _p5._0, _p6);
+					return A2(_user$project$Table$viewTable, _p3._0, _p4);
 				}
 			}
 		}());
