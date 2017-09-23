@@ -183,17 +183,23 @@ viewDataRow rowIndex data =
         values : List (Element.OnGrid (Element Styles variation msg))
         values =
             data.points
-                |> List.indexedMap (\pindex point ->
-                        List.indexedMap (\vindex value -> viewDataCell
-                                                            rowIndex 
-                                                            (dimCount + pindex * pointSize + vindex)
-                                                            value
-                                        )
-                                        point.values
-                                    )
+                |> List.indexedMap (viewDataPoint rowIndex dimCount pointSize)
                 |> List.foldr (++) []
     in
         dimensions ++ values
+
+
+viewDataPoint : Int -> Int -> Int -> Int -> DataPoint -> List (Element.OnGrid (Element Styles variation msg))
+viewDataPoint rowIndex dimensionCount pointSize pointIndex point =
+    point.values
+        |> List.indexedMap
+            (\vindex value -> viewDataCell
+                                rowIndex 
+                                (dimensionCount + pointIndex * pointSize + vindex)
+                                value
+            )
+                                        
+
 
 viewDimensionCell : Int -> Int -> String -> Element.OnGrid (Element Styles variation msg)
 viewDimensionCell rowIndex columnIndex value =

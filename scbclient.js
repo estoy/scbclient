@@ -24363,6 +24363,16 @@ var _user$project$Client$viewDataCell = F3(
 	function (rowIndex, columnIndex, value) {
 		return A4(_user$project$Client$viewCell, _user$project$Client$DataBox, rowIndex, columnIndex, value);
 	});
+var _user$project$Client$viewDataPoint = F5(
+	function (rowIndex, dimensionCount, pointSize, pointIndex, point) {
+		return A2(
+			_elm_lang$core$List$indexedMap,
+			F2(
+				function (vindex, value) {
+					return A3(_user$project$Client$viewDataCell, rowIndex, (dimensionCount + (pointIndex * pointSize)) + vindex, value);
+				}),
+			point.values);
+	});
 var _user$project$Client$DimBox = {ctor: 'DimBox'};
 var _user$project$Client$viewDimensionCell = F3(
 	function (rowIndex, columnIndex, value) {
@@ -24397,16 +24407,7 @@ var _user$project$Client$viewDataRow = F2(
 			{ctor: '[]'},
 			A2(
 				_elm_lang$core$List$indexedMap,
-				F2(
-					function (pindex, point) {
-						return A2(
-							_elm_lang$core$List$indexedMap,
-							F2(
-								function (vindex, value) {
-									return A3(_user$project$Client$viewDataCell, rowIndex, (dimCount + (pindex * pointSize)) + vindex, value);
-								}),
-							point.values);
-					}),
+				A3(_user$project$Client$viewDataPoint, rowIndex, dimCount, pointSize),
 				data.points));
 		return A2(_elm_lang$core$Basics_ops['++'], dimensions, values);
 	});
