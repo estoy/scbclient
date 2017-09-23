@@ -338,7 +338,7 @@ elementFromSite selected site =
             if site == selected then
                 Selected
             else
-                None
+                Deselected
     in
         el style [ onClick <| SelectSite site ] (text site.language)
 
@@ -368,10 +368,10 @@ elementFromLevel selected index level =
                     if sel == level then
                         Selected
                     else
-                        None
+                        Deselected
 
                 Nothing ->
-                    None
+                    Deselected
     in
         el style [ onClick <| SelectLevel level index ] (text level.text)
 
@@ -680,6 +680,7 @@ type Styles
     = None
     | Main
     | Selected
+    | Deselected
     | Site
     | Table
     | TableTitle
@@ -712,6 +713,10 @@ stylesheet =
         , style Selected
             [ Color.text Color.white
             , Color.background Color.charcoal
+            , cursor "pointer"
+            ]
+        , style Deselected
+            [ cursor "pointer"
             ]
         , style Site
             [ Color.background (Color.rgba 186 196 238 1.0) ]
@@ -726,7 +731,8 @@ stylesheet =
         , style VariableName
             [Font.bold]
         , style VariableData
-            [Color.background dataBackground]
+            [Color.background dataBackground
+            , cursor "pointer"]
         , style DimBox
             [ Border.all 1.0
             , Font.size 12
