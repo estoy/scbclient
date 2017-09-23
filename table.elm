@@ -53,10 +53,14 @@ viewValues table meta =
                 |> List.filter ((==) "d")
                 |> List.length
 
-        dataCount =
+        dataColumns : List Column
+        dataColumns =
             table.columns
-                |> List.map .type_
-                |> List.filter ((==) "c")
+                |> List.filter (\c -> c.type_ == "c")
+        
+
+        dataCount =
+            dataColumns
                 |> List.length
 
         columnCount =
@@ -69,11 +73,18 @@ viewValues table meta =
                 |> List.map mergeSequences
                 |> List.map (lookupKey meta.variables)
 
-        headerRow : List (Element.OnGrid (Element Styles variation msg))
-        headerRow =
+        dimensionHeaders : List (Element.OnGrid (Element Styles variation msg))
+        dimensionHeaders =
             meta.variables
                 |> List.take dimensionCount
                 |> List.indexedMap viewDimensionHeader
+
+        dataHeaders : List (Element.OnGrid (Element Styles variation msg))
+        dataHeaders =
+            dataColumns
+                |> List.repeat timeCount
+                |> List.foldr (++) []
+                |> List.indexedMap (viewDataHeader dimensionCount)
 
         dataRowCount =
             dataSeqs
@@ -90,13 +101,17 @@ viewValues table meta =
             , rows = List.repeat (2 + dataRowCount) (px 34)
             }
             [ scrollbars ]
-            (headerRow ++ dataRows)
+            (dimensionHeaders ++ dataHeaders ++ dataRows)
+
+viewDataHeader : Int -> Int -> Column -> Element.OnGrid (Element Styles variation msg)
+viewDataHeader baseIndex columnIndex column =
+     viewCell HeaderBox 1 (baseIndex +columnIndex) column.text 
 
 viewDimensionHeader : Int -> VariableMeta -> Element.OnGrid (Element Styles variation msg)
 viewDimensionHeader columnIndex var =
     viewCell HeaderBox 1 columnIndex var.text
 
-lookupKey : List VariableMeta -> DataSequence -> DataSequence
+lookupKey : List VariableMeta ->  DataSequence -> DataSequence
 lookupKey variables seq =
     let
         translatedKey : List String

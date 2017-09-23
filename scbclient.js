@@ -24363,6 +24363,10 @@ var _user$project$Table$viewDimensionHeader = F2(
 	function (columnIndex, $var) {
 		return A4(_user$project$Table$viewCell, _user$project$Styles$HeaderBox, 1, columnIndex, $var.text);
 	});
+var _user$project$Table$viewDataHeader = F3(
+	function (baseIndex, columnIndex, column) {
+		return A4(_user$project$Table$viewCell, _user$project$Styles$HeaderBox, 1, baseIndex + columnIndex, column.text);
+	});
 var _user$project$Table$viewValues = F2(
 	function (table, meta) {
 		var dataSeqs = A2(
@@ -24386,19 +24390,13 @@ var _user$project$Table$viewValues = F2(
 				}),
 			{ctor: '[]'},
 			A2(_elm_lang$core$List$indexedMap, _user$project$Table$viewDataRow, dataSeqs));
-		var dataCount = _elm_lang$core$List$length(
-			A2(
-				_elm_lang$core$List$filter,
-				F2(
-					function (x, y) {
-						return _elm_lang$core$Native_Utils.eq(x, y);
-					})('c'),
-				A2(
-					_elm_lang$core$List$map,
-					function (_) {
-						return _.type_;
-					},
-					table.columns)));
+		var dataColumns = A2(
+			_elm_lang$core$List$filter,
+			function (c) {
+				return _elm_lang$core$Native_Utils.eq(c.type_, 'c');
+			},
+			table.columns);
+		var dataCount = _elm_lang$core$List$length(dataColumns);
 		var dimensionCount = _elm_lang$core$List$length(
 			A2(
 				_elm_lang$core$List$filter,
@@ -24412,7 +24410,7 @@ var _user$project$Table$viewValues = F2(
 						return _.type_;
 					},
 					table.columns)));
-		var headerRow = A2(
+		var dimensionHeaders = A2(
 			_elm_lang$core$List$indexedMap,
 			_user$project$Table$viewDimensionHeader,
 			A2(_elm_lang$core$List$take, dimensionCount, meta.variables));
@@ -24434,6 +24432,17 @@ var _user$project$Table$viewValues = F2(
 				},
 				timeField.values));
 		var columnCount = (timeCount * dataCount) + dimensionCount;
+		var dataHeaders = A2(
+			_elm_lang$core$List$indexedMap,
+			_user$project$Table$viewDataHeader(dimensionCount),
+			A3(
+				_elm_lang$core$List$foldr,
+				F2(
+					function (x, y) {
+						return A2(_elm_lang$core$Basics_ops['++'], x, y);
+					}),
+				{ctor: '[]'},
+				A2(_elm_lang$core$List$repeat, timeCount, dataColumns)));
 		return A4(
 			_mdgriffith$style_elements$Element$grid,
 			_user$project$Styles$DataGrid,
@@ -24452,7 +24461,10 @@ var _user$project$Table$viewValues = F2(
 				_0: _mdgriffith$style_elements$Element_Attributes$scrollbars,
 				_1: {ctor: '[]'}
 			},
-			A2(_elm_lang$core$Basics_ops['++'], headerRow, dataRows));
+			A2(
+				_elm_lang$core$Basics_ops['++'],
+				dimensionHeaders,
+				A2(_elm_lang$core$Basics_ops['++'], dataHeaders, dataRows)));
 	});
 var _user$project$Table$viewTable = F2(
 	function (table, meta) {
