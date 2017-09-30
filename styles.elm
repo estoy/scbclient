@@ -5,7 +5,7 @@ module Styles exposing (..)
 import Color
 import Style exposing (..)
 import Style.Color as Color
-import Style.Font as Font
+import Style.Font as Font exposing (font)
 import Style.Border as Border
 
 
@@ -36,7 +36,7 @@ dataBackground =
 
 baseStyle : List (Style.Property class variation)
 baseStyle =
-    [ Font.typeface [ "helvetica", "arial", "sans-serif" ]
+    [ Font.typeface [ font "helvetica", font "arial", font "sans-serif" ]
     , Font.size 16
     , Font.lineHeight 1.3
     ]

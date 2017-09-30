@@ -8,9 +8,10 @@ import Attributes exposing (columnAttributes, listAttributes)
 
 -- External ------
 
-import Element exposing (Element, text, button, el, column, row, checkbox)
-import Element.Attributes exposing (spacing, disabled, paddingRight, paddingLeft, justify, yScrollbar, maxHeight, px)
+import Element exposing (Element, text, button, el, column, row)
+import Element.Attributes exposing (alignTop, spacing, spread, paddingRight, paddingLeft, yScrollbar, maxHeight, px)
 import Element.Events exposing (onClick)
+import Element.Input as Input exposing (checkbox)
 
 
 -- View -------
@@ -22,28 +23,23 @@ viewTableMeta meta =
         completeSelection =
             meta.variables
                 |> List.all hasSelection
-        
-        buttonStyle =
+
+        (buttonStyle, buttonAttributes) =
             if completeSelection then
-                Main
+                (Main, [ onClick Submit])
             else
-                Disabled
+                (Disabled, [])
+        
     in
         column Table
             columnAttributes
             [ row None
-                [ justify]
+                [ spread ]
                 [ el TableTitle [] <| text meta.title
                 , (row None
-                    [spacing 5]
-                    [ button <|
-                        el buttonStyle
-                            [ onClick Submit
-                            , disabled (not completeSelection)
-                            ]
-                        <|
-                            text "Submit"
-                    , button <| el Main [ onClick ToggleTableMetaView ] <| text "X"
+                    [ spacing 5 ]
+                    [ button buttonStyle buttonAttributes  <| text "Submit"
+                    , button Main [ onClick ToggleTableMetaView ] <| text "X"
                     ]
                   )
                 ]
@@ -73,16 +69,20 @@ viewVariableMeta variable =
                 variable.values
     in
         row None
-            []
+            [alignTop]
             [ el VariableName [ paddingRight 10 ] <| text variable.text
             , column VariableData
                 ([ yScrollbar, maxHeight (px 150) ] ++ listAttributes)
                 (values
                     |> List.map (viewValueMeta variable)
                 )
-            , checkbox variable.sorted None [ paddingLeft 10, onClick (ToggleSort variable) ] <| el None [ paddingLeft 5 ] <| text "sort"
+            , checkbox None [ paddingLeft 10 ]
+                { onChange = \_-> (ToggleSort variable)
+                , label = text "sort"
+                , checked = variable.sorted
+                , options = []
+                }
             ]
-
 
 viewValueMeta : VariableMeta -> ValueMeta -> Element Styles variation Msg
 viewValueMeta var val =

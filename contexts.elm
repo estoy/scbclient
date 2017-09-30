@@ -7,7 +7,7 @@ import Attributes exposing (columnAttributes)
 
 -- External ----
 
-import Element exposing (text, el, column, Element)
+import Element exposing (text, el, column, paragraph, Element)
 import Element.Events exposing (onClick)
 
 
@@ -51,7 +51,7 @@ elementFromLevel selected index level =
                 Nothing ->
                     Deselected
     in
-        el style [ onClick <| SelectLevel level index ] (text level.text)
+        el style [ onClick <| SelectLevel level index ] (paragraph None [] [text level.text])
 
 
 modelWithSite : Model -> Site -> List Level -> Model

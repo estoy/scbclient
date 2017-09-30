@@ -13,7 +13,8 @@ import Config exposing (..)
 -- External
 
 import Html exposing (Html)
-import Element exposing (viewport, row, column)
+import Element exposing (layout, row, column)
+import Element.Attributes exposing (spread)
 
 
 initialModel : Model
@@ -28,11 +29,11 @@ initialModel =
 
 view : Model -> Html Msg
 view model =
-    viewport stylesheet <|
+    layout stylesheet <|
         case model.tableMeta of
             Nothing ->
                 row Main
-                    []
+                    [spread]
                     ((column Styles.Site
                         columnAttributes
                         (List.map (elementFromSite model.siteContext.selected) sites)

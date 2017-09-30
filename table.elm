@@ -8,8 +8,8 @@ import Attributes exposing (columnAttributes)
 
 -- External ------
 
-import Element exposing (Element, column, text, row, el, button, grid, area)
-import Element.Attributes exposing (verticalCenter, padding, justify, px, scrollbars)
+import Element exposing (Element, paragraph, column, text, row, el, button, grid, cell)
+import Element.Attributes exposing (verticalCenter, padding, spread, px, scrollbars)
 import Element.Events exposing (onClick)
 
 
@@ -21,11 +21,11 @@ viewTable table meta =
     column Table
         columnAttributes
         [ row None
-            [ justify ]
+            [ spread ]
             [ el TableTitle [] <| text meta.title
             , (row None
                 []
-                [ button <| el Main [ onClick ToggleTableDataView ] <| text "X" ]
+                [ button Main [onClick ToggleTableDataView] <| text "X" ]
               )
             ]
         , viewValues table meta
@@ -106,16 +106,16 @@ viewValues table meta =
                 |> List.foldr (++) []
     in
         grid DataGrid
+            [ scrollbars ]
             { columns = List.repeat columnCount (px 150)
             , rows = List.repeat (2 + dataRowCount) (px 34)
+            , cells = dimensionHeaders ++ dataHeaders ++ timeHeaders ++ dataRows
             }
-            [ scrollbars ]
-            (dimensionHeaders ++ dataHeaders ++ timeHeaders ++ dataRows)
-
 
 viewTimeHeader : Int -> Int -> Int -> String -> Element.OnGrid (Element Styles variation msg)
 viewTimeHeader width baseIndex columnIndex text =
     viewCell HeaderBox 0 (baseIndex + columnIndex * width) text width
+
 
 viewDataHeader : Int -> Int -> Column -> Element.OnGrid (Element Styles variation msg)
 viewDataHeader baseIndex columnIndex column =
@@ -225,12 +225,12 @@ viewDataCell rowIndex columnIndex value =
 
 viewCell : Styles -> Int -> Int -> String -> Int -> Element.OnGrid (Element Styles variation msg)
 viewCell style rowIndex columnIndex value width =
-    area
+    cell
         { start = ( columnIndex, rowIndex )
         , width = width
         , height = 1
+        , content = el style [ verticalCenter, scrollbars, padding 2 ] (paragraph None [] [text value])
         }
-        (el style [ verticalCenter, scrollbars, padding 2 ] (text value))
 
 
 emptyVariableMeta : VariableMeta
