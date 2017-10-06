@@ -16,20 +16,49 @@ import Element.Events exposing (onClick)
 -- View ---------------
 
 
-viewTable : TableData -> TableMeta -> Element Styles variation Msg
-viewTable table meta =
-    column Table
-        columnAttributes
-        [ row None
-            [ spread ]
-            [ el TableTitle [] <| text meta.title
-            , (row None
-                []
-                [ button Main [onClick ToggleTableDataView] <| text "X" ]
-              )
-            ]
-        , viewValues table meta
-        ]
+viewTable : TableData -> TableMeta -> Bool -> Element Styles variation Msg
+viewTable table meta showPlot =
+    let
+        canPlot =
+            dataSequences table meta
+                |> List.all isNumericSequence
+
+        ( plotButtonStyle, plotButtonAttributes ) =
+            if canPlot then
+                ( Main, [ onClick TogglePlot ] )
+            else
+                ( Disabled, [] )
+    in
+        case showPlot of
+            False ->
+                column Table
+                    columnAttributes
+                    [ row None
+                        [ spread ]
+                        [ el TableTitle [] <| text meta.title
+                        , (row None
+                            []
+                            [ button Main [ onClick ToggleTableDataView ] <| text "X"
+                            , button plotButtonStyle plotButtonAttributes <| text "Plot"
+                            ]
+                          )
+                        ]
+                    , viewValues table meta
+                    ]
+
+            True ->
+                column Table
+                    columnAttributes
+                    [ row None
+                        [ spread ]
+                        [ el TableTitle [] <| text meta.title
+                        , (row None
+                            []
+                            [ button Main [ onClick TogglePlot ] <| text "X"
+                            ]
+                          )
+                        ]
+                    ]
 
 
 viewValues : TableData -> TableMeta -> Element Styles variation Msg
@@ -71,10 +100,7 @@ viewValues table meta =
 
         dataSeqs : List DataSequence
         dataSeqs =
-            table.data
-                |> groupBy .key
-                |> List.map mergeSequences
-                |> List.map (lookupKey meta.variables)
+            dataSequences table meta
 
         dimensionHeaders : List (Element.OnGrid (Element Styles variation msg))
         dimensionHeaders =
@@ -111,6 +137,40 @@ viewValues table meta =
             , rows = List.repeat (2 + dataRowCount) (px 34)
             , cells = dimensionHeaders ++ dataHeaders ++ timeHeaders ++ dataRows
             }
+
+
+isNumericSequence : DataSequence -> Bool
+isNumericSequence sequence =
+    sequence.points
+        |> List.all isNumericDataPoint
+
+
+isNumericDataPoint : DataPoint -> Bool
+isNumericDataPoint point =
+    point.values
+        |> List.all isNumericOrEmpty
+
+isNumericOrEmpty : String -> Bool
+isNumericOrEmpty str =
+    let
+        isEmpty = str == ""
+        isPlaceHolder = str == ".."
+        isNumeric =
+            case String.toFloat str of
+                Ok float ->
+                    True
+                Err err ->
+                    False
+    in
+        isEmpty || isPlaceHolder || isNumeric
+
+dataSequences : TableData -> TableMeta -> List DataSequence
+dataSequences table meta =
+    table.data
+        |> groupBy .key
+        |> List.map mergeSequences
+        |> List.map (lookupKey meta.variables)
+
 
 viewTimeHeader : Int -> Int -> Int -> String -> Element.OnGrid (Element Styles variation msg)
 viewTimeHeader width baseIndex columnIndex text =
@@ -229,7 +289,7 @@ viewCell style rowIndex columnIndex value width =
         { start = ( columnIndex, rowIndex )
         , width = width
         , height = 1
-        , content = el style [ verticalCenter, scrollbars, padding 2 ] (paragraph None [] [text value])
+        , content = el style [ verticalCenter, scrollbars, padding 2 ] (paragraph None [] [ text value ])
         }
 
 

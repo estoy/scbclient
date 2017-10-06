@@ -24,6 +24,7 @@ initialModel =
     , tableMeta = Nothing
     , table = Nothing
     , latestError = Nothing
+    , showPlot = False
     }
 
 
@@ -33,7 +34,7 @@ view model =
         case model.tableMeta of
             Nothing ->
                 row Main
-                    [spread]
+                    [ spread ]
                     ((column Styles.Site
                         columnAttributes
                         (List.map (elementFromSite model.siteContext.selected) sites)
@@ -47,7 +48,7 @@ view model =
                         viewTableMeta meta
 
                     Just table ->
-                        viewTable table meta
+                        viewTable table meta model.showPlot
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -103,7 +104,7 @@ update msg model =
             ( { model | latestError = Just err }, Cmd.none )
 
         ToggleSort variable ->
-           case model.tableMeta of
+            case model.tableMeta of
                 Just table ->
                     ( { model | tableMeta = Just <| toggleVariableSort variable table }
                     , Cmd.none
@@ -111,6 +112,9 @@ update msg model =
 
                 Nothing ->
                     ( model, Cmd.none )
+
+        TogglePlot ->
+            ( { model | showPlot = not model.showPlot }, Cmd.none )
 
 
 main : Program Never Model Msg

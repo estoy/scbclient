@@ -15,6 +15,7 @@ type Msg
     | Submit
     | TableLoaded (Result Http.Error TableData)
     | ToggleSort VariableMeta
+    | TogglePlot
 
 
 type alias Model =
@@ -22,6 +23,7 @@ type alias Model =
     , levelContexts : List LevelCtx
     , tableMeta : Maybe TableMeta
     , table : Maybe TableData
+    , showPlot : Bool
     , latestError : Maybe Http.Error
     }
 
