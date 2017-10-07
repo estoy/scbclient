@@ -29,8 +29,11 @@ import Plot
         )
 import Svg exposing (Svg)
 import Svg.Attributes exposing (stroke)
-import Element exposing (Element, column, text, row, el, button, html)
-import Element.Attributes exposing (spread, height, fill)
+import Element exposing (Element, column, text, row, el, button, html, paragraph)
+import Element.Attributes exposing (spread, height, fill, width, percent, spacing)
+import Style exposing (style)
+import Style.Color as Color
+import Color
 import Element.Events exposing (onClick)
 
 
@@ -58,8 +61,27 @@ viewPlot data meta =
                     ]
                   )
                 ]
-            , el Main [ height fill ] <| html <| plotDataSequences data times
+            , row None
+                [spacing 20]
+                [ el Main [ height fill, width (percent 70) ] <| html <| plotDataSequences data times
+                , legend data
+                ]
             ]
+
+legend : List DataSequence -> Element Styles variation msg
+legend data =
+    column None [spacing 5] <|
+        List.indexedMap legendLabel data
+
+legendLabel : Int -> DataSequence -> Element Styles variation msg
+legendLabel index data =
+    let
+        key =
+            data.key
+                |> List.foldl (\k ks -> ks ++ "[" ++ k ++ "] ") ""
+                |> String.trim
+    in
+        paragraph (colourForIndex index) [] [text key]
 
 
 plotDataSequences : List DataSequence -> List String -> Svg msg
@@ -70,7 +92,7 @@ plotDataSequences dataSeqs times =
             , margin =
                 { top = 20
                 , right = 40
-                , bottom = 80
+                , bottom = 20
                 , left = 40
                 }
         }
@@ -84,10 +106,7 @@ plotLine : Int -> DataSequence -> Series (List DataSequence) msg
 plotLine seriesIndex seq =
     let
         colour =
-            colours
-                |> List.drop seriesIndex
-                |> List.head
-                |> Maybe.withDefault "black"
+            colourNameForIndex seriesIndex
     in
         customSeries normalAxis (Plot.Linear Nothing [ stroke colour ]) (\seqs -> preparePoints colour seq.points)
 
@@ -120,9 +139,35 @@ plotPoint colour index point =
                 Nothing
 
 
-colours : List String
-colours =
+colourNames : List String
+colourNames =
     [ "fuchsia", "red", "blue", "green", "maroon", "purple", "aqua", "olive" ]
+
+colourStyles : List Styles.Styles
+colourStyles =
+    [ PlotFuchsia
+    , PlotRed
+    , PlotBlue
+    , PlotGreen
+    , PlotMaroon
+    , PlotPurple
+    , PlotAqua
+    , PlotOlive
+    ]
+
+colourForIndex : Int -> Styles.Styles
+colourForIndex index =
+    colourStyles
+            |> List.drop index
+            |> List.head
+            |> Maybe.withDefault PlotBlack
+
+colourNameForIndex : Int -> String
+colourNameForIndex index =
+    colourNames
+            |> List.drop index
+            |> List.head
+            |> Maybe.withDefault "black"
 
 
 timeAxis : List String -> Axis

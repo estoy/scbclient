@@ -30842,6 +30842,15 @@ var _user$project$Styles$baseStyle = {
 };
 var _user$project$Styles$dataBackground = A4(_elm_lang$core$Color$rgba, 239, 227, 195, 1.0);
 var _user$project$Styles$tableBackground = A4(_elm_lang$core$Color$rgba, 231, 214, 166, 1.0);
+var _user$project$Styles$PlotBlack = {ctor: 'PlotBlack'};
+var _user$project$Styles$PlotOlive = {ctor: 'PlotOlive'};
+var _user$project$Styles$PlotAqua = {ctor: 'PlotAqua'};
+var _user$project$Styles$PlotPurple = {ctor: 'PlotPurple'};
+var _user$project$Styles$PlotMaroon = {ctor: 'PlotMaroon'};
+var _user$project$Styles$PlotGreen = {ctor: 'PlotGreen'};
+var _user$project$Styles$PlotBlue = {ctor: 'PlotBlue'};
+var _user$project$Styles$PlotRed = {ctor: 'PlotRed'};
+var _user$project$Styles$PlotFuchsia = {ctor: 'PlotFuchsia'};
 var _user$project$Styles$DataGrid = {ctor: 'DataGrid'};
 var _user$project$Styles$HeaderBox = {ctor: 'HeaderBox'};
 var _user$project$Styles$DataBox = {ctor: 'DataBox'};
@@ -31064,7 +31073,142 @@ var _user$project$Styles$stylesheet = _mdgriffith$style_elements$Style$styleShee
 																	_0: _mdgriffith$style_elements$Style_Color$background(_user$project$Styles$dataBackground),
 																	_1: {ctor: '[]'}
 																}),
-															_1: {ctor: '[]'}
+															_1: {
+																ctor: '::',
+																_0: A2(
+																	_mdgriffith$style_elements$Style$style,
+																	_user$project$Styles$PlotFuchsia,
+																	A2(
+																		_elm_lang$core$Basics_ops['++'],
+																		{
+																			ctor: '::',
+																			_0: _mdgriffith$style_elements$Style_Color$text(
+																				A4(_elm_lang$core$Color$rgba, 255, 0, 255, 1.0)),
+																			_1: {ctor: '[]'}
+																		},
+																		_user$project$Styles$baseStyle)),
+																_1: {
+																	ctor: '::',
+																	_0: A2(
+																		_mdgriffith$style_elements$Style$style,
+																		_user$project$Styles$PlotRed,
+																		A2(
+																			_elm_lang$core$Basics_ops['++'],
+																			{
+																				ctor: '::',
+																				_0: _mdgriffith$style_elements$Style_Color$text(
+																					A4(_elm_lang$core$Color$rgba, 255, 0, 0, 1.0)),
+																				_1: {ctor: '[]'}
+																			},
+																			_user$project$Styles$baseStyle)),
+																	_1: {
+																		ctor: '::',
+																		_0: A2(
+																			_mdgriffith$style_elements$Style$style,
+																			_user$project$Styles$PlotBlue,
+																			A2(
+																				_elm_lang$core$Basics_ops['++'],
+																				{
+																					ctor: '::',
+																					_0: _mdgriffith$style_elements$Style_Color$text(
+																						A4(_elm_lang$core$Color$rgba, 0, 0, 255, 1.0)),
+																					_1: {ctor: '[]'}
+																				},
+																				_user$project$Styles$baseStyle)),
+																		_1: {
+																			ctor: '::',
+																			_0: A2(
+																				_mdgriffith$style_elements$Style$style,
+																				_user$project$Styles$PlotGreen,
+																				A2(
+																					_elm_lang$core$Basics_ops['++'],
+																					{
+																						ctor: '::',
+																						_0: _mdgriffith$style_elements$Style_Color$text(
+																							A4(_elm_lang$core$Color$rgba, 0, 128, 0, 1.0)),
+																						_1: {ctor: '[]'}
+																					},
+																					_user$project$Styles$baseStyle)),
+																			_1: {
+																				ctor: '::',
+																				_0: A2(
+																					_mdgriffith$style_elements$Style$style,
+																					_user$project$Styles$PlotMaroon,
+																					A2(
+																						_elm_lang$core$Basics_ops['++'],
+																						{
+																							ctor: '::',
+																							_0: _mdgriffith$style_elements$Style_Color$text(
+																								A4(_elm_lang$core$Color$rgba, 128, 0, 0, 1.0)),
+																							_1: {ctor: '[]'}
+																						},
+																						_user$project$Styles$baseStyle)),
+																				_1: {
+																					ctor: '::',
+																					_0: A2(
+																						_mdgriffith$style_elements$Style$style,
+																						_user$project$Styles$PlotPurple,
+																						A2(
+																							_elm_lang$core$Basics_ops['++'],
+																							{
+																								ctor: '::',
+																								_0: _mdgriffith$style_elements$Style_Color$text(
+																									A4(_elm_lang$core$Color$rgba, 128, 0, 128, 1.0)),
+																								_1: {ctor: '[]'}
+																							},
+																							_user$project$Styles$baseStyle)),
+																					_1: {
+																						ctor: '::',
+																						_0: A2(
+																							_mdgriffith$style_elements$Style$style,
+																							_user$project$Styles$PlotAqua,
+																							A2(
+																								_elm_lang$core$Basics_ops['++'],
+																								{
+																									ctor: '::',
+																									_0: _mdgriffith$style_elements$Style_Color$text(
+																										A4(_elm_lang$core$Color$rgba, 0, 255, 255, 1.0)),
+																									_1: {ctor: '[]'}
+																								},
+																								_user$project$Styles$baseStyle)),
+																						_1: {
+																							ctor: '::',
+																							_0: A2(
+																								_mdgriffith$style_elements$Style$style,
+																								_user$project$Styles$PlotOlive,
+																								A2(
+																									_elm_lang$core$Basics_ops['++'],
+																									{
+																										ctor: '::',
+																										_0: _mdgriffith$style_elements$Style_Color$text(
+																											A4(_elm_lang$core$Color$rgba, 128, 128, 0, 1.0)),
+																										_1: {ctor: '[]'}
+																									},
+																									_user$project$Styles$baseStyle)),
+																							_1: {
+																								ctor: '::',
+																								_0: A2(
+																									_mdgriffith$style_elements$Style$style,
+																									_user$project$Styles$PlotBlack,
+																									A2(
+																										_elm_lang$core$Basics_ops['++'],
+																										{
+																											ctor: '::',
+																											_0: _mdgriffith$style_elements$Style_Color$text(
+																												A4(_elm_lang$core$Color$rgba, 0, 0, 0, 1.0)),
+																											_1: {ctor: '[]'}
+																										},
+																										_user$project$Styles$baseStyle)),
+																								_1: {ctor: '[]'}
+																							}
+																						}
+																					}
+																				}
+																			}
+																		}
+																	}
+																}
+															}
 														}
 													}
 												}
@@ -31120,7 +31264,47 @@ var _user$project$DataPlot$timeAxis = function (times) {
 			};
 		});
 };
-var _user$project$DataPlot$colours = {
+var _user$project$DataPlot$colourStyles = {
+	ctor: '::',
+	_0: _user$project$Styles$PlotFuchsia,
+	_1: {
+		ctor: '::',
+		_0: _user$project$Styles$PlotRed,
+		_1: {
+			ctor: '::',
+			_0: _user$project$Styles$PlotBlue,
+			_1: {
+				ctor: '::',
+				_0: _user$project$Styles$PlotGreen,
+				_1: {
+					ctor: '::',
+					_0: _user$project$Styles$PlotMaroon,
+					_1: {
+						ctor: '::',
+						_0: _user$project$Styles$PlotPurple,
+						_1: {
+							ctor: '::',
+							_0: _user$project$Styles$PlotAqua,
+							_1: {
+								ctor: '::',
+								_0: _user$project$Styles$PlotOlive,
+								_1: {ctor: '[]'}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+};
+var _user$project$DataPlot$colourForIndex = function (index) {
+	return A2(
+		_elm_lang$core$Maybe$withDefault,
+		_user$project$Styles$PlotBlack,
+		_elm_lang$core$List$head(
+			A2(_elm_lang$core$List$drop, index, _user$project$DataPlot$colourStyles)));
+};
+var _user$project$DataPlot$colourNames = {
 	ctor: '::',
 	_0: 'fuchsia',
 	_1: {
@@ -31153,6 +31337,13 @@ var _user$project$DataPlot$colours = {
 		}
 	}
 };
+var _user$project$DataPlot$colourNameForIndex = function (index) {
+	return A2(
+		_elm_lang$core$Maybe$withDefault,
+		'black',
+		_elm_lang$core$List$head(
+			A2(_elm_lang$core$List$drop, index, _user$project$DataPlot$colourNames)));
+};
 var _user$project$DataPlot$plotPoint = F3(
 	function (colour, index, point) {
 		var value = A2(
@@ -31184,11 +31375,7 @@ var _user$project$DataPlot$preparePoints = F2(
 	});
 var _user$project$DataPlot$plotLine = F2(
 	function (seriesIndex, seq) {
-		var colour = A2(
-			_elm_lang$core$Maybe$withDefault,
-			'black',
-			_elm_lang$core$List$head(
-				A2(_elm_lang$core$List$drop, seriesIndex, _user$project$DataPlot$colours)));
+		var colour = _user$project$DataPlot$colourNameForIndex(seriesIndex);
 		return A3(
 			_terezka$elm_plot$Plot$customSeries,
 			_terezka$elm_plot$Plot$normalAxis,
@@ -31212,11 +31399,49 @@ var _user$project$DataPlot$plotDataSequences = F2(
 				_terezka$elm_plot$Plot$defaultSeriesPlotCustomizations,
 				{
 					horizontalAxis: _user$project$DataPlot$timeAxis(times),
-					margin: {top: 20, right: 40, bottom: 80, left: 40}
+					margin: {top: 20, right: 40, bottom: 20, left: 40}
 				}),
 			A2(_elm_lang$core$List$indexedMap, _user$project$DataPlot$plotLine, dataSeqs),
 			dataSeqs);
 	});
+var _user$project$DataPlot$legendLabel = F2(
+	function (index, data) {
+		var key = _elm_lang$core$String$trim(
+			A3(
+				_elm_lang$core$List$foldl,
+				F2(
+					function (k, ks) {
+						return A2(
+							_elm_lang$core$Basics_ops['++'],
+							ks,
+							A2(
+								_elm_lang$core$Basics_ops['++'],
+								'[',
+								A2(_elm_lang$core$Basics_ops['++'], k, '] ')));
+					}),
+				'',
+				data.key));
+		return A3(
+			_mdgriffith$style_elements$Element$paragraph,
+			_user$project$DataPlot$colourForIndex(index),
+			{ctor: '[]'},
+			{
+				ctor: '::',
+				_0: _mdgriffith$style_elements$Element$text(key),
+				_1: {ctor: '[]'}
+			});
+	});
+var _user$project$DataPlot$legend = function (data) {
+	return A3(
+		_mdgriffith$style_elements$Element$column,
+		_user$project$Styles$None,
+		{
+			ctor: '::',
+			_0: _mdgriffith$style_elements$Element_Attributes$spacing(5),
+			_1: {ctor: '[]'}
+		},
+		A2(_elm_lang$core$List$indexedMap, _user$project$DataPlot$legendLabel, data));
+};
 var _user$project$DataPlot$viewPlot = F2(
 	function (data, meta) {
 		var times = A2(
@@ -31288,15 +31513,36 @@ var _user$project$DataPlot$viewPlot = F2(
 				_1: {
 					ctor: '::',
 					_0: A3(
-						_mdgriffith$style_elements$Element$el,
-						_user$project$Styles$Main,
+						_mdgriffith$style_elements$Element$row,
+						_user$project$Styles$None,
 						{
 							ctor: '::',
-							_0: _mdgriffith$style_elements$Element_Attributes$height(_mdgriffith$style_elements$Element_Attributes$fill),
+							_0: _mdgriffith$style_elements$Element_Attributes$spacing(20),
 							_1: {ctor: '[]'}
 						},
-						_mdgriffith$style_elements$Element$html(
-							A2(_user$project$DataPlot$plotDataSequences, data, times))),
+						{
+							ctor: '::',
+							_0: A3(
+								_mdgriffith$style_elements$Element$el,
+								_user$project$Styles$Main,
+								{
+									ctor: '::',
+									_0: _mdgriffith$style_elements$Element_Attributes$height(_mdgriffith$style_elements$Element_Attributes$fill),
+									_1: {
+										ctor: '::',
+										_0: _mdgriffith$style_elements$Element_Attributes$width(
+											_mdgriffith$style_elements$Element_Attributes$percent(70)),
+										_1: {ctor: '[]'}
+									}
+								},
+								_mdgriffith$style_elements$Element$html(
+									A2(_user$project$DataPlot$plotDataSequences, data, times))),
+							_1: {
+								ctor: '::',
+								_0: _user$project$DataPlot$legend(data),
+								_1: {ctor: '[]'}
+							}
+						}),
 					_1: {ctor: '[]'}
 				}
 			});

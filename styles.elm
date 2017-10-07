@@ -24,6 +24,15 @@ type Styles
     | DataBox
     | HeaderBox
     | DataGrid
+    | PlotFuchsia
+    | PlotRed
+    | PlotBlue
+    | PlotGreen
+    | PlotMaroon
+    | PlotPurple
+    | PlotAqua
+    | PlotOlive
+    | PlotBlack
 
 
 tableBackground =
@@ -68,12 +77,12 @@ stylesheet =
             ]
         , style Site
             [ Color.background (Color.rgba 186 196 238 1.0) ]
-        , style Table
-            ([ Color.text Color.darkCharcoal
+        , style Table <|
+            [ Color.text Color.darkCharcoal
              , Color.background tableBackground
              ]
                 ++ baseStyle
-            )
+            
         , style TableTitle
             [ Font.size 24, Font.bold ]
         , style VariableName
@@ -101,4 +110,24 @@ stylesheet =
             ]
         , style DataGrid
             [ Color.background dataBackground ]
-        ]
+        , style PlotFuchsia <|
+            [ Color.text <| Color.rgba 255 0 255 1.0] ++ baseStyle
+         , style PlotRed <|
+            [ Color.text <| Color.rgba 255 0 0 1.0] ++ baseStyle
+        , style PlotBlue <|
+            [ Color.text <| Color.rgba 0 0 255 1.0] ++ baseStyle
+        , style PlotGreen <|
+            [ Color.text <| Color.rgba 0 128 0 1.0] ++ baseStyle
+        , style PlotMaroon <|
+            [ Color.text <| Color.rgba 128 0 0 1.0] ++ baseStyle
+        , style PlotPurple <|
+            [ Color.text <| Color.rgba 128 0 128 1.0] ++ baseStyle
+        , style PlotAqua <|
+            [ Color.text <| Color.rgba 0 255 255 1.0] ++ baseStyle
+        , style PlotOlive <|
+            [ Color.text <| Color.rgba 128 128 0 1.0] ++ baseStyle
+        , style PlotBlack <|
+            [ Color.text <| Color.rgba 0 0 0 1.0] ++ baseStyle
+       ]
+
+
