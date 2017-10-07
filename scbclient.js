@@ -31404,8 +31404,9 @@ var _user$project$DataPlot$plotDataSequences = F2(
 			A2(_elm_lang$core$List$indexedMap, _user$project$DataPlot$plotLine, dataSeqs),
 			dataSeqs);
 	});
-var _user$project$DataPlot$legendLabel = F2(
-	function (index, data) {
+var _user$project$DataPlot$legendLabel = F3(
+	function (subKeyIndices, index, data) {
+		var keyArray = _elm_lang$core$Array$fromList(data.key);
 		var key = _elm_lang$core$String$trim(
 			A3(
 				_elm_lang$core$List$foldl,
@@ -31420,7 +31421,12 @@ var _user$project$DataPlot$legendLabel = F2(
 								A2(_elm_lang$core$Basics_ops['++'], k, '] ')));
 					}),
 				'',
-				data.key));
+				A2(
+					_elm_lang$core$List$filterMap,
+					function (i) {
+						return A2(_elm_lang$core$Array$get, i, keyArray);
+					},
+					subKeyIndices)));
 		return A3(
 			_mdgriffith$style_elements$Element$paragraph,
 			_user$project$DataPlot$colourForIndex(index),
@@ -31431,19 +31437,62 @@ var _user$project$DataPlot$legendLabel = F2(
 				_1: {ctor: '[]'}
 			});
 	});
-var _user$project$DataPlot$legend = function (data) {
-	return A3(
-		_mdgriffith$style_elements$Element$column,
-		_user$project$Styles$None,
-		{
-			ctor: '::',
-			_0: _mdgriffith$style_elements$Element_Attributes$spacing(5),
-			_1: {ctor: '[]'}
-		},
-		A2(_elm_lang$core$List$indexedMap, _user$project$DataPlot$legendLabel, data));
+var _user$project$DataPlot$legend = F2(
+	function (data, subKeyIndices) {
+		return A3(
+			_mdgriffith$style_elements$Element$column,
+			_user$project$Styles$None,
+			{
+				ctor: '::',
+				_0: _mdgriffith$style_elements$Element_Attributes$spacing(5),
+				_1: {ctor: '[]'}
+			},
+			A2(
+				_elm_lang$core$List$indexedMap,
+				_user$project$DataPlot$legendLabel(subKeyIndices),
+				data));
+	});
+var _user$project$DataPlot$combineKeys = F2(
+	function (key, combined) {
+		return A3(
+			_elm_lang$core$List$map2,
+			F2(
+				function (k, s) {
+					return A2(_elm_lang$core$Set$insert, k, s);
+				}),
+			key,
+			combined);
+	});
+var _user$project$DataPlot$subKeysToUse = function (keys) {
+	var keyLength = _elm_lang$core$List$length(
+		A2(
+			_elm_lang$core$Maybe$withDefault,
+			{ctor: '[]'},
+			_elm_lang$core$List$head(keys)));
+	var emptySets = A2(_elm_lang$core$List$repeat, keyLength, _elm_lang$core$Set$empty);
+	var combinedKeys = A3(_elm_lang$core$List$foldl, _user$project$DataPlot$combineKeys, emptySets, keys);
+	return A2(
+		_elm_lang$core$List$filterMap,
+		_elm_lang$core$Basics$identity,
+		A2(
+			_elm_lang$core$List$indexedMap,
+			F2(
+				function (i, s) {
+					return _elm_lang$core$Native_Utils.eq(
+						_elm_lang$core$Set$size(s),
+						1) ? _elm_lang$core$Maybe$Nothing : _elm_lang$core$Maybe$Just(i);
+				}),
+			combinedKeys));
 };
 var _user$project$DataPlot$viewPlot = F2(
 	function (data, meta) {
+		var keys = A2(
+			_elm_lang$core$List$map,
+			function (_) {
+				return _.key;
+			},
+			data);
+		var subKeyIndices = _user$project$DataPlot$subKeysToUse(keys);
 		var times = A2(
 			_elm_lang$core$List$map,
 			function (_) {
@@ -31539,7 +31588,7 @@ var _user$project$DataPlot$viewPlot = F2(
 									A2(_user$project$DataPlot$plotDataSequences, data, times))),
 							_1: {
 								ctor: '::',
-								_0: _user$project$DataPlot$legend(data),
+								_0: A2(_user$project$DataPlot$legend, data, subKeyIndices),
 								_1: {ctor: '[]'}
 							}
 						}),

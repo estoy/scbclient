@@ -32,6 +32,8 @@ import Svg.Attributes exposing (stroke)
 import Element exposing (Element, column, text, row, el, button, html, paragraph)
 import Element.Attributes exposing (spread, height, fill, width, percent, spacing)
 import Element.Events exposing (onClick)
+import Set exposing (Set)
+import Array exposing (Array)
 
 
 viewPlot : List DataSequence -> TableMeta -> Element Styles variation Msg
@@ -46,6 +48,14 @@ viewPlot data meta =
                 |> .values
                 |> List.filter .selected
                 |> List.map .text
+
+        keys : List (List String)
+        keys =
+            List.map .key data
+
+        subKeyIndices : List Int
+        subKeyIndices =
+            subKeysToUse keys
     in
         column Table
             columnAttributes
@@ -59,26 +69,67 @@ viewPlot data meta =
                   )
                 ]
             , row None
-                [spacing 20]
+                [ spacing 20 ]
                 [ el Main [ height fill, width (percent 70) ] <| html <| plotDataSequences data times
-                , legend data
+                , legend data subKeyIndices
                 ]
             ]
 
-legend : List DataSequence -> Element Styles variation msg
-legend data =
-    column None [spacing 5] <|
-        List.indexedMap legendLabel data
 
-legendLabel : Int -> DataSequence -> Element Styles variation msg
-legendLabel index data =
+subKeysToUse : List (List String) -> List Int
+subKeysToUse keys =
     let
-        key =
+        keyLength : Int
+        keyLength =
+            keys
+                |> List.head
+                |> Maybe.withDefault []
+                |> List.length
+
+        emptySets : List (Set String)
+        emptySets =
+            List.repeat keyLength Set.empty
+
+        combinedKeys : List (Set String)
+        combinedKeys =
+            List.foldl combineKeys emptySets keys
+    in
+        combinedKeys
+            |> List.indexedMap
+                (\i s ->
+                    if Set.size s == 1 then
+                        Nothing
+                    else
+                        Just i
+                )
+            |> List.filterMap identity
+
+
+combineKeys : List String -> List (Set String) -> List (Set String)
+combineKeys key combined =
+    List.map2 (\k s -> Set.insert k s) key combined
+
+
+legend : List DataSequence -> List Int -> Element Styles variation msg
+legend data subKeyIndices =
+    column None [ spacing 5 ] <|
+        List.indexedMap (legendLabel subKeyIndices) data
+
+
+legendLabel : List Int -> Int -> DataSequence -> Element Styles variation msg
+legendLabel subKeyIndices index data =
+    let
+        keyArray =
             data.key
+                |> Array.fromList
+
+        key =
+            subKeyIndices
+                |> List.filterMap (\i -> Array.get i keyArray)
                 |> List.foldl (\k ks -> ks ++ "[" ++ k ++ "] ") ""
                 |> String.trim
     in
-        paragraph (colourForIndex index) [] [text key]
+        paragraph (colourForIndex index) [] [ text key ]
 
 
 plotDataSequences : List DataSequence -> List String -> Svg msg
@@ -140,6 +191,7 @@ colourNames : List String
 colourNames =
     [ "fuchsia", "red", "blue", "green", "maroon", "purple", "aqua", "olive" ]
 
+
 colourStyles : List Styles.Styles
 colourStyles =
     [ PlotFuchsia
@@ -152,19 +204,21 @@ colourStyles =
     , PlotOlive
     ]
 
+
 colourForIndex : Int -> Styles.Styles
 colourForIndex index =
     colourStyles
-            |> List.drop index
-            |> List.head
-            |> Maybe.withDefault PlotBlack
+        |> List.drop index
+        |> List.head
+        |> Maybe.withDefault PlotBlack
+
 
 colourNameForIndex : Int -> String
 colourNameForIndex index =
     colourNames
-            |> List.drop index
-            |> List.head
-            |> Maybe.withDefault "black"
+        |> List.drop index
+        |> List.head
+        |> Maybe.withDefault "black"
 
 
 timeAxis : List String -> Axis
