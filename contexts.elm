@@ -51,7 +51,7 @@ elementFromLevel selected index level =
                 Nothing ->
                     Deselected
     in
-        el style [ onClick <| SelectLevel level index ] (paragraph None [] [text level.text])
+        el style [ onClick <| SelectLevel level index ] (paragraph None [] [ text level.text ])
 
 
 modelWithSite : Model -> Site -> List Level -> Model

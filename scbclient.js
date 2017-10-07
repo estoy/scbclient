@@ -31080,7 +31080,7 @@ var _user$project$Styles$stylesheet = _mdgriffith$style_elements$Style$styleShee
 		}
 	});
 
-var _user$project$Table$colours = {
+var _user$project$DataPlot$colours = {
 	ctor: '::',
 	_0: 'fuchsia',
 	_1: {
@@ -31113,6 +31113,125 @@ var _user$project$Table$colours = {
 		}
 	}
 };
+var _user$project$DataPlot$plotPoint = F3(
+	function (colour, index, point) {
+		var value = A2(
+			_elm_lang$core$Maybe$withDefault,
+			'',
+			_elm_lang$core$List$head(point.values));
+		var floatValue = _elm_lang$core$String$toFloat(value);
+		var _p0 = floatValue;
+		if (_p0.ctor === 'Ok') {
+			return _elm_lang$core$Maybe$Just(
+				A3(
+					_terezka$elm_plot$Plot$dot,
+					A2(_terezka$elm_plot$Plot$viewCircle, 5.0, colour),
+					_elm_lang$core$Basics$toFloat(index),
+					_p0._0));
+		} else {
+			return _elm_lang$core$Maybe$Nothing;
+		}
+	});
+var _user$project$DataPlot$preparePoints = F2(
+	function (colour, points) {
+		return A2(
+			_elm_lang$core$List$filterMap,
+			_elm_lang$core$Basics$identity,
+			A2(
+				_elm_lang$core$List$indexedMap,
+				_user$project$DataPlot$plotPoint(colour),
+				points));
+	});
+var _user$project$DataPlot$plotLine = F2(
+	function (seriesIndex, seq) {
+		var colour = A2(
+			_elm_lang$core$Maybe$withDefault,
+			'black',
+			_elm_lang$core$List$head(
+				A2(_elm_lang$core$List$drop, seriesIndex, _user$project$DataPlot$colours)));
+		return A3(
+			_terezka$elm_plot$Plot$customSeries,
+			_terezka$elm_plot$Plot$normalAxis,
+			A2(
+				_terezka$elm_plot$Plot$Linear,
+				_elm_lang$core$Maybe$Nothing,
+				{
+					ctor: '::',
+					_0: _elm_lang$svg$Svg_Attributes$stroke(colour),
+					_1: {ctor: '[]'}
+				}),
+			function (seqs) {
+				return A2(_user$project$DataPlot$preparePoints, colour, seq.points);
+			});
+	});
+var _user$project$DataPlot$plotDataSequences = function (dataSeqs) {
+	return A2(
+		_terezka$elm_plot$Plot$viewSeries,
+		A2(_elm_lang$core$List$indexedMap, _user$project$DataPlot$plotLine, dataSeqs),
+		dataSeqs);
+};
+var _user$project$DataPlot$viewPlot = F2(
+	function (data, meta) {
+		return A3(
+			_mdgriffith$style_elements$Element$column,
+			_user$project$Styles$Table,
+			_user$project$Attributes$columnAttributes,
+			{
+				ctor: '::',
+				_0: A3(
+					_mdgriffith$style_elements$Element$row,
+					_user$project$Styles$None,
+					{
+						ctor: '::',
+						_0: _mdgriffith$style_elements$Element_Attributes$spread,
+						_1: {ctor: '[]'}
+					},
+					{
+						ctor: '::',
+						_0: A3(
+							_mdgriffith$style_elements$Element$el,
+							_user$project$Styles$TableTitle,
+							{ctor: '[]'},
+							_mdgriffith$style_elements$Element$text(meta.title)),
+						_1: {
+							ctor: '::',
+							_0: A3(
+								_mdgriffith$style_elements$Element$row,
+								_user$project$Styles$None,
+								{ctor: '[]'},
+								{
+									ctor: '::',
+									_0: A3(
+										_mdgriffith$style_elements$Element$button,
+										_user$project$Styles$Main,
+										{
+											ctor: '::',
+											_0: _mdgriffith$style_elements$Element_Events$onClick(_user$project$Types$TogglePlot),
+											_1: {ctor: '[]'}
+										},
+										_mdgriffith$style_elements$Element$text('X')),
+									_1: {ctor: '[]'}
+								}),
+							_1: {ctor: '[]'}
+						}
+					}),
+				_1: {
+					ctor: '::',
+					_0: A3(
+						_mdgriffith$style_elements$Element$el,
+						_user$project$Styles$Main,
+						{
+							ctor: '::',
+							_0: _mdgriffith$style_elements$Element_Attributes$height(_mdgriffith$style_elements$Element_Attributes$fill),
+							_1: {ctor: '[]'}
+						},
+						_mdgriffith$style_elements$Element$html(
+							_user$project$DataPlot$plotDataSequences(data))),
+					_1: {ctor: '[]'}
+				}
+			});
+	});
+
 var _user$project$Table$emptyVariableMeta = A5(
 	_user$project$Types$VariableMeta,
 	'',
@@ -31402,63 +31521,6 @@ var _user$project$Table$viewValues = F2(
 						A2(_elm_lang$core$Basics_ops['++'], timeHeaders, dataRows)))
 			});
 	});
-var _user$project$Table$plotPoint = F3(
-	function (colour, index, point) {
-		var value = A2(
-			_elm_lang$core$Maybe$withDefault,
-			'',
-			_elm_lang$core$List$head(point.values));
-		var floatValue = _elm_lang$core$String$toFloat(value);
-		var _p1 = floatValue;
-		if (_p1.ctor === 'Ok') {
-			return _elm_lang$core$Maybe$Just(
-				A3(
-					_terezka$elm_plot$Plot$dot,
-					A2(_terezka$elm_plot$Plot$viewCircle, 5.0, colour),
-					_elm_lang$core$Basics$toFloat(index),
-					_p1._0));
-		} else {
-			return _elm_lang$core$Maybe$Nothing;
-		}
-	});
-var _user$project$Table$preparePoints = F2(
-	function (colour, points) {
-		return A2(
-			_elm_lang$core$List$filterMap,
-			_elm_lang$core$Basics$identity,
-			A2(
-				_elm_lang$core$List$indexedMap,
-				_user$project$Table$plotPoint(colour),
-				points));
-	});
-var _user$project$Table$plotLine = F2(
-	function (seriesIndex, seq) {
-		var colour = A2(
-			_elm_lang$core$Maybe$withDefault,
-			'black',
-			_elm_lang$core$List$head(
-				A2(_elm_lang$core$List$drop, seriesIndex, _user$project$Table$colours)));
-		return A3(
-			_terezka$elm_plot$Plot$customSeries,
-			_terezka$elm_plot$Plot$normalAxis,
-			A2(
-				_terezka$elm_plot$Plot$Linear,
-				_elm_lang$core$Maybe$Nothing,
-				{
-					ctor: '::',
-					_0: _elm_lang$svg$Svg_Attributes$stroke(colour),
-					_1: {ctor: '[]'}
-				}),
-			function (seqs) {
-				return A2(_user$project$Table$preparePoints, colour, seq.points);
-			});
-	});
-var _user$project$Table$plotDataSequences = function (dataSeqs) {
-	return A2(
-		_terezka$elm_plot$Plot$viewSeries,
-		A2(_elm_lang$core$List$indexedMap, _user$project$Table$plotLine, dataSeqs),
-		dataSeqs);
-};
 var _user$project$Table$viewTable = F3(
 	function (table, meta, showPlot) {
 		var onlyHasSingleDataPoints = _elm_lang$core$Native_Utils.eq(
@@ -31479,7 +31541,7 @@ var _user$project$Table$viewTable = F3(
 		var data = A2(_user$project$Table$dataSequences, table, meta);
 		var isAllNumeric = A2(_elm_lang$core$List$all, _user$project$Table$isNumericSequence, data);
 		var canPlot = onlyHasSingleDataPoints && isAllNumeric;
-		var _p2 = canPlot ? {
+		var _p1 = canPlot ? {
 			ctor: '_Tuple2',
 			_0: _user$project$Styles$Main,
 			_1: {
@@ -31492,10 +31554,10 @@ var _user$project$Table$viewTable = F3(
 			_0: _user$project$Styles$Disabled,
 			_1: {ctor: '[]'}
 		};
-		var plotButtonStyle = _p2._0;
-		var plotButtonAttributes = _p2._1;
-		var _p3 = showPlot;
-		if (_p3 === false) {
+		var plotButtonStyle = _p1._0;
+		var plotButtonAttributes = _p1._1;
+		var _p2 = showPlot;
+		if (_p2 === false) {
 			return A3(
 				_mdgriffith$style_elements$Element$column,
 				_user$project$Styles$Table,
@@ -31558,64 +31620,7 @@ var _user$project$Table$viewTable = F3(
 					}
 				});
 		} else {
-			return A3(
-				_mdgriffith$style_elements$Element$column,
-				_user$project$Styles$Table,
-				_user$project$Attributes$columnAttributes,
-				{
-					ctor: '::',
-					_0: A3(
-						_mdgriffith$style_elements$Element$row,
-						_user$project$Styles$None,
-						{
-							ctor: '::',
-							_0: _mdgriffith$style_elements$Element_Attributes$spread,
-							_1: {ctor: '[]'}
-						},
-						{
-							ctor: '::',
-							_0: A3(
-								_mdgriffith$style_elements$Element$el,
-								_user$project$Styles$TableTitle,
-								{ctor: '[]'},
-								_mdgriffith$style_elements$Element$text(meta.title)),
-							_1: {
-								ctor: '::',
-								_0: A3(
-									_mdgriffith$style_elements$Element$row,
-									_user$project$Styles$None,
-									{ctor: '[]'},
-									{
-										ctor: '::',
-										_0: A3(
-											_mdgriffith$style_elements$Element$button,
-											_user$project$Styles$Main,
-											{
-												ctor: '::',
-												_0: _mdgriffith$style_elements$Element_Events$onClick(_user$project$Types$TogglePlot),
-												_1: {ctor: '[]'}
-											},
-											_mdgriffith$style_elements$Element$text('X')),
-										_1: {ctor: '[]'}
-									}),
-								_1: {ctor: '[]'}
-							}
-						}),
-					_1: {
-						ctor: '::',
-						_0: A3(
-							_mdgriffith$style_elements$Element$el,
-							_user$project$Styles$Main,
-							{
-								ctor: '::',
-								_0: _mdgriffith$style_elements$Element_Attributes$height(_mdgriffith$style_elements$Element_Attributes$fill),
-								_1: {ctor: '[]'}
-							},
-							_mdgriffith$style_elements$Element$html(
-								_user$project$Table$plotDataSequences(data))),
-						_1: {ctor: '[]'}
-					}
-				});
+			return A2(_user$project$DataPlot$viewPlot, data, meta);
 		}
 	});
 

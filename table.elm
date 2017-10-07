@@ -4,16 +4,14 @@ import Types exposing (..)
 import Styles exposing (..)
 import Utils exposing (groupBy)
 import Attributes exposing (columnAttributes)
+import DataPlot exposing (viewPlot)
 
 
 -- External ------
 
-import Element exposing (Element, paragraph, column, text, row, el, button, grid, cell, html)
-import Element.Attributes exposing (spacing, verticalCenter, padding, spread, px, scrollbars, height, fill)
+import Element exposing (Element, paragraph, column, text, row, el, button, grid, cell)
 import Element.Events exposing (onClick)
-import Plot exposing (customSeries, normalAxis, dot, viewCircle, viewSeries, Series)
-import Svg exposing (Svg)
-import Svg.Attributes exposing (stroke)
+import Element.Attributes exposing (spacing, verticalCenter, padding, spread, px, scrollbars)
 
 
 -- View ---------------
@@ -34,8 +32,9 @@ viewTable table meta showPlot =
             (table.columns
                 |> List.map .type_
                 |> List.filter ((==) "c")
-                |> List.length)
-            == 1 
+                |> List.length
+            )
+                == 1
 
         canPlot =
             onlyHasSingleDataPoints && isAllNumeric
@@ -54,7 +53,7 @@ viewTable table meta showPlot =
                         [ spread ]
                         [ el TableTitle [] <| text meta.title
                         , (row None
-                            [spacing 5]
+                            [ spacing 5 ]
                             [ button plotButtonStyle plotButtonAttributes <| text "Plot"
                             , button Main [ onClick ToggleTableDataView ] <| text "X"
                             ]
@@ -64,65 +63,7 @@ viewTable table meta showPlot =
                     ]
 
             True ->
-                column Table
-                    columnAttributes
-                    [ row None
-                        [ spread ]
-                        [ el TableTitle [] <| text meta.title
-                        , (row None
-                            []
-                            [ button Main [ onClick TogglePlot ] <| text "X"
-                            ]
-                          )
-                        ]
-                    , el Main [ height fill ] <| html <| plotDataSequences data
-                    ]
-
-
-plotDataSequences : List DataSequence -> Svg msg
-plotDataSequences dataSeqs =
-    viewSeries
-        (dataSeqs
-            |> List.indexedMap plotLine
-        )
-        dataSeqs
-
-
-plotLine : Int -> DataSequence -> Series (List DataSequence) msg
-plotLine seriesIndex seq =
-    let
-        colour =
-            colours
-                |> List.drop seriesIndex
-                |> List.head
-                |> Maybe.withDefault "black"
-    in 
-        customSeries normalAxis (Plot.Linear Nothing [stroke colour]) (\seqs -> preparePoints colour seq.points)
-
-preparePoints : String -> List DataPoint -> List (Plot.DataPoint msg)
-preparePoints colour points =
-    points
-        |> List.indexedMap (plotPoint colour)
-        |> List.filterMap identity
-
-plotPoint : String -> Int -> DataPoint -> Maybe (Plot.DataPoint msg)
-plotPoint colour index point =
-    let
-        value : String
-        value =
-            point.values
-                |> List.head
-                |> Maybe.withDefault ""
-
-        floatValue : Result String Float
-        floatValue =
-            String.toFloat value
-    in
-        case floatValue of
-            Ok val ->
-                Just (dot (viewCircle 5.0 colour) (toFloat index) val)
-            Err err ->
-                Nothing
+                viewPlot data meta
 
 
 viewValues : TableData -> TableMeta -> Element Styles variation Msg
@@ -367,7 +308,3 @@ viewCell style rowIndex columnIndex value width =
 emptyVariableMeta : VariableMeta
 emptyVariableMeta =
     VariableMeta "" "" [] False False
-
-colours : List String
-colours =
-    ["fuchsia", "red", "blue", "green", "maroon", "purple", "aqua", "olive"]
