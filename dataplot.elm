@@ -31,9 +31,6 @@ import Svg exposing (Svg)
 import Svg.Attributes exposing (stroke)
 import Element exposing (Element, column, text, row, el, button, html, paragraph)
 import Element.Attributes exposing (spread, height, fill, width, percent, spacing)
-import Style exposing (style)
-import Style.Color as Color
-import Color
 import Element.Events exposing (onClick)
 
 
