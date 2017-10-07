@@ -8,9 +8,12 @@ import Attributes exposing (columnAttributes)
 
 -- External ------
 
-import Element exposing (Element, paragraph, column, text, row, el, button, grid, cell)
-import Element.Attributes exposing (verticalCenter, padding, spread, px, scrollbars)
+import Element exposing (Element, paragraph, column, text, row, el, button, grid, cell, html)
+import Element.Attributes exposing (spacing, verticalCenter, padding, spread, px, scrollbars, height, fill)
 import Element.Events exposing (onClick)
+import Plot exposing (customSeries, normalAxis, dot, viewCircle, viewSeries, Series)
+import Svg exposing (Svg)
+import Svg.Attributes exposing (stroke)
 
 
 -- View ---------------
@@ -19,9 +22,23 @@ import Element.Events exposing (onClick)
 viewTable : TableData -> TableMeta -> Bool -> Element Styles variation Msg
 viewTable table meta showPlot =
     let
-        canPlot =
+        data : List DataSequence
+        data =
             dataSequences table meta
+
+        isAllNumeric =
+            data
                 |> List.all isNumericSequence
+
+        onlyHasSingleDataPoints =
+            (table.columns
+                |> List.map .type_
+                |> List.filter ((==) "c")
+                |> List.length)
+            == 1 
+
+        canPlot =
+            onlyHasSingleDataPoints && isAllNumeric
 
         ( plotButtonStyle, plotButtonAttributes ) =
             if canPlot then
@@ -37,9 +54,9 @@ viewTable table meta showPlot =
                         [ spread ]
                         [ el TableTitle [] <| text meta.title
                         , (row None
-                            []
-                            [ button Main [ onClick ToggleTableDataView ] <| text "X"
-                            , button plotButtonStyle plotButtonAttributes <| text "Plot"
+                            [spacing 5]
+                            [ button plotButtonStyle plotButtonAttributes <| text "Plot"
+                            , button Main [ onClick ToggleTableDataView ] <| text "X"
                             ]
                           )
                         ]
@@ -58,7 +75,54 @@ viewTable table meta showPlot =
                             ]
                           )
                         ]
+                    , el Main [ height fill ] <| html <| plotDataSequences data
                     ]
+
+
+plotDataSequences : List DataSequence -> Svg msg
+plotDataSequences dataSeqs =
+    viewSeries
+        (dataSeqs
+            |> List.indexedMap plotLine
+        )
+        dataSeqs
+
+
+plotLine : Int -> DataSequence -> Series (List DataSequence) msg
+plotLine seriesIndex seq =
+    let
+        colour =
+            colours
+                |> List.drop seriesIndex
+                |> List.head
+                |> Maybe.withDefault "black"
+    in 
+        customSeries normalAxis (Plot.Linear Nothing [stroke colour]) (\seqs -> preparePoints colour seq.points)
+
+preparePoints : String -> List DataPoint -> List (Plot.DataPoint msg)
+preparePoints colour points =
+    points
+        |> List.indexedMap (plotPoint colour)
+        |> List.filterMap identity
+
+plotPoint : String -> Int -> DataPoint -> Maybe (Plot.DataPoint msg)
+plotPoint colour index point =
+    let
+        value : String
+        value =
+            point.values
+                |> List.head
+                |> Maybe.withDefault ""
+
+        floatValue : Result String Float
+        floatValue =
+            String.toFloat value
+    in
+        case floatValue of
+            Ok val ->
+                Just (dot (viewCircle 5.0 colour) (toFloat index) val)
+            Err err ->
+                Nothing
 
 
 viewValues : TableData -> TableMeta -> Element Styles variation Msg
@@ -150,19 +214,26 @@ isNumericDataPoint point =
     point.values
         |> List.all isNumericOrEmpty
 
+
 isNumericOrEmpty : String -> Bool
 isNumericOrEmpty str =
     let
-        isEmpty = str == ""
-        isPlaceHolder = str == ".."
+        isEmpty =
+            str == ""
+
+        isPlaceHolder =
+            str == ".."
+
         isNumeric =
             case String.toFloat str of
                 Ok float ->
                     True
+
                 Err err ->
                     False
     in
         isEmpty || isPlaceHolder || isNumeric
+
 
 dataSequences : TableData -> TableMeta -> List DataSequence
 dataSequences table meta =
@@ -296,3 +367,7 @@ viewCell style rowIndex columnIndex value width =
 emptyVariableMeta : VariableMeta
 emptyVariableMeta =
     VariableMeta "" "" [] False False
+
+colours : List String
+colours =
+    ["fuchsia", "red", "blue", "green", "maroon", "purple", "aqua", "olive"]
