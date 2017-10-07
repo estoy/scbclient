@@ -31080,6 +31080,46 @@ var _user$project$Styles$stylesheet = _mdgriffith$style_elements$Style$styleShee
 		}
 	});
 
+var _user$project$DataPlot$emptyVariableMeta = A5(
+	_user$project$Types$VariableMeta,
+	'',
+	'',
+	{ctor: '[]'},
+	false,
+	false);
+var _user$project$DataPlot$axisLabel = F2(
+	function (pos, txt) {
+		return {
+			view: A2(
+				_terezka$elm_plot$Plot$viewLabel,
+				{ctor: '[]'},
+				txt),
+			position: _elm_lang$core$Basics$toFloat(pos)
+		};
+	});
+var _user$project$DataPlot$ticks = function (count) {
+	return A2(
+		_elm_lang$core$List$map,
+		_terezka$elm_plot$Plot$simpleTick,
+		A2(
+			_elm_lang$core$List$map,
+			_elm_lang$core$Basics$toFloat,
+			A2(_elm_lang$core$List$range, 1, count)));
+};
+var _user$project$DataPlot$timeAxis = function (times) {
+	return _terezka$elm_plot$Plot$customAxis(
+		function (summary) {
+			return {
+				position: _terezka$elm_plot$Plot$closestToZero,
+				axisLine: _elm_lang$core$Maybe$Just(
+					_terezka$elm_plot$Plot$simpleLine(summary)),
+				ticks: _user$project$DataPlot$ticks(
+					_elm_lang$core$List$length(times)),
+				labels: A2(_elm_lang$core$List$indexedMap, _user$project$DataPlot$axisLabel, times),
+				flipAnchor: false
+			};
+		});
+};
 var _user$project$DataPlot$colours = {
 	ctor: '::',
 	_0: 'fuchsia',
@@ -31164,14 +31204,44 @@ var _user$project$DataPlot$plotLine = F2(
 				return A2(_user$project$DataPlot$preparePoints, colour, seq.points);
 			});
 	});
-var _user$project$DataPlot$plotDataSequences = function (dataSeqs) {
-	return A2(
-		_terezka$elm_plot$Plot$viewSeries,
-		A2(_elm_lang$core$List$indexedMap, _user$project$DataPlot$plotLine, dataSeqs),
-		dataSeqs);
-};
+var _user$project$DataPlot$plotDataSequences = F2(
+	function (dataSeqs, times) {
+		return A3(
+			_terezka$elm_plot$Plot$viewSeriesCustom,
+			_elm_lang$core$Native_Utils.update(
+				_terezka$elm_plot$Plot$defaultSeriesPlotCustomizations,
+				{
+					horizontalAxis: _user$project$DataPlot$timeAxis(times),
+					margin: {top: 20, right: 40, bottom: 80, left: 40}
+				}),
+			A2(_elm_lang$core$List$indexedMap, _user$project$DataPlot$plotLine, dataSeqs),
+			dataSeqs);
+	});
 var _user$project$DataPlot$viewPlot = F2(
 	function (data, meta) {
+		var times = A2(
+			_elm_lang$core$List$map,
+			function (_) {
+				return _.text;
+			},
+			A2(
+				_elm_lang$core$List$filter,
+				function (_) {
+					return _.selected;
+				},
+				function (_) {
+					return _.values;
+				}(
+					A2(
+						_elm_lang$core$Maybe$withDefault,
+						_user$project$DataPlot$emptyVariableMeta,
+						_elm_lang$core$List$head(
+							A2(
+								_elm_lang$core$List$filter,
+								function (_) {
+									return _.time;
+								},
+								meta.variables))))));
 		return A3(
 			_mdgriffith$style_elements$Element$column,
 			_user$project$Styles$Table,
@@ -31226,7 +31296,7 @@ var _user$project$DataPlot$viewPlot = F2(
 							_1: {ctor: '[]'}
 						},
 						_mdgriffith$style_elements$Element$html(
-							_user$project$DataPlot$plotDataSequences(data))),
+							A2(_user$project$DataPlot$plotDataSequences, data, times))),
 					_1: {ctor: '[]'}
 				}
 			});
