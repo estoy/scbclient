@@ -4,6 +4,7 @@
 
 # Query
 * Make sorting culture aware
+* Clear selection
 
 # Query Results
 * Show comments
