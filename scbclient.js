@@ -31317,25 +31317,62 @@ var _user$project$DataPlot$axisLabel = F2(
 			position: _elm_lang$core$Basics$toFloat(pos)
 		};
 	});
-var _user$project$DataPlot$ticks = function (count) {
+var _user$project$DataPlot$labels = F2(
+	function (times, indices) {
+		return A2(
+			_elm_lang$core$List$map,
+			function (_p0) {
+				var _p1 = _p0;
+				return A2(_user$project$DataPlot$axisLabel, _p1._0, _p1._1);
+			},
+			A2(
+				_elm_lang$core$List$filterMap,
+				_elm_lang$core$Basics$identity,
+				A2(
+					_elm_lang$core$List$indexedMap,
+					F2(
+						function (i, t) {
+							return A2(_elm_lang$core$List$member, i, indices) ? _elm_lang$core$Maybe$Just(
+								{ctor: '_Tuple2', _0: i, _1: t}) : _elm_lang$core$Maybe$Nothing;
+						}),
+					times)));
+	});
+var _user$project$DataPlot$reasonableTicks = function (times) {
+	var length = _elm_lang$core$List$length(times);
+	var step = A2(_elm_lang$core$Basics$max, 1, (((length - 1) / 5) | 0) + 1);
+	return A2(
+		_elm_lang$core$List$filter,
+		F2(
+			function (x, y) {
+				return _elm_lang$core$Native_Utils.cmp(x, y) > 0;
+			})(length),
+		A2(
+			_elm_lang$core$List$map,
+			F2(
+				function (x, y) {
+					return x * y;
+				})(step),
+			A2(_elm_lang$core$List$range, 0, length - 1)));
+};
+var _user$project$DataPlot$ticks = function (indices) {
 	return A2(
 		_elm_lang$core$List$map,
 		_terezka$elm_plot$Plot$simpleTick,
-		A2(
-			_elm_lang$core$List$map,
-			_elm_lang$core$Basics$toFloat,
-			A2(_elm_lang$core$List$range, 1, count)));
+		A2(_elm_lang$core$List$map, _elm_lang$core$Basics$toFloat, indices));
 };
 var _user$project$DataPlot$timeAxis = function (times) {
+	var tickIndices = A2(
+		_elm_lang$core$Debug$log,
+		'ticks',
+		_user$project$DataPlot$reasonableTicks(times));
 	return _terezka$elm_plot$Plot$customAxis(
 		function (summary) {
 			return {
 				position: _terezka$elm_plot$Plot$closestToZero,
 				axisLine: _elm_lang$core$Maybe$Just(
 					_terezka$elm_plot$Plot$simpleLine(summary)),
-				ticks: _user$project$DataPlot$ticks(
-					_elm_lang$core$List$length(times)),
-				labels: A2(_elm_lang$core$List$indexedMap, _user$project$DataPlot$axisLabel, times),
+				ticks: _user$project$DataPlot$ticks(tickIndices),
+				labels: A2(_user$project$DataPlot$labels, times, tickIndices),
 				flipAnchor: false
 			};
 		});
@@ -31427,14 +31464,14 @@ var _user$project$DataPlot$plotPoint = F3(
 			'',
 			_elm_lang$core$List$head(point.values));
 		var floatValue = _elm_lang$core$String$toFloat(value);
-		var _p0 = floatValue;
-		if (_p0.ctor === 'Ok') {
+		var _p2 = floatValue;
+		if (_p2.ctor === 'Ok') {
 			return _elm_lang$core$Maybe$Just(
 				A3(
 					_terezka$elm_plot$Plot$dot,
 					A2(_terezka$elm_plot$Plot$viewCircle, 5.0, colour),
 					_elm_lang$core$Basics$toFloat(index),
-					_p0._0));
+					_p2._0));
 		} else {
 			return _elm_lang$core$Maybe$Nothing;
 		}
@@ -31475,7 +31512,7 @@ var _user$project$DataPlot$plotDataSequences = F2(
 				_terezka$elm_plot$Plot$defaultSeriesPlotCustomizations,
 				{
 					horizontalAxis: _user$project$DataPlot$timeAxis(times),
-					margin: {top: 20, right: 40, bottom: 20, left: 40}
+					margin: {top: 20, right: 40, bottom: 20, left: 60}
 				}),
 			A2(_elm_lang$core$List$indexedMap, _user$project$DataPlot$plotLine, dataSeqs),
 			dataSeqs);
@@ -31645,8 +31682,8 @@ var _user$project$DataPlot$viewPlot = F2(
 	});
 var _user$project$DataPlot$isNumericOrEmpty = function (str) {
 	var isNumeric = function () {
-		var _p1 = _elm_lang$core$String$toFloat(str);
-		if (_p1.ctor === 'Ok') {
+		var _p3 = _elm_lang$core$String$toFloat(str);
+		if (_p3.ctor === 'Ok') {
 			return true;
 		} else {
 			return false;

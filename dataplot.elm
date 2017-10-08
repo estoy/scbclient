@@ -5,6 +5,7 @@ import Styles exposing (..)
 import Attributes exposing (columnAttributes, buttonHeight)
 import Elements exposing (buttonElement, titleRow)
 
+
 -- External ------
 
 import Plot
@@ -189,7 +190,7 @@ plotDataSequences dataSeqs times =
                 { top = 20
                 , right = 40
                 , bottom = 20
-                , left = 40
+                , left = 60
                 }
         }
         (dataSeqs
@@ -271,21 +272,53 @@ colourNameForIndex index =
 
 timeAxis : List String -> Axis
 timeAxis times =
-    customAxis <|
-        \summary ->
-            { position = closestToZero
-            , axisLine = Just (simpleLine summary)
-            , ticks = ticks <| List.length times
-            , labels = List.indexedMap axisLabel times
-            , flipAnchor = False
-            }
+    let
+        tickIndices =
+            Debug.log "ticks" (reasonableTicks times)
+    in
+        customAxis <|
+            \summary ->
+                { position = closestToZero
+                , axisLine = Just (simpleLine summary)
+                , ticks = ticks tickIndices
+                , labels = labels times tickIndices
+                , flipAnchor = False
+                }
 
 
-ticks : Int -> List TickCustomizations
-ticks count =
-    List.range 1 count
+ticks : List Int -> List TickCustomizations
+ticks indices =
+    indices
         |> List.map toFloat
         |> List.map simpleTick
+
+
+reasonableTicks : List String -> List Int
+reasonableTicks times =
+    let
+        length =
+            List.length times
+        step : Int
+        step =
+            max 1 ((length - 1) // 5 + 1)
+    in
+        List.range 0 (length - 1)
+            |> List.map ((*) step)
+            |> List.filter ((>) length)
+
+
+labels : List String -> List Int -> List LabelCustomizations
+labels times indices =
+    times
+        |> List.indexedMap
+            (\i t ->
+                if List.member i indices then
+                    Just ( i, t )
+                else
+                    Nothing
+            )
+        |> List.filterMap identity
+        |> List.map (\( i, t ) -> axisLabel i t)
 
 
 axisLabel : Int -> String -> LabelCustomizations

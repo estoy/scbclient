@@ -15,4 +15,4 @@
 * Make y-axis (optionally) zero-based
 * Make background fill vertically
 * Show selection values that are common for all series
-* Constrain the number of ticks on the horizontal axis
+
