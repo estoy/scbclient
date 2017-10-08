@@ -3,9 +3,9 @@ module Table exposing (viewTable)
 import Types exposing (..)
 import Styles exposing (..)
 import Utils exposing (groupBy)
-import Attributes exposing (columnAttributes, buttonHeight, titleAttributes)
+import Attributes exposing (columnAttributes, buttonHeight)
 import DataPlot exposing (viewPlot, canPlot)
-import Elements exposing (titleElement, buttonElement)
+import Elements exposing (buttonElement, titleRow)
 
 
 -- External ------
@@ -32,15 +32,9 @@ viewTable table meta showPlot =
             False ->
                 column Table
                     columnAttributes
-                    [ row None
-                        titleAttributes
-                        [ titleElement meta.title
-                        , (row None
-                            [ spacing 5 ]
-                            [ buttonElement "Plot" TogglePlot isPlottable
-                            , buttonElement "X" ToggleTableDataView True
-                            ]
-                          )
+                    [ titleRow meta.title
+                        [ buttonElement "Plot" TogglePlot isPlottable
+                        , buttonElement "X" ToggleTableDataView True
                         ]
                     , viewValues table meta
                     ]

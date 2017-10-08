@@ -2,8 +2,8 @@ module DataPlot exposing (viewPlot, canPlot)
 
 import Types exposing (..)
 import Styles exposing (..)
-import Attributes exposing (columnAttributes, buttonHeight, titleAttributes)
-import Elements exposing (titleElement, buttonElement)
+import Attributes exposing (columnAttributes, buttonHeight)
+import Elements exposing (buttonElement, titleRow)
 
 -- External ------
 
@@ -115,15 +115,7 @@ viewPlot data meta =
     in
         column Table
             columnAttributes
-            [ row None
-                titleAttributes
-                [ titleElement meta.title
-                , (row None
-                    []
-                    [ buttonElement "X" TogglePlot True
-                    ]
-                  )
-                ]
+            [ titleRow meta.title [ buttonElement "X" TogglePlot True ]
             , row None
                 [ spacing 20 ]
                 [ el Main [ height fill, width (percent 70) ] <| html <| plotDataSequences data times

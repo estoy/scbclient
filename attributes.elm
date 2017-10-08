@@ -1,9 +1,9 @@
-module Attributes exposing (columnAttributes, listAttributes, buttonHeight, titleAttributes)
+module Attributes exposing (columnAttributes, listAttributes, buttonHeight)
 
 -- External ------
 
 import Element exposing (Attribute)
-import Element.Attributes exposing (spacing, padding, paddingXY, height, px, spread)
+import Element.Attributes exposing (spacing, padding, paddingXY, height, px)
 
 
 columnAttributes : List (Attribute variation msg)
@@ -19,8 +19,3 @@ listAttributes =
 buttonHeight : Attribute variation msg
 buttonHeight =
     height (px 30)
-
-
-titleAttributes : List (Attribute variation msg)
-titleAttributes =
-    [ spread, spacing 10 ]

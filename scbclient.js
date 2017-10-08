@@ -30364,6 +30364,416 @@ var _terezka$elm_plot$Plot$axisAtMax = _terezka$elm_plot$Plot$customAxis(
 		};
 	});
 
+var _user$project$Styles$baseStyle = {
+	ctor: '::',
+	_0: _mdgriffith$style_elements$Style_Font$typeface(
+		{
+			ctor: '::',
+			_0: _mdgriffith$style_elements$Style_Font$font('helvetica'),
+			_1: {
+				ctor: '::',
+				_0: _mdgriffith$style_elements$Style_Font$font('arial'),
+				_1: {
+					ctor: '::',
+					_0: _mdgriffith$style_elements$Style_Font$font('sans-serif'),
+					_1: {ctor: '[]'}
+				}
+			}
+		}),
+	_1: {
+		ctor: '::',
+		_0: _mdgriffith$style_elements$Style_Font$size(16),
+		_1: {
+			ctor: '::',
+			_0: _mdgriffith$style_elements$Style_Font$lineHeight(1.3),
+			_1: {ctor: '[]'}
+		}
+	}
+};
+var _user$project$Styles$dataBackground = A4(_elm_lang$core$Color$rgba, 239, 227, 195, 1.0);
+var _user$project$Styles$tableBackground = A4(_elm_lang$core$Color$rgba, 231, 214, 166, 1.0);
+var _user$project$Styles$PlotBlack = {ctor: 'PlotBlack'};
+var _user$project$Styles$PlotOlive = {ctor: 'PlotOlive'};
+var _user$project$Styles$PlotAqua = {ctor: 'PlotAqua'};
+var _user$project$Styles$PlotPurple = {ctor: 'PlotPurple'};
+var _user$project$Styles$PlotMaroon = {ctor: 'PlotMaroon'};
+var _user$project$Styles$PlotGreen = {ctor: 'PlotGreen'};
+var _user$project$Styles$PlotBlue = {ctor: 'PlotBlue'};
+var _user$project$Styles$PlotRed = {ctor: 'PlotRed'};
+var _user$project$Styles$PlotFuchsia = {ctor: 'PlotFuchsia'};
+var _user$project$Styles$DataGrid = {ctor: 'DataGrid'};
+var _user$project$Styles$HeaderBox = {ctor: 'HeaderBox'};
+var _user$project$Styles$DataBox = {ctor: 'DataBox'};
+var _user$project$Styles$DimBox = {ctor: 'DimBox'};
+var _user$project$Styles$VariableData = {ctor: 'VariableData'};
+var _user$project$Styles$VariableName = {ctor: 'VariableName'};
+var _user$project$Styles$TableTitle = {ctor: 'TableTitle'};
+var _user$project$Styles$Table = {ctor: 'Table'};
+var _user$project$Styles$Site = {ctor: 'Site'};
+var _user$project$Styles$Deselected = {ctor: 'Deselected'};
+var _user$project$Styles$Selected = {ctor: 'Selected'};
+var _user$project$Styles$Disabled = {ctor: 'Disabled'};
+var _user$project$Styles$Main = {ctor: 'Main'};
+var _user$project$Styles$None = {ctor: 'None'};
+var _user$project$Styles$stylesheet = _mdgriffith$style_elements$Style$styleSheet(
+	{
+		ctor: '::',
+		_0: A2(
+			_mdgriffith$style_elements$Style$style,
+			_user$project$Styles$None,
+			{ctor: '[]'}),
+		_1: {
+			ctor: '::',
+			_0: A2(
+				_mdgriffith$style_elements$Style$style,
+				_user$project$Styles$Main,
+				A2(
+					_elm_lang$core$Basics_ops['++'],
+					{
+						ctor: '::',
+						_0: _mdgriffith$style_elements$Style_Color$text(_elm_lang$core$Color$darkCharcoal),
+						_1: {
+							ctor: '::',
+							_0: _mdgriffith$style_elements$Style_Color$background(_elm_lang$core$Color$lightGrey),
+							_1: {ctor: '[]'}
+						}
+					},
+					_user$project$Styles$baseStyle)),
+			_1: {
+				ctor: '::',
+				_0: A2(
+					_mdgriffith$style_elements$Style$style,
+					_user$project$Styles$Disabled,
+					A2(
+						_elm_lang$core$Basics_ops['++'],
+						{
+							ctor: '::',
+							_0: _mdgriffith$style_elements$Style_Color$text(_elm_lang$core$Color$lightCharcoal),
+							_1: {
+								ctor: '::',
+								_0: _mdgriffith$style_elements$Style_Color$background(_elm_lang$core$Color$lightGray),
+								_1: {ctor: '[]'}
+							}
+						},
+						_user$project$Styles$baseStyle)),
+				_1: {
+					ctor: '::',
+					_0: A2(
+						_mdgriffith$style_elements$Style$style,
+						_user$project$Styles$Selected,
+						{
+							ctor: '::',
+							_0: _mdgriffith$style_elements$Style_Color$text(_elm_lang$core$Color$white),
+							_1: {
+								ctor: '::',
+								_0: _mdgriffith$style_elements$Style_Color$background(_elm_lang$core$Color$charcoal),
+								_1: {
+									ctor: '::',
+									_0: _mdgriffith$style_elements$Style$cursor('pointer'),
+									_1: {ctor: '[]'}
+								}
+							}
+						}),
+					_1: {
+						ctor: '::',
+						_0: A2(
+							_mdgriffith$style_elements$Style$style,
+							_user$project$Styles$Deselected,
+							{
+								ctor: '::',
+								_0: _mdgriffith$style_elements$Style$cursor('pointer'),
+								_1: {ctor: '[]'}
+							}),
+						_1: {
+							ctor: '::',
+							_0: A2(
+								_mdgriffith$style_elements$Style$style,
+								_user$project$Styles$Site,
+								{
+									ctor: '::',
+									_0: _mdgriffith$style_elements$Style_Color$background(
+										A4(_elm_lang$core$Color$rgba, 186, 196, 238, 1.0)),
+									_1: {ctor: '[]'}
+								}),
+							_1: {
+								ctor: '::',
+								_0: A2(
+									_mdgriffith$style_elements$Style$style,
+									_user$project$Styles$Table,
+									A2(
+										_elm_lang$core$Basics_ops['++'],
+										{
+											ctor: '::',
+											_0: _mdgriffith$style_elements$Style_Color$text(_elm_lang$core$Color$darkCharcoal),
+											_1: {
+												ctor: '::',
+												_0: _mdgriffith$style_elements$Style_Color$background(_user$project$Styles$tableBackground),
+												_1: {ctor: '[]'}
+											}
+										},
+										_user$project$Styles$baseStyle)),
+								_1: {
+									ctor: '::',
+									_0: A2(
+										_mdgriffith$style_elements$Style$style,
+										_user$project$Styles$TableTitle,
+										{
+											ctor: '::',
+											_0: _mdgriffith$style_elements$Style_Font$size(24),
+											_1: {
+												ctor: '::',
+												_0: _mdgriffith$style_elements$Style_Font$bold,
+												_1: {ctor: '[]'}
+											}
+										}),
+									_1: {
+										ctor: '::',
+										_0: A2(
+											_mdgriffith$style_elements$Style$style,
+											_user$project$Styles$VariableName,
+											{
+												ctor: '::',
+												_0: _mdgriffith$style_elements$Style_Font$bold,
+												_1: {ctor: '[]'}
+											}),
+										_1: {
+											ctor: '::',
+											_0: A2(
+												_mdgriffith$style_elements$Style$style,
+												_user$project$Styles$VariableData,
+												{
+													ctor: '::',
+													_0: _mdgriffith$style_elements$Style_Color$background(_user$project$Styles$dataBackground),
+													_1: {
+														ctor: '::',
+														_0: _mdgriffith$style_elements$Style$cursor('pointer'),
+														_1: {ctor: '[]'}
+													}
+												}),
+											_1: {
+												ctor: '::',
+												_0: A2(
+													_mdgriffith$style_elements$Style$style,
+													_user$project$Styles$DimBox,
+													{
+														ctor: '::',
+														_0: _mdgriffith$style_elements$Style_Border$all(1.0),
+														_1: {
+															ctor: '::',
+															_0: _mdgriffith$style_elements$Style_Font$size(12),
+															_1: {
+																ctor: '::',
+																_0: _mdgriffith$style_elements$Style_Font$lineHeight(1.2),
+																_1: {ctor: '[]'}
+															}
+														}
+													}),
+												_1: {
+													ctor: '::',
+													_0: A2(
+														_mdgriffith$style_elements$Style$style,
+														_user$project$Styles$HeaderBox,
+														{
+															ctor: '::',
+															_0: _mdgriffith$style_elements$Style_Border$all(1.0),
+															_1: {
+																ctor: '::',
+																_0: _mdgriffith$style_elements$Style_Font$size(12),
+																_1: {
+																	ctor: '::',
+																	_0: _mdgriffith$style_elements$Style_Font$bold,
+																	_1: {
+																		ctor: '::',
+																		_0: _mdgriffith$style_elements$Style_Font$lineHeight(1.2),
+																		_1: {ctor: '[]'}
+																	}
+																}
+															}
+														}),
+													_1: {
+														ctor: '::',
+														_0: A2(
+															_mdgriffith$style_elements$Style$style,
+															_user$project$Styles$DataBox,
+															{
+																ctor: '::',
+																_0: _mdgriffith$style_elements$Style_Border$all(1.0),
+																_1: {
+																	ctor: '::',
+																	_0: _mdgriffith$style_elements$Style_Font$size(12),
+																	_1: {
+																		ctor: '::',
+																		_0: _mdgriffith$style_elements$Style_Font$lineHeight(1.2),
+																		_1: {
+																			ctor: '::',
+																			_0: _mdgriffith$style_elements$Style_Color$background(
+																				A4(_elm_lang$core$Color$rgba, 186, 196, 238, 1.0)),
+																			_1: {ctor: '[]'}
+																		}
+																	}
+																}
+															}),
+														_1: {
+															ctor: '::',
+															_0: A2(
+																_mdgriffith$style_elements$Style$style,
+																_user$project$Styles$DataGrid,
+																{
+																	ctor: '::',
+																	_0: _mdgriffith$style_elements$Style_Color$background(_user$project$Styles$dataBackground),
+																	_1: {ctor: '[]'}
+																}),
+															_1: {
+																ctor: '::',
+																_0: A2(
+																	_mdgriffith$style_elements$Style$style,
+																	_user$project$Styles$PlotFuchsia,
+																	A2(
+																		_elm_lang$core$Basics_ops['++'],
+																		{
+																			ctor: '::',
+																			_0: _mdgriffith$style_elements$Style_Color$text(
+																				A4(_elm_lang$core$Color$rgba, 255, 0, 255, 1.0)),
+																			_1: {ctor: '[]'}
+																		},
+																		_user$project$Styles$baseStyle)),
+																_1: {
+																	ctor: '::',
+																	_0: A2(
+																		_mdgriffith$style_elements$Style$style,
+																		_user$project$Styles$PlotRed,
+																		A2(
+																			_elm_lang$core$Basics_ops['++'],
+																			{
+																				ctor: '::',
+																				_0: _mdgriffith$style_elements$Style_Color$text(
+																					A4(_elm_lang$core$Color$rgba, 255, 0, 0, 1.0)),
+																				_1: {ctor: '[]'}
+																			},
+																			_user$project$Styles$baseStyle)),
+																	_1: {
+																		ctor: '::',
+																		_0: A2(
+																			_mdgriffith$style_elements$Style$style,
+																			_user$project$Styles$PlotBlue,
+																			A2(
+																				_elm_lang$core$Basics_ops['++'],
+																				{
+																					ctor: '::',
+																					_0: _mdgriffith$style_elements$Style_Color$text(
+																						A4(_elm_lang$core$Color$rgba, 0, 0, 255, 1.0)),
+																					_1: {ctor: '[]'}
+																				},
+																				_user$project$Styles$baseStyle)),
+																		_1: {
+																			ctor: '::',
+																			_0: A2(
+																				_mdgriffith$style_elements$Style$style,
+																				_user$project$Styles$PlotGreen,
+																				A2(
+																					_elm_lang$core$Basics_ops['++'],
+																					{
+																						ctor: '::',
+																						_0: _mdgriffith$style_elements$Style_Color$text(
+																							A4(_elm_lang$core$Color$rgba, 0, 128, 0, 1.0)),
+																						_1: {ctor: '[]'}
+																					},
+																					_user$project$Styles$baseStyle)),
+																			_1: {
+																				ctor: '::',
+																				_0: A2(
+																					_mdgriffith$style_elements$Style$style,
+																					_user$project$Styles$PlotMaroon,
+																					A2(
+																						_elm_lang$core$Basics_ops['++'],
+																						{
+																							ctor: '::',
+																							_0: _mdgriffith$style_elements$Style_Color$text(
+																								A4(_elm_lang$core$Color$rgba, 128, 0, 0, 1.0)),
+																							_1: {ctor: '[]'}
+																						},
+																						_user$project$Styles$baseStyle)),
+																				_1: {
+																					ctor: '::',
+																					_0: A2(
+																						_mdgriffith$style_elements$Style$style,
+																						_user$project$Styles$PlotPurple,
+																						A2(
+																							_elm_lang$core$Basics_ops['++'],
+																							{
+																								ctor: '::',
+																								_0: _mdgriffith$style_elements$Style_Color$text(
+																									A4(_elm_lang$core$Color$rgba, 128, 0, 128, 1.0)),
+																								_1: {ctor: '[]'}
+																							},
+																							_user$project$Styles$baseStyle)),
+																					_1: {
+																						ctor: '::',
+																						_0: A2(
+																							_mdgriffith$style_elements$Style$style,
+																							_user$project$Styles$PlotAqua,
+																							A2(
+																								_elm_lang$core$Basics_ops['++'],
+																								{
+																									ctor: '::',
+																									_0: _mdgriffith$style_elements$Style_Color$text(
+																										A4(_elm_lang$core$Color$rgba, 0, 255, 255, 1.0)),
+																									_1: {ctor: '[]'}
+																								},
+																								_user$project$Styles$baseStyle)),
+																						_1: {
+																							ctor: '::',
+																							_0: A2(
+																								_mdgriffith$style_elements$Style$style,
+																								_user$project$Styles$PlotOlive,
+																								A2(
+																									_elm_lang$core$Basics_ops['++'],
+																									{
+																										ctor: '::',
+																										_0: _mdgriffith$style_elements$Style_Color$text(
+																											A4(_elm_lang$core$Color$rgba, 128, 128, 0, 1.0)),
+																										_1: {ctor: '[]'}
+																									},
+																									_user$project$Styles$baseStyle)),
+																							_1: {
+																								ctor: '::',
+																								_0: A2(
+																									_mdgriffith$style_elements$Style$style,
+																									_user$project$Styles$PlotBlack,
+																									A2(
+																										_elm_lang$core$Basics_ops['++'],
+																										{
+																											ctor: '::',
+																											_0: _mdgriffith$style_elements$Style_Color$text(
+																												A4(_elm_lang$core$Color$rgba, 0, 0, 0, 1.0)),
+																											_1: {ctor: '[]'}
+																										},
+																										_user$project$Styles$baseStyle)),
+																								_1: {ctor: '[]'}
+																							}
+																						}
+																					}
+																				}
+																			}
+																		}
+																	}
+																}
+															}
+														}
+													}
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	});
+
 var _user$project$Types$Model = F6(
 	function (a, b, c, d, e, f) {
 		return {siteContext: a, levelContexts: b, tableMeta: c, table: d, showPlot: e, latestError: f};
@@ -30795,15 +31205,6 @@ var _user$project$Api$loadSiteCmd = function (site) {
 			_elm_lang$core$Json_Decode$list(_user$project$Api$levelDecoder)));
 };
 
-var _user$project$Attributes$titleAttributes = {
-	ctor: '::',
-	_0: _mdgriffith$style_elements$Element_Attributes$spread,
-	_1: {
-		ctor: '::',
-		_0: _mdgriffith$style_elements$Element_Attributes$spacing(10),
-		_1: {ctor: '[]'}
-	}
-};
 var _user$project$Attributes$buttonHeight = _mdgriffith$style_elements$Element_Attributes$height(
 	_mdgriffith$style_elements$Element_Attributes$px(30));
 var _user$project$Attributes$listAttributes = {
@@ -30824,416 +31225,6 @@ var _user$project$Attributes$columnAttributes = {
 		_1: {ctor: '[]'}
 	}
 };
-
-var _user$project$Styles$baseStyle = {
-	ctor: '::',
-	_0: _mdgriffith$style_elements$Style_Font$typeface(
-		{
-			ctor: '::',
-			_0: _mdgriffith$style_elements$Style_Font$font('helvetica'),
-			_1: {
-				ctor: '::',
-				_0: _mdgriffith$style_elements$Style_Font$font('arial'),
-				_1: {
-					ctor: '::',
-					_0: _mdgriffith$style_elements$Style_Font$font('sans-serif'),
-					_1: {ctor: '[]'}
-				}
-			}
-		}),
-	_1: {
-		ctor: '::',
-		_0: _mdgriffith$style_elements$Style_Font$size(16),
-		_1: {
-			ctor: '::',
-			_0: _mdgriffith$style_elements$Style_Font$lineHeight(1.3),
-			_1: {ctor: '[]'}
-		}
-	}
-};
-var _user$project$Styles$dataBackground = A4(_elm_lang$core$Color$rgba, 239, 227, 195, 1.0);
-var _user$project$Styles$tableBackground = A4(_elm_lang$core$Color$rgba, 231, 214, 166, 1.0);
-var _user$project$Styles$PlotBlack = {ctor: 'PlotBlack'};
-var _user$project$Styles$PlotOlive = {ctor: 'PlotOlive'};
-var _user$project$Styles$PlotAqua = {ctor: 'PlotAqua'};
-var _user$project$Styles$PlotPurple = {ctor: 'PlotPurple'};
-var _user$project$Styles$PlotMaroon = {ctor: 'PlotMaroon'};
-var _user$project$Styles$PlotGreen = {ctor: 'PlotGreen'};
-var _user$project$Styles$PlotBlue = {ctor: 'PlotBlue'};
-var _user$project$Styles$PlotRed = {ctor: 'PlotRed'};
-var _user$project$Styles$PlotFuchsia = {ctor: 'PlotFuchsia'};
-var _user$project$Styles$DataGrid = {ctor: 'DataGrid'};
-var _user$project$Styles$HeaderBox = {ctor: 'HeaderBox'};
-var _user$project$Styles$DataBox = {ctor: 'DataBox'};
-var _user$project$Styles$DimBox = {ctor: 'DimBox'};
-var _user$project$Styles$VariableData = {ctor: 'VariableData'};
-var _user$project$Styles$VariableName = {ctor: 'VariableName'};
-var _user$project$Styles$TableTitle = {ctor: 'TableTitle'};
-var _user$project$Styles$Table = {ctor: 'Table'};
-var _user$project$Styles$Site = {ctor: 'Site'};
-var _user$project$Styles$Deselected = {ctor: 'Deselected'};
-var _user$project$Styles$Selected = {ctor: 'Selected'};
-var _user$project$Styles$Disabled = {ctor: 'Disabled'};
-var _user$project$Styles$Main = {ctor: 'Main'};
-var _user$project$Styles$None = {ctor: 'None'};
-var _user$project$Styles$stylesheet = _mdgriffith$style_elements$Style$styleSheet(
-	{
-		ctor: '::',
-		_0: A2(
-			_mdgriffith$style_elements$Style$style,
-			_user$project$Styles$None,
-			{ctor: '[]'}),
-		_1: {
-			ctor: '::',
-			_0: A2(
-				_mdgriffith$style_elements$Style$style,
-				_user$project$Styles$Main,
-				A2(
-					_elm_lang$core$Basics_ops['++'],
-					{
-						ctor: '::',
-						_0: _mdgriffith$style_elements$Style_Color$text(_elm_lang$core$Color$darkCharcoal),
-						_1: {
-							ctor: '::',
-							_0: _mdgriffith$style_elements$Style_Color$background(_elm_lang$core$Color$lightGrey),
-							_1: {ctor: '[]'}
-						}
-					},
-					_user$project$Styles$baseStyle)),
-			_1: {
-				ctor: '::',
-				_0: A2(
-					_mdgriffith$style_elements$Style$style,
-					_user$project$Styles$Disabled,
-					A2(
-						_elm_lang$core$Basics_ops['++'],
-						{
-							ctor: '::',
-							_0: _mdgriffith$style_elements$Style_Color$text(_elm_lang$core$Color$lightCharcoal),
-							_1: {
-								ctor: '::',
-								_0: _mdgriffith$style_elements$Style_Color$background(_elm_lang$core$Color$lightGray),
-								_1: {ctor: '[]'}
-							}
-						},
-						_user$project$Styles$baseStyle)),
-				_1: {
-					ctor: '::',
-					_0: A2(
-						_mdgriffith$style_elements$Style$style,
-						_user$project$Styles$Selected,
-						{
-							ctor: '::',
-							_0: _mdgriffith$style_elements$Style_Color$text(_elm_lang$core$Color$white),
-							_1: {
-								ctor: '::',
-								_0: _mdgriffith$style_elements$Style_Color$background(_elm_lang$core$Color$charcoal),
-								_1: {
-									ctor: '::',
-									_0: _mdgriffith$style_elements$Style$cursor('pointer'),
-									_1: {ctor: '[]'}
-								}
-							}
-						}),
-					_1: {
-						ctor: '::',
-						_0: A2(
-							_mdgriffith$style_elements$Style$style,
-							_user$project$Styles$Deselected,
-							{
-								ctor: '::',
-								_0: _mdgriffith$style_elements$Style$cursor('pointer'),
-								_1: {ctor: '[]'}
-							}),
-						_1: {
-							ctor: '::',
-							_0: A2(
-								_mdgriffith$style_elements$Style$style,
-								_user$project$Styles$Site,
-								{
-									ctor: '::',
-									_0: _mdgriffith$style_elements$Style_Color$background(
-										A4(_elm_lang$core$Color$rgba, 186, 196, 238, 1.0)),
-									_1: {ctor: '[]'}
-								}),
-							_1: {
-								ctor: '::',
-								_0: A2(
-									_mdgriffith$style_elements$Style$style,
-									_user$project$Styles$Table,
-									A2(
-										_elm_lang$core$Basics_ops['++'],
-										{
-											ctor: '::',
-											_0: _mdgriffith$style_elements$Style_Color$text(_elm_lang$core$Color$darkCharcoal),
-											_1: {
-												ctor: '::',
-												_0: _mdgriffith$style_elements$Style_Color$background(_user$project$Styles$tableBackground),
-												_1: {ctor: '[]'}
-											}
-										},
-										_user$project$Styles$baseStyle)),
-								_1: {
-									ctor: '::',
-									_0: A2(
-										_mdgriffith$style_elements$Style$style,
-										_user$project$Styles$TableTitle,
-										{
-											ctor: '::',
-											_0: _mdgriffith$style_elements$Style_Font$size(24),
-											_1: {
-												ctor: '::',
-												_0: _mdgriffith$style_elements$Style_Font$bold,
-												_1: {ctor: '[]'}
-											}
-										}),
-									_1: {
-										ctor: '::',
-										_0: A2(
-											_mdgriffith$style_elements$Style$style,
-											_user$project$Styles$VariableName,
-											{
-												ctor: '::',
-												_0: _mdgriffith$style_elements$Style_Font$bold,
-												_1: {ctor: '[]'}
-											}),
-										_1: {
-											ctor: '::',
-											_0: A2(
-												_mdgriffith$style_elements$Style$style,
-												_user$project$Styles$VariableData,
-												{
-													ctor: '::',
-													_0: _mdgriffith$style_elements$Style_Color$background(_user$project$Styles$dataBackground),
-													_1: {
-														ctor: '::',
-														_0: _mdgriffith$style_elements$Style$cursor('pointer'),
-														_1: {ctor: '[]'}
-													}
-												}),
-											_1: {
-												ctor: '::',
-												_0: A2(
-													_mdgriffith$style_elements$Style$style,
-													_user$project$Styles$DimBox,
-													{
-														ctor: '::',
-														_0: _mdgriffith$style_elements$Style_Border$all(1.0),
-														_1: {
-															ctor: '::',
-															_0: _mdgriffith$style_elements$Style_Font$size(12),
-															_1: {
-																ctor: '::',
-																_0: _mdgriffith$style_elements$Style_Font$lineHeight(1.2),
-																_1: {ctor: '[]'}
-															}
-														}
-													}),
-												_1: {
-													ctor: '::',
-													_0: A2(
-														_mdgriffith$style_elements$Style$style,
-														_user$project$Styles$HeaderBox,
-														{
-															ctor: '::',
-															_0: _mdgriffith$style_elements$Style_Border$all(1.0),
-															_1: {
-																ctor: '::',
-																_0: _mdgriffith$style_elements$Style_Font$size(12),
-																_1: {
-																	ctor: '::',
-																	_0: _mdgriffith$style_elements$Style_Font$bold,
-																	_1: {
-																		ctor: '::',
-																		_0: _mdgriffith$style_elements$Style_Font$lineHeight(1.2),
-																		_1: {ctor: '[]'}
-																	}
-																}
-															}
-														}),
-													_1: {
-														ctor: '::',
-														_0: A2(
-															_mdgriffith$style_elements$Style$style,
-															_user$project$Styles$DataBox,
-															{
-																ctor: '::',
-																_0: _mdgriffith$style_elements$Style_Border$all(1.0),
-																_1: {
-																	ctor: '::',
-																	_0: _mdgriffith$style_elements$Style_Font$size(12),
-																	_1: {
-																		ctor: '::',
-																		_0: _mdgriffith$style_elements$Style_Font$lineHeight(1.2),
-																		_1: {
-																			ctor: '::',
-																			_0: _mdgriffith$style_elements$Style_Color$background(
-																				A4(_elm_lang$core$Color$rgba, 186, 196, 238, 1.0)),
-																			_1: {ctor: '[]'}
-																		}
-																	}
-																}
-															}),
-														_1: {
-															ctor: '::',
-															_0: A2(
-																_mdgriffith$style_elements$Style$style,
-																_user$project$Styles$DataGrid,
-																{
-																	ctor: '::',
-																	_0: _mdgriffith$style_elements$Style_Color$background(_user$project$Styles$dataBackground),
-																	_1: {ctor: '[]'}
-																}),
-															_1: {
-																ctor: '::',
-																_0: A2(
-																	_mdgriffith$style_elements$Style$style,
-																	_user$project$Styles$PlotFuchsia,
-																	A2(
-																		_elm_lang$core$Basics_ops['++'],
-																		{
-																			ctor: '::',
-																			_0: _mdgriffith$style_elements$Style_Color$text(
-																				A4(_elm_lang$core$Color$rgba, 255, 0, 255, 1.0)),
-																			_1: {ctor: '[]'}
-																		},
-																		_user$project$Styles$baseStyle)),
-																_1: {
-																	ctor: '::',
-																	_0: A2(
-																		_mdgriffith$style_elements$Style$style,
-																		_user$project$Styles$PlotRed,
-																		A2(
-																			_elm_lang$core$Basics_ops['++'],
-																			{
-																				ctor: '::',
-																				_0: _mdgriffith$style_elements$Style_Color$text(
-																					A4(_elm_lang$core$Color$rgba, 255, 0, 0, 1.0)),
-																				_1: {ctor: '[]'}
-																			},
-																			_user$project$Styles$baseStyle)),
-																	_1: {
-																		ctor: '::',
-																		_0: A2(
-																			_mdgriffith$style_elements$Style$style,
-																			_user$project$Styles$PlotBlue,
-																			A2(
-																				_elm_lang$core$Basics_ops['++'],
-																				{
-																					ctor: '::',
-																					_0: _mdgriffith$style_elements$Style_Color$text(
-																						A4(_elm_lang$core$Color$rgba, 0, 0, 255, 1.0)),
-																					_1: {ctor: '[]'}
-																				},
-																				_user$project$Styles$baseStyle)),
-																		_1: {
-																			ctor: '::',
-																			_0: A2(
-																				_mdgriffith$style_elements$Style$style,
-																				_user$project$Styles$PlotGreen,
-																				A2(
-																					_elm_lang$core$Basics_ops['++'],
-																					{
-																						ctor: '::',
-																						_0: _mdgriffith$style_elements$Style_Color$text(
-																							A4(_elm_lang$core$Color$rgba, 0, 128, 0, 1.0)),
-																						_1: {ctor: '[]'}
-																					},
-																					_user$project$Styles$baseStyle)),
-																			_1: {
-																				ctor: '::',
-																				_0: A2(
-																					_mdgriffith$style_elements$Style$style,
-																					_user$project$Styles$PlotMaroon,
-																					A2(
-																						_elm_lang$core$Basics_ops['++'],
-																						{
-																							ctor: '::',
-																							_0: _mdgriffith$style_elements$Style_Color$text(
-																								A4(_elm_lang$core$Color$rgba, 128, 0, 0, 1.0)),
-																							_1: {ctor: '[]'}
-																						},
-																						_user$project$Styles$baseStyle)),
-																				_1: {
-																					ctor: '::',
-																					_0: A2(
-																						_mdgriffith$style_elements$Style$style,
-																						_user$project$Styles$PlotPurple,
-																						A2(
-																							_elm_lang$core$Basics_ops['++'],
-																							{
-																								ctor: '::',
-																								_0: _mdgriffith$style_elements$Style_Color$text(
-																									A4(_elm_lang$core$Color$rgba, 128, 0, 128, 1.0)),
-																								_1: {ctor: '[]'}
-																							},
-																							_user$project$Styles$baseStyle)),
-																					_1: {
-																						ctor: '::',
-																						_0: A2(
-																							_mdgriffith$style_elements$Style$style,
-																							_user$project$Styles$PlotAqua,
-																							A2(
-																								_elm_lang$core$Basics_ops['++'],
-																								{
-																									ctor: '::',
-																									_0: _mdgriffith$style_elements$Style_Color$text(
-																										A4(_elm_lang$core$Color$rgba, 0, 255, 255, 1.0)),
-																									_1: {ctor: '[]'}
-																								},
-																								_user$project$Styles$baseStyle)),
-																						_1: {
-																							ctor: '::',
-																							_0: A2(
-																								_mdgriffith$style_elements$Style$style,
-																								_user$project$Styles$PlotOlive,
-																								A2(
-																									_elm_lang$core$Basics_ops['++'],
-																									{
-																										ctor: '::',
-																										_0: _mdgriffith$style_elements$Style_Color$text(
-																											A4(_elm_lang$core$Color$rgba, 128, 128, 0, 1.0)),
-																										_1: {ctor: '[]'}
-																									},
-																									_user$project$Styles$baseStyle)),
-																							_1: {
-																								ctor: '::',
-																								_0: A2(
-																									_mdgriffith$style_elements$Style$style,
-																									_user$project$Styles$PlotBlack,
-																									A2(
-																										_elm_lang$core$Basics_ops['++'],
-																										{
-																											ctor: '::',
-																											_0: _mdgriffith$style_elements$Style_Color$text(
-																												A4(_elm_lang$core$Color$rgba, 0, 0, 0, 1.0)),
-																											_1: {ctor: '[]'}
-																										},
-																										_user$project$Styles$baseStyle)),
-																								_1: {ctor: '[]'}
-																							}
-																						}
-																					}
-																				}
-																			}
-																		}
-																	}
-																}
-															}
-														}
-													}
-												}
-											}
-										}
-									}
-								}
-							}
-						}
-					}
-				}
-			}
-		}
-	});
 
 var _user$project$Elements$buttonElement = F3(
 	function (title, msg, enabled) {
@@ -31273,6 +31264,38 @@ var _user$project$Elements$titleElement = function (title) {
 				_1: {ctor: '[]'}
 			}));
 };
+var _user$project$Elements$titleRow = F2(
+	function (title, buttons) {
+		return A3(
+			_mdgriffith$style_elements$Element$row,
+			_user$project$Styles$None,
+			{
+				ctor: '::',
+				_0: _mdgriffith$style_elements$Element_Attributes$spread,
+				_1: {
+					ctor: '::',
+					_0: _mdgriffith$style_elements$Element_Attributes$spacing(10),
+					_1: {ctor: '[]'}
+				}
+			},
+			{
+				ctor: '::',
+				_0: _user$project$Elements$titleElement(title),
+				_1: {
+					ctor: '::',
+					_0: A3(
+						_mdgriffith$style_elements$Element$row,
+						_user$project$Styles$None,
+						{
+							ctor: '::',
+							_0: _mdgriffith$style_elements$Element_Attributes$spacing(5),
+							_1: {ctor: '[]'}
+						},
+						buttons),
+					_1: {ctor: '[]'}
+				}
+			});
+	});
 
 var _user$project$DataPlot$emptyVariableMeta = A5(
 	_user$project$Types$VariableMeta,
@@ -31572,26 +31595,13 @@ var _user$project$DataPlot$viewPlot = F2(
 			_user$project$Attributes$columnAttributes,
 			{
 				ctor: '::',
-				_0: A3(
-					_mdgriffith$style_elements$Element$row,
-					_user$project$Styles$None,
-					_user$project$Attributes$titleAttributes,
+				_0: A2(
+					_user$project$Elements$titleRow,
+					meta.title,
 					{
 						ctor: '::',
-						_0: _user$project$Elements$titleElement(meta.title),
-						_1: {
-							ctor: '::',
-							_0: A3(
-								_mdgriffith$style_elements$Element$row,
-								_user$project$Styles$None,
-								{ctor: '[]'},
-								{
-									ctor: '::',
-									_0: A3(_user$project$Elements$buttonElement, 'X', _user$project$Types$TogglePlot, true),
-									_1: {ctor: '[]'}
-								}),
-							_1: {ctor: '[]'}
-						}
+						_0: A3(_user$project$Elements$buttonElement, 'X', _user$project$Types$TogglePlot, true),
+						_1: {ctor: '[]'}
 					}),
 				_1: {
 					ctor: '::',
@@ -31952,32 +31962,15 @@ var _user$project$Table$viewTable = F3(
 				_user$project$Attributes$columnAttributes,
 				{
 					ctor: '::',
-					_0: A3(
-						_mdgriffith$style_elements$Element$row,
-						_user$project$Styles$None,
-						_user$project$Attributes$titleAttributes,
+					_0: A2(
+						_user$project$Elements$titleRow,
+						meta.title,
 						{
 							ctor: '::',
-							_0: _user$project$Elements$titleElement(meta.title),
+							_0: A3(_user$project$Elements$buttonElement, 'Plot', _user$project$Types$TogglePlot, isPlottable),
 							_1: {
 								ctor: '::',
-								_0: A3(
-									_mdgriffith$style_elements$Element$row,
-									_user$project$Styles$None,
-									{
-										ctor: '::',
-										_0: _mdgriffith$style_elements$Element_Attributes$spacing(5),
-										_1: {ctor: '[]'}
-									},
-									{
-										ctor: '::',
-										_0: A3(_user$project$Elements$buttonElement, 'Plot', _user$project$Types$TogglePlot, isPlottable),
-										_1: {
-											ctor: '::',
-											_0: A3(_user$project$Elements$buttonElement, 'X', _user$project$Types$ToggleTableDataView, true),
-											_1: {ctor: '[]'}
-										}
-									}),
+								_0: A3(_user$project$Elements$buttonElement, 'X', _user$project$Types$ToggleTableDataView, true),
 								_1: {ctor: '[]'}
 							}
 						}),
@@ -32184,32 +32177,15 @@ var _user$project$TableMeta$viewTableMeta = function (meta) {
 		_user$project$Attributes$columnAttributes,
 		{
 			ctor: '::',
-			_0: A3(
-				_mdgriffith$style_elements$Element$row,
-				_user$project$Styles$None,
-				_user$project$Attributes$titleAttributes,
+			_0: A2(
+				_user$project$Elements$titleRow,
+				meta.title,
 				{
 					ctor: '::',
-					_0: _user$project$Elements$titleElement(meta.title),
+					_0: A3(_user$project$Elements$buttonElement, 'Submit', _user$project$Types$Submit, completeSelection),
 					_1: {
 						ctor: '::',
-						_0: A3(
-							_mdgriffith$style_elements$Element$row,
-							_user$project$Styles$None,
-							{
-								ctor: '::',
-								_0: _mdgriffith$style_elements$Element_Attributes$spacing(5),
-								_1: {ctor: '[]'}
-							},
-							{
-								ctor: '::',
-								_0: A3(_user$project$Elements$buttonElement, 'Submit', _user$project$Types$Submit, completeSelection),
-								_1: {
-									ctor: '::',
-									_0: A3(_user$project$Elements$buttonElement, 'X', _user$project$Types$ToggleTableMetaView, true),
-									_1: {ctor: '[]'}
-								}
-							}),
+						_0: A3(_user$project$Elements$buttonElement, 'X', _user$project$Types$ToggleTableMetaView, true),
 						_1: {ctor: '[]'}
 					}
 				}),

@@ -3,8 +3,8 @@ module TableMeta exposing (viewTableMeta, toggleValueForTable, modelWithTableMet
 import Types exposing (..)
 import Styles exposing (..)
 import Utils exposing (mapIf)
-import Attributes exposing (columnAttributes, listAttributes, buttonHeight, titleAttributes)
-import Elements exposing (titleElement, buttonElement)
+import Attributes exposing (columnAttributes, listAttributes, buttonHeight)
+import Elements exposing (buttonElement, titleRow)
 
 
 -- External ------
@@ -27,15 +27,9 @@ viewTableMeta meta =
     in
         column Table
             columnAttributes
-            [ row None
-                titleAttributes
-                [ titleElement meta.title
-                , (row None
-                    [ spacing 5 ]
-                    [ buttonElement "Submit" Submit completeSelection
-                    , buttonElement "X" ToggleTableMetaView True
-                    ]
-                  )
+            [ titleRow meta.title
+                [ buttonElement "Submit" Submit completeSelection
+                , buttonElement "X" ToggleTableMetaView True
                 ]
             , viewVariablesMeta meta.variables
             ]

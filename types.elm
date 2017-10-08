@@ -1,6 +1,12 @@
 module Types exposing (..)
 
+import Styles exposing (Styles)
+
+
+-- External -----
+
 import Http
+import Element exposing (Element)
 
 
 type Msg
@@ -125,3 +131,7 @@ type alias Column =
     , text : String
     , type_ : String
     }
+
+
+type alias Button variation =
+    Element Styles variation Msg
