@@ -1,9 +1,11 @@
 # General
 * Cache responses
 * Add help on hover
+* Localization
 
 # Query
 * Select all for time dimension
+* Make sorting culture aware
 
 # Query Results
 * Show comments
