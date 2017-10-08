@@ -1,4 +1,4 @@
-module DataPlot exposing (viewPlot)
+module DataPlot exposing (viewPlot, canPlot)
 
 import Types exposing (..)
 import Styles exposing (..)
@@ -34,6 +34,63 @@ import Element.Attributes exposing (spread, height, fill, width, percent, spacin
 import Element.Events exposing (onClick)
 import Set exposing (Set)
 import Array exposing (Array)
+
+
+-- Can plot? ------------------------------------
+
+
+canPlot : List DataSequence -> List Column -> Bool
+canPlot data columns =
+    let
+        isAllNumeric =
+            data
+                |> List.all isNumericSequence
+
+        onlyHasSingleDataPoints =
+            (columns
+                |> List.map .type_
+                |> List.filter ((==) "c")
+                |> List.length
+            )
+                == 1
+    in
+        onlyHasSingleDataPoints && isAllNumeric
+
+
+isNumericSequence : DataSequence -> Bool
+isNumericSequence sequence =
+    sequence.points
+        |> List.all isNumericDataPoint
+
+
+isNumericDataPoint : DataPoint -> Bool
+isNumericDataPoint point =
+    point.values
+        |> List.all isNumericOrEmpty
+
+
+isNumericOrEmpty : String -> Bool
+isNumericOrEmpty str =
+    let
+        isEmpty =
+            str == ""
+
+        isPlaceHolder =
+            str == ".."
+
+        isNumeric =
+            case String.toFloat str of
+                Ok float ->
+                    True
+
+                Err err ->
+                    False
+    in
+        isEmpty || isPlaceHolder || isNumeric
+
+
+
+-- View -----------------------------
 
 
 viewPlot : List DataSequence -> TableMeta -> Element Styles variation Msg

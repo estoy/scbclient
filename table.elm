@@ -4,7 +4,7 @@ import Types exposing (..)
 import Styles exposing (..)
 import Utils exposing (groupBy)
 import Attributes exposing (columnAttributes)
-import DataPlot exposing (viewPlot)
+import DataPlot exposing (viewPlot, canPlot)
 
 
 -- External ------
@@ -24,23 +24,11 @@ viewTable table meta showPlot =
         data =
             dataSequences table meta
 
-        isAllNumeric =
-            data
-                |> List.all isNumericSequence
-
-        onlyHasSingleDataPoints =
-            (table.columns
-                |> List.map .type_
-                |> List.filter ((==) "c")
-                |> List.length
-            )
-                == 1
-
-        canPlot =
-            onlyHasSingleDataPoints && isAllNumeric
+        isPlottable =
+            canPlot data table.columns
 
         ( plotButtonStyle, plotButtonAttributes ) =
-            if canPlot then
+            if isPlottable then
                 ( Main, [ onClick TogglePlot ] )
             else
                 ( Disabled, [] )
@@ -142,38 +130,6 @@ viewValues table meta =
             , rows = List.repeat (2 + dataRowCount) (px 34)
             , cells = dimensionHeaders ++ dataHeaders ++ timeHeaders ++ dataRows
             }
-
-
-isNumericSequence : DataSequence -> Bool
-isNumericSequence sequence =
-    sequence.points
-        |> List.all isNumericDataPoint
-
-
-isNumericDataPoint : DataPoint -> Bool
-isNumericDataPoint point =
-    point.values
-        |> List.all isNumericOrEmpty
-
-
-isNumericOrEmpty : String -> Bool
-isNumericOrEmpty str =
-    let
-        isEmpty =
-            str == ""
-
-        isPlaceHolder =
-            str == ".."
-
-        isNumeric =
-            case String.toFloat str of
-                Ok float ->
-                    True
-
-                Err err ->
-                    False
-    in
-        isEmpty || isPlaceHolder || isNumeric
 
 
 dataSequences : TableData -> TableMeta -> List DataSequence

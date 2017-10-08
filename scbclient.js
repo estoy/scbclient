@@ -31596,6 +31596,45 @@ var _user$project$DataPlot$viewPlot = F2(
 				}
 			});
 	});
+var _user$project$DataPlot$isNumericOrEmpty = function (str) {
+	var isNumeric = function () {
+		var _p1 = _elm_lang$core$String$toFloat(str);
+		if (_p1.ctor === 'Ok') {
+			return true;
+		} else {
+			return false;
+		}
+	}();
+	var isPlaceHolder = _elm_lang$core$Native_Utils.eq(str, '..');
+	var isEmpty = _elm_lang$core$Native_Utils.eq(str, '');
+	return isEmpty || (isPlaceHolder || isNumeric);
+};
+var _user$project$DataPlot$isNumericDataPoint = function (point) {
+	return A2(_elm_lang$core$List$all, _user$project$DataPlot$isNumericOrEmpty, point.values);
+};
+var _user$project$DataPlot$isNumericSequence = function (sequence) {
+	return A2(_elm_lang$core$List$all, _user$project$DataPlot$isNumericDataPoint, sequence.points);
+};
+var _user$project$DataPlot$canPlot = F2(
+	function (data, columns) {
+		var onlyHasSingleDataPoints = _elm_lang$core$Native_Utils.eq(
+			_elm_lang$core$List$length(
+				A2(
+					_elm_lang$core$List$filter,
+					F2(
+						function (x, y) {
+							return _elm_lang$core$Native_Utils.eq(x, y);
+						})('c'),
+					A2(
+						_elm_lang$core$List$map,
+						function (_) {
+							return _.type_;
+						},
+						columns))),
+			1);
+		var isAllNumeric = A2(_elm_lang$core$List$all, _user$project$DataPlot$isNumericSequence, data);
+		return onlyHasSingleDataPoints && isAllNumeric;
+	});
 
 var _user$project$Table$emptyVariableMeta = A5(
 	_user$project$Types$VariableMeta,
@@ -31767,25 +31806,6 @@ var _user$project$Table$dataSequences = F2(
 					},
 					table.data)));
 	});
-var _user$project$Table$isNumericOrEmpty = function (str) {
-	var isNumeric = function () {
-		var _p0 = _elm_lang$core$String$toFloat(str);
-		if (_p0.ctor === 'Ok') {
-			return true;
-		} else {
-			return false;
-		}
-	}();
-	var isPlaceHolder = _elm_lang$core$Native_Utils.eq(str, '..');
-	var isEmpty = _elm_lang$core$Native_Utils.eq(str, '');
-	return isEmpty || (isPlaceHolder || isNumeric);
-};
-var _user$project$Table$isNumericDataPoint = function (point) {
-	return A2(_elm_lang$core$List$all, _user$project$Table$isNumericOrEmpty, point.values);
-};
-var _user$project$Table$isNumericSequence = function (sequence) {
-	return A2(_elm_lang$core$List$all, _user$project$Table$isNumericDataPoint, sequence.points);
-};
 var _user$project$Table$viewValues = F2(
 	function (table, meta) {
 		var dataSeqs = A2(_user$project$Table$dataSequences, table, meta);
@@ -31888,25 +31908,9 @@ var _user$project$Table$viewValues = F2(
 	});
 var _user$project$Table$viewTable = F3(
 	function (table, meta, showPlot) {
-		var onlyHasSingleDataPoints = _elm_lang$core$Native_Utils.eq(
-			_elm_lang$core$List$length(
-				A2(
-					_elm_lang$core$List$filter,
-					F2(
-						function (x, y) {
-							return _elm_lang$core$Native_Utils.eq(x, y);
-						})('c'),
-					A2(
-						_elm_lang$core$List$map,
-						function (_) {
-							return _.type_;
-						},
-						table.columns))),
-			1);
 		var data = A2(_user$project$Table$dataSequences, table, meta);
-		var isAllNumeric = A2(_elm_lang$core$List$all, _user$project$Table$isNumericSequence, data);
-		var canPlot = onlyHasSingleDataPoints && isAllNumeric;
-		var _p1 = canPlot ? {
+		var isPlottable = A2(_user$project$DataPlot$canPlot, data, table.columns);
+		var _p0 = isPlottable ? {
 			ctor: '_Tuple2',
 			_0: _user$project$Styles$Main,
 			_1: {
@@ -31919,10 +31923,10 @@ var _user$project$Table$viewTable = F3(
 			_0: _user$project$Styles$Disabled,
 			_1: {ctor: '[]'}
 		};
-		var plotButtonStyle = _p1._0;
-		var plotButtonAttributes = _p1._1;
-		var _p2 = showPlot;
-		if (_p2 === false) {
+		var plotButtonStyle = _p0._0;
+		var plotButtonAttributes = _p0._1;
+		var _p1 = showPlot;
+		if (_p1 === false) {
 			return A3(
 				_mdgriffith$style_elements$Element$column,
 				_user$project$Styles$Table,
