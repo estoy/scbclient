@@ -1,7 +1,6 @@
 # General
 * Cache responses
 * Add help on hover
-* Localization
 
 # Query
 * Make sorting culture aware
