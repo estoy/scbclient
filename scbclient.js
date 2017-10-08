@@ -31235,6 +31235,29 @@ var _user$project$Styles$stylesheet = _mdgriffith$style_elements$Style$styleShee
 		}
 	});
 
+var _user$project$Elements$buttonElement = F3(
+	function (title, msg, enabled) {
+		var _p0 = enabled ? {
+			ctor: '_Tuple2',
+			_0: _user$project$Styles$Main,
+			_1: {
+				ctor: '::',
+				_0: _mdgriffith$style_elements$Element_Events$onClick(msg),
+				_1: {ctor: '[]'}
+			}
+		} : {
+			ctor: '_Tuple2',
+			_0: _user$project$Styles$Disabled,
+			_1: {ctor: '[]'}
+		};
+		var buttonStyle = _p0._0;
+		var buttonAttributes = _p0._1;
+		return A3(
+			_mdgriffith$style_elements$Element$button,
+			buttonStyle,
+			{ctor: '::', _0: _user$project$Attributes$buttonHeight, _1: buttonAttributes},
+			_mdgriffith$style_elements$Element$text(title));
+	});
 var _user$project$Elements$titleElement = function (title) {
 	return A3(
 		_mdgriffith$style_elements$Element$el,
@@ -31564,19 +31587,7 @@ var _user$project$DataPlot$viewPlot = F2(
 								{ctor: '[]'},
 								{
 									ctor: '::',
-									_0: A3(
-										_mdgriffith$style_elements$Element$button,
-										_user$project$Styles$Main,
-										{
-											ctor: '::',
-											_0: _mdgriffith$style_elements$Element_Events$onClick(_user$project$Types$TogglePlot),
-											_1: {
-												ctor: '::',
-												_0: _user$project$Attributes$buttonHeight,
-												_1: {ctor: '[]'}
-											}
-										},
-										_mdgriffith$style_elements$Element$text('X')),
+									_0: A3(_user$project$Elements$buttonElement, 'X', _user$project$Types$TogglePlot, true),
 									_1: {ctor: '[]'}
 								}),
 							_1: {ctor: '[]'}
@@ -31933,23 +31944,8 @@ var _user$project$Table$viewTable = F3(
 	function (table, meta, showPlot) {
 		var data = A2(_user$project$Table$dataSequences, table, meta);
 		var isPlottable = A2(_user$project$DataPlot$canPlot, data, table.columns);
-		var _p0 = isPlottable ? {
-			ctor: '_Tuple2',
-			_0: _user$project$Styles$Main,
-			_1: {
-				ctor: '::',
-				_0: _mdgriffith$style_elements$Element_Events$onClick(_user$project$Types$TogglePlot),
-				_1: {ctor: '[]'}
-			}
-		} : {
-			ctor: '_Tuple2',
-			_0: _user$project$Styles$Disabled,
-			_1: {ctor: '[]'}
-		};
-		var plotButtonStyle = _p0._0;
-		var plotButtonAttributes = _p0._1;
-		var _p1 = showPlot;
-		if (_p1 === false) {
+		var _p0 = showPlot;
+		if (_p0 === false) {
 			return A3(
 				_mdgriffith$style_elements$Element$column,
 				_user$project$Styles$Table,
@@ -31975,26 +31971,10 @@ var _user$project$Table$viewTable = F3(
 									},
 									{
 										ctor: '::',
-										_0: A3(
-											_mdgriffith$style_elements$Element$button,
-											plotButtonStyle,
-											{ctor: '::', _0: _user$project$Attributes$buttonHeight, _1: plotButtonAttributes},
-											_mdgriffith$style_elements$Element$text('Plot')),
+										_0: A3(_user$project$Elements$buttonElement, 'Plot', _user$project$Types$TogglePlot, isPlottable),
 										_1: {
 											ctor: '::',
-											_0: A3(
-												_mdgriffith$style_elements$Element$button,
-												_user$project$Styles$Main,
-												{
-													ctor: '::',
-													_0: _mdgriffith$style_elements$Element_Events$onClick(_user$project$Types$ToggleTableDataView),
-													_1: {
-														ctor: '::',
-														_0: _user$project$Attributes$buttonHeight,
-														_1: {ctor: '[]'}
-													}
-												},
-												_mdgriffith$style_elements$Element$text('X')),
+											_0: A3(_user$project$Elements$buttonElement, 'X', _user$project$Types$ToggleTableDataView, true),
 											_1: {ctor: '[]'}
 										}
 									}),
@@ -32198,21 +32178,6 @@ var _user$project$TableMeta$hasSelection = function ($var) {
 };
 var _user$project$TableMeta$viewTableMeta = function (meta) {
 	var completeSelection = A2(_elm_lang$core$List$all, _user$project$TableMeta$hasSelection, meta.variables);
-	var _p2 = completeSelection ? {
-		ctor: '_Tuple2',
-		_0: _user$project$Styles$Main,
-		_1: {
-			ctor: '::',
-			_0: _mdgriffith$style_elements$Element_Events$onClick(_user$project$Types$Submit),
-			_1: {ctor: '[]'}
-		}
-	} : {
-		ctor: '_Tuple2',
-		_0: _user$project$Styles$Disabled,
-		_1: {ctor: '[]'}
-	};
-	var buttonStyle = _p2._0;
-	var submitButtonAttributes = _p2._1;
 	return A3(
 		_mdgriffith$style_elements$Element$column,
 		_user$project$Styles$Table,
@@ -32238,26 +32203,10 @@ var _user$project$TableMeta$viewTableMeta = function (meta) {
 							},
 							{
 								ctor: '::',
-								_0: A3(
-									_mdgriffith$style_elements$Element$button,
-									buttonStyle,
-									{ctor: '::', _0: _user$project$Attributes$buttonHeight, _1: submitButtonAttributes},
-									_mdgriffith$style_elements$Element$text('Submit')),
+								_0: A3(_user$project$Elements$buttonElement, 'Submit', _user$project$Types$Submit, completeSelection),
 								_1: {
 									ctor: '::',
-									_0: A3(
-										_mdgriffith$style_elements$Element$button,
-										_user$project$Styles$Main,
-										{
-											ctor: '::',
-											_0: _mdgriffith$style_elements$Element_Events$onClick(_user$project$Types$ToggleTableMetaView),
-											_1: {
-												ctor: '::',
-												_0: _user$project$Attributes$buttonHeight,
-												_1: {ctor: '[]'}
-											}
-										},
-										_mdgriffith$style_elements$Element$text('X')),
+									_0: A3(_user$project$Elements$buttonElement, 'X', _user$project$Types$ToggleTableMetaView, true),
 									_1: {ctor: '[]'}
 								}
 							}),

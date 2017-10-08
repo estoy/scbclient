@@ -3,8 +3,8 @@ module TableMeta exposing (viewTableMeta, toggleValueForTable, modelWithTableMet
 import Types exposing (..)
 import Styles exposing (..)
 import Utils exposing (mapIf)
-import Attributes exposing (columnAttributes, listAttributes,  buttonHeight, titleAttributes)
-import Elements exposing (titleElement)
+import Attributes exposing (columnAttributes, listAttributes, buttonHeight, titleAttributes)
+import Elements exposing (titleElement, buttonElement)
 
 
 -- External ------
@@ -24,13 +24,6 @@ viewTableMeta meta =
         completeSelection =
             meta.variables
                 |> List.all hasSelection
-
-        (buttonStyle, submitButtonAttributes) =
-            if completeSelection then
-                (Main, [ onClick Submit])
-            else
-                (Disabled, [])
-        
     in
         column Table
             columnAttributes
@@ -39,8 +32,8 @@ viewTableMeta meta =
                 [ titleElement meta.title
                 , (row None
                     [ spacing 5 ]
-                    [ button buttonStyle (buttonHeight :: submitButtonAttributes)  <| text "Submit"
-                    , button Main [ onClick ToggleTableMetaView, buttonHeight ] <| text "X"
+                    [ buttonElement "Submit" Submit completeSelection
+                    , buttonElement "X" ToggleTableMetaView True
                     ]
                   )
                 ]
@@ -70,20 +63,22 @@ viewVariableMeta variable =
                 variable.values
     in
         row None
-            [alignTop]
+            [ alignTop ]
             [ el VariableName [ paddingRight 10 ] <| text variable.text
             , column VariableData
                 ([ yScrollbar, maxHeight (px 150) ] ++ listAttributes)
                 (values
                     |> List.map (viewValueMeta variable)
                 )
-            , checkbox None [ paddingLeft 10 ]
-                { onChange = \_-> (ToggleSort variable)
+            , checkbox None
+                [ paddingLeft 10 ]
+                { onChange = \_ -> (ToggleSort variable)
                 , label = text "sort"
                 , checked = variable.sorted
                 , options = []
                 }
             ]
+
 
 viewValueMeta : VariableMeta -> ValueMeta -> Element Styles variation Msg
 viewValueMeta var val =

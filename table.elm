@@ -5,7 +5,7 @@ import Styles exposing (..)
 import Utils exposing (groupBy)
 import Attributes exposing (columnAttributes, buttonHeight, titleAttributes)
 import DataPlot exposing (viewPlot, canPlot)
-import Elements exposing (titleElement)
+import Elements exposing (titleElement, buttonElement)
 
 
 -- External ------
@@ -27,12 +27,6 @@ viewTable table meta showPlot =
 
         isPlottable =
             canPlot data table.columns
-
-        ( plotButtonStyle, plotButtonAttributes ) =
-            if isPlottable then
-                ( Main, [ onClick TogglePlot ] )
-            else
-                ( Disabled, [] )
     in
         case showPlot of
             False ->
@@ -43,8 +37,8 @@ viewTable table meta showPlot =
                         [ titleElement meta.title
                         , (row None
                             [ spacing 5 ]
-                            [ button plotButtonStyle (buttonHeight :: plotButtonAttributes) <| text "Plot"
-                            , button Main [ onClick ToggleTableDataView, buttonHeight ] <| text "X"
+                            [ buttonElement "Plot" TogglePlot isPlottable
+                            , buttonElement "X" ToggleTableDataView True
                             ]
                           )
                         ]

@@ -3,7 +3,7 @@ module DataPlot exposing (viewPlot, canPlot)
 import Types exposing (..)
 import Styles exposing (..)
 import Attributes exposing (columnAttributes, buttonHeight, titleAttributes)
-import Elements exposing (titleElement)
+import Elements exposing (titleElement, buttonElement)
 
 -- External ------
 
@@ -31,7 +31,6 @@ import Svg exposing (Svg)
 import Svg.Attributes exposing (stroke)
 import Element exposing (Element, column, text, row, el, button, html, paragraph)
 import Element.Attributes exposing (spread, height, fill, width, percent, spacing)
-import Element.Events exposing (onClick)
 import Set exposing (Set)
 import Array exposing (Array)
 
@@ -121,7 +120,7 @@ viewPlot data meta =
                 [ titleElement meta.title
                 , (row None
                     []
-                    [ button Main [ onClick TogglePlot, buttonHeight ] <| text "X"
+                    [ buttonElement "X" TogglePlot True
                     ]
                   )
                 ]
