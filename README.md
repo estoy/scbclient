@@ -13,9 +13,10 @@ At any time you can close the current page and go back to the previous one by pr
 The server exposing the API doesn't handle preflight calls well so you'll need to help the browser along a bit by, for instance, installing an extension that handles CORS.
 # Planned Improvements
 * Cache results
-* Make plot interactive: Give details on hover
+
 ## Recently done
 * Plot graphs of numeric data
 * Optinally shift origo for Y axis.
 * Improve query selection: *Select all* for time dimension
 * Improve query selection: Clear all selections
+* Make plot interactive: Give details on hover

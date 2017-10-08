@@ -25,6 +25,7 @@ initialModel =
     , table = Nothing
     , latestError = Nothing
     , showPlot = False
+    , plotHoverPoint = Nothing
     , plotFromYAtZero = False
     }
 
@@ -53,7 +54,7 @@ view model =
                             viewTableMeta meta language
 
                         Just table ->
-                            viewTable table meta model.showPlot model.plotFromYAtZero language
+                            viewTable table meta model.showPlot model.plotFromYAtZero model.plotHoverPoint language
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -143,6 +144,9 @@ update msg model =
 
                 Nothing ->
                     ( model, Cmd.none )
+
+        HoverPoint point ->
+            ( { model | plotHoverPoint = point }, Cmd.none )
 
 
 main : Program Never Model Msg

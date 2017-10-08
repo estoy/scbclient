@@ -10,7 +10,6 @@
 * Make background fill vertically
 
 # Plot
-* Make plot interactive
 * Make background fill vertically
 * Show selection values that are common for all series
 

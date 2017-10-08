@@ -25,6 +25,7 @@ type Msg
     | SelectAll VariableMeta
     | ClearSelection
     | TogglePlotOrigo
+    | HoverPoint (Maybe DataPoint)
 
 
 type alias Model =
@@ -34,6 +35,7 @@ type alias Model =
     , table : Maybe TableData
     , showPlot : Bool
     , plotFromYAtZero : Bool
+    , plotHoverPoint : Maybe DataPoint
     , latestError : Maybe Http.Error
     }
 

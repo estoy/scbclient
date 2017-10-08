@@ -30,6 +30,8 @@ import Plot
         , viewLabel
         )
 import Svg exposing (Svg)
+import Svg.Attributes exposing (stroke, strokeDasharray, r, strokeWidth)
+import Svg.Events exposing (onMouseOver, onMouseOut)
 import Svg.Attributes exposing (stroke)
 import Element exposing (Element, column, text, row, el, button, html, paragraph)
 import Element.Attributes exposing (spread, height, fill, width, percent, spacing)
@@ -94,8 +96,8 @@ isNumericOrEmpty str =
 -- View -----------------------------
 
 
-viewPlot : List DataSequence -> TableMeta -> Bool -> String -> Element Styles variation Msg
-viewPlot data meta plotFromYAtZero language =
+viewPlot : List DataSequence -> TableMeta -> Bool -> Maybe DataPoint -> String -> Element Styles variation Msg
+viewPlot data meta plotFromYAtZero hoverPoint language =
     let
         times : List String
         times =
@@ -124,7 +126,10 @@ viewPlot data meta plotFromYAtZero language =
             , row None
                 [ spacing 20 ]
                 [ el Main [ height fill, width (percent 70) ] <| html <| plotDataSequences data times plotFromYAtZero
-                , legend data subKeyIndices
+                , column None [spacing 20] 
+                    [ legend data subKeyIndices
+                    , showPoint hoverPoint
+                    ]
                 ]
             ]
 
@@ -185,7 +190,7 @@ legendLabel subKeyIndices index data =
         paragraph (colourForIndex index) [] [ text key ]
 
 
-plotDataSequences : List DataSequence -> List String -> Bool -> Svg msg
+plotDataSequences : List DataSequence -> List String -> Bool -> Svg Msg
 plotDataSequences dataSeqs times plotFromYAtZero =
     let
         domainLowest : Float -> Float
@@ -212,7 +217,7 @@ plotDataSequences dataSeqs times plotFromYAtZero =
             dataSeqs
 
 
-plotLine : Int -> DataSequence -> Series (List DataSequence) msg
+plotLine : Int -> DataSequence -> Series (List DataSequence) Msg
 plotLine seriesIndex seq =
     let
         colour =
@@ -221,14 +226,14 @@ plotLine seriesIndex seq =
         customSeries normalAxis (Plot.Linear Nothing [ stroke colour ]) (\seqs -> preparePoints colour seq.points)
 
 
-preparePoints : String -> List DataPoint -> List (Plot.DataPoint msg)
+preparePoints : String -> List DataPoint -> List (Plot.DataPoint Msg)
 preparePoints colour points =
     points
         |> List.indexedMap (plotPoint colour)
         |> List.filterMap identity
 
 
-plotPoint : String -> Int -> DataPoint -> Maybe (Plot.DataPoint msg)
+plotPoint : String -> Int -> DataPoint -> Maybe (Plot.DataPoint Msg)
 plotPoint colour index point =
     let
         value : String
@@ -243,10 +248,22 @@ plotPoint colour index point =
     in
         case floatValue of
             Ok val ->
-                Just (dot (viewCircle 5.0 colour) (toFloat index) val)
+                Just (dot (circle point colour) (toFloat index) val)
 
             Err err ->
                 Nothing
+
+circle : DataPoint -> String -> Svg Msg
+circle point colour =
+  Svg.circle
+    [ r "5"
+    , stroke "transparent"
+    , strokeWidth "3px"
+    , Svg.Attributes.fill colour
+    , onMouseOver (HoverPoint (Just point))
+    , onMouseOut (HoverPoint Nothing)
+    ]
+    []
 
 
 colourNames : List String
@@ -345,3 +362,21 @@ axisLabel pos txt =
 emptyVariableMeta : VariableMeta
 emptyVariableMeta =
     VariableMeta "" "" [] False False
+
+showPoint : Maybe DataPoint -> Element Styles variation msg
+showPoint point =
+    case point of
+        Just p ->
+            el None [] <| paragraph None [] [text <| pointToText p]
+        Nothing ->
+            text ""
+
+pointToText : DataPoint -> String
+pointToText point =
+    "{ " ++ point.time ++ " => " ++ valueOfPoint point ++ " }"
+
+valueOfPoint : DataPoint -> String
+valueOfPoint point =
+    point.values
+        |> List.head
+        |> Maybe.withDefault ""

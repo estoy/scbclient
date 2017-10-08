@@ -14242,6 +14242,34 @@ var _elm_lang$svg$Svg_Attributes$accumulate = _elm_lang$virtual_dom$VirtualDom$a
 var _elm_lang$svg$Svg_Attributes$accelerate = _elm_lang$virtual_dom$VirtualDom$attribute('accelerate');
 var _elm_lang$svg$Svg_Attributes$accentHeight = _elm_lang$virtual_dom$VirtualDom$attribute('accent-height');
 
+var _elm_lang$svg$Svg_Events$on = _elm_lang$virtual_dom$VirtualDom$on;
+var _elm_lang$svg$Svg_Events$simpleOn = F2(
+	function (name, msg) {
+		return A2(
+			_elm_lang$svg$Svg_Events$on,
+			name,
+			_elm_lang$core$Json_Decode$succeed(msg));
+	});
+var _elm_lang$svg$Svg_Events$onBegin = _elm_lang$svg$Svg_Events$simpleOn('begin');
+var _elm_lang$svg$Svg_Events$onEnd = _elm_lang$svg$Svg_Events$simpleOn('end');
+var _elm_lang$svg$Svg_Events$onRepeat = _elm_lang$svg$Svg_Events$simpleOn('repeat');
+var _elm_lang$svg$Svg_Events$onAbort = _elm_lang$svg$Svg_Events$simpleOn('abort');
+var _elm_lang$svg$Svg_Events$onError = _elm_lang$svg$Svg_Events$simpleOn('error');
+var _elm_lang$svg$Svg_Events$onResize = _elm_lang$svg$Svg_Events$simpleOn('resize');
+var _elm_lang$svg$Svg_Events$onScroll = _elm_lang$svg$Svg_Events$simpleOn('scroll');
+var _elm_lang$svg$Svg_Events$onLoad = _elm_lang$svg$Svg_Events$simpleOn('load');
+var _elm_lang$svg$Svg_Events$onUnload = _elm_lang$svg$Svg_Events$simpleOn('unload');
+var _elm_lang$svg$Svg_Events$onZoom = _elm_lang$svg$Svg_Events$simpleOn('zoom');
+var _elm_lang$svg$Svg_Events$onActivate = _elm_lang$svg$Svg_Events$simpleOn('activate');
+var _elm_lang$svg$Svg_Events$onClick = _elm_lang$svg$Svg_Events$simpleOn('click');
+var _elm_lang$svg$Svg_Events$onFocusIn = _elm_lang$svg$Svg_Events$simpleOn('focusin');
+var _elm_lang$svg$Svg_Events$onFocusOut = _elm_lang$svg$Svg_Events$simpleOn('focusout');
+var _elm_lang$svg$Svg_Events$onMouseDown = _elm_lang$svg$Svg_Events$simpleOn('mousedown');
+var _elm_lang$svg$Svg_Events$onMouseMove = _elm_lang$svg$Svg_Events$simpleOn('mousemove');
+var _elm_lang$svg$Svg_Events$onMouseOut = _elm_lang$svg$Svg_Events$simpleOn('mouseout');
+var _elm_lang$svg$Svg_Events$onMouseOver = _elm_lang$svg$Svg_Events$simpleOn('mouseover');
+var _elm_lang$svg$Svg_Events$onMouseUp = _elm_lang$svg$Svg_Events$simpleOn('mouseup');
+
 var _elm_lang$window$Native_Window = function()
 {
 
@@ -30774,9 +30802,9 @@ var _user$project$Styles$stylesheet = _mdgriffith$style_elements$Style$styleShee
 		}
 	});
 
-var _user$project$Types$Model = F7(
-	function (a, b, c, d, e, f, g) {
-		return {siteContext: a, levelContexts: b, tableMeta: c, table: d, showPlot: e, plotFromYAtZero: f, latestError: g};
+var _user$project$Types$Model = F8(
+	function (a, b, c, d, e, f, g, h) {
+		return {siteContext: a, levelContexts: b, tableMeta: c, table: d, showPlot: e, plotFromYAtZero: f, plotHoverPoint: g, latestError: h};
 	});
 var _user$project$Types$SiteCtx = F2(
 	function (a, b) {
@@ -30834,6 +30862,9 @@ var _user$project$Types$Column = F3(
 	function (a, b, c) {
 		return {code: a, text: b, type_: c};
 	});
+var _user$project$Types$HoverPoint = function (a) {
+	return {ctor: 'HoverPoint', _0: a};
+};
 var _user$project$Types$TogglePlotOrigo = {ctor: 'TogglePlotOrigo'};
 var _user$project$Types$ClearSelection = {ctor: 'ClearSelection'};
 var _user$project$Types$SelectAll = function (a) {
@@ -31401,6 +31432,48 @@ var _user$project$Translations$translate = F2(
 					A2(_elm_lang$core$Dict$get, lang, _user$project$Translations$translations))));
 	});
 
+var _user$project$DataPlot$valueOfPoint = function (point) {
+	return A2(
+		_elm_lang$core$Maybe$withDefault,
+		'',
+		_elm_lang$core$List$head(point.values));
+};
+var _user$project$DataPlot$pointToText = function (point) {
+	return A2(
+		_elm_lang$core$Basics_ops['++'],
+		'{ ',
+		A2(
+			_elm_lang$core$Basics_ops['++'],
+			point.time,
+			A2(
+				_elm_lang$core$Basics_ops['++'],
+				' => ',
+				A2(
+					_elm_lang$core$Basics_ops['++'],
+					_user$project$DataPlot$valueOfPoint(point),
+					' }'))));
+};
+var _user$project$DataPlot$showPoint = function (point) {
+	var _p0 = point;
+	if (_p0.ctor === 'Just') {
+		return A3(
+			_mdgriffith$style_elements$Element$el,
+			_user$project$Styles$None,
+			{ctor: '[]'},
+			A3(
+				_mdgriffith$style_elements$Element$paragraph,
+				_user$project$Styles$None,
+				{ctor: '[]'},
+				{
+					ctor: '::',
+					_0: _mdgriffith$style_elements$Element$text(
+						_user$project$DataPlot$pointToText(_p0._0)),
+					_1: {ctor: '[]'}
+				}));
+	} else {
+		return _mdgriffith$style_elements$Element$text('');
+	}
+};
 var _user$project$DataPlot$emptyVariableMeta = A5(
 	_user$project$Types$VariableMeta,
 	'',
@@ -31422,9 +31495,9 @@ var _user$project$DataPlot$labels = F2(
 	function (times, indices) {
 		return A2(
 			_elm_lang$core$List$map,
-			function (_p0) {
-				var _p1 = _p0;
-				return A2(_user$project$DataPlot$axisLabel, _p1._0, _p1._1);
+			function (_p1) {
+				var _p2 = _p1;
+				return A2(_user$project$DataPlot$axisLabel, _p2._0, _p2._1);
 			},
 			A2(
 				_elm_lang$core$List$filterMap,
@@ -31555,6 +31628,40 @@ var _user$project$DataPlot$colourNameForIndex = function (index) {
 		_elm_lang$core$List$head(
 			A2(_elm_lang$core$List$drop, index, _user$project$DataPlot$colourNames)));
 };
+var _user$project$DataPlot$circle = F2(
+	function (point, colour) {
+		return A2(
+			_elm_lang$svg$Svg$circle,
+			{
+				ctor: '::',
+				_0: _elm_lang$svg$Svg_Attributes$r('5'),
+				_1: {
+					ctor: '::',
+					_0: _elm_lang$svg$Svg_Attributes$stroke('transparent'),
+					_1: {
+						ctor: '::',
+						_0: _elm_lang$svg$Svg_Attributes$strokeWidth('3px'),
+						_1: {
+							ctor: '::',
+							_0: _elm_lang$svg$Svg_Attributes$fill(colour),
+							_1: {
+								ctor: '::',
+								_0: _elm_lang$svg$Svg_Events$onMouseOver(
+									_user$project$Types$HoverPoint(
+										_elm_lang$core$Maybe$Just(point))),
+								_1: {
+									ctor: '::',
+									_0: _elm_lang$svg$Svg_Events$onMouseOut(
+										_user$project$Types$HoverPoint(_elm_lang$core$Maybe$Nothing)),
+									_1: {ctor: '[]'}
+								}
+							}
+						}
+					}
+				}
+			},
+			{ctor: '[]'});
+	});
 var _user$project$DataPlot$plotPoint = F3(
 	function (colour, index, point) {
 		var value = A2(
@@ -31562,14 +31669,14 @@ var _user$project$DataPlot$plotPoint = F3(
 			'',
 			_elm_lang$core$List$head(point.values));
 		var floatValue = _elm_lang$core$String$toFloat(value);
-		var _p2 = floatValue;
-		if (_p2.ctor === 'Ok') {
+		var _p3 = floatValue;
+		if (_p3.ctor === 'Ok') {
 			return _elm_lang$core$Maybe$Just(
 				A3(
 					_terezka$elm_plot$Plot$dot,
-					A2(_terezka$elm_plot$Plot$viewCircle, 5.0, colour),
+					A2(_user$project$DataPlot$circle, point, colour),
 					_elm_lang$core$Basics$toFloat(index),
-					_p2._0));
+					_p3._0));
 		} else {
 			return _elm_lang$core$Maybe$Nothing;
 		}
@@ -31697,8 +31804,8 @@ var _user$project$DataPlot$subKeysToUse = function (keys) {
 				}),
 			combinedKeys));
 };
-var _user$project$DataPlot$viewPlot = F4(
-	function (data, meta, plotFromYAtZero, language) {
+var _user$project$DataPlot$viewPlot = F5(
+	function (data, meta, plotFromYAtZero, hoverPoint, language) {
 		var keys = A2(
 			_elm_lang$core$List$map,
 			function (_) {
@@ -31780,7 +31887,23 @@ var _user$project$DataPlot$viewPlot = F4(
 									A3(_user$project$DataPlot$plotDataSequences, data, times, plotFromYAtZero))),
 							_1: {
 								ctor: '::',
-								_0: A2(_user$project$DataPlot$legend, data, subKeyIndices),
+								_0: A3(
+									_mdgriffith$style_elements$Element$column,
+									_user$project$Styles$None,
+									{
+										ctor: '::',
+										_0: _mdgriffith$style_elements$Element_Attributes$spacing(20),
+										_1: {ctor: '[]'}
+									},
+									{
+										ctor: '::',
+										_0: A2(_user$project$DataPlot$legend, data, subKeyIndices),
+										_1: {
+											ctor: '::',
+											_0: _user$project$DataPlot$showPoint(hoverPoint),
+											_1: {ctor: '[]'}
+										}
+									}),
 								_1: {ctor: '[]'}
 							}
 						}),
@@ -31790,8 +31913,8 @@ var _user$project$DataPlot$viewPlot = F4(
 	});
 var _user$project$DataPlot$isNumericOrEmpty = function (str) {
 	var isNumeric = function () {
-		var _p3 = _elm_lang$core$String$toFloat(str);
-		if (_p3.ctor === 'Ok') {
+		var _p4 = _elm_lang$core$String$toFloat(str);
+		if (_p4.ctor === 'Ok') {
 			return true;
 		} else {
 			return false;
@@ -32098,8 +32221,8 @@ var _user$project$Table$viewValues = F2(
 						A2(_elm_lang$core$Basics_ops['++'], timeHeaders, dataRows)))
 			});
 	});
-var _user$project$Table$viewTable = F5(
-	function (table, meta, showPlot, plotFromYAtZero, language) {
+var _user$project$Table$viewTable = F6(
+	function (table, meta, showPlot, plotFromYAtZero, hoverPoint, language) {
 		var data = A2(_user$project$Table$dataSequences, table, meta);
 		var isPlottable = A2(_user$project$DataPlot$canPlot, data, table.columns);
 		var _p0 = showPlot;
@@ -32133,7 +32256,7 @@ var _user$project$Table$viewTable = F5(
 					}
 				});
 		} else {
-			return A4(_user$project$DataPlot$viewPlot, data, meta, plotFromYAtZero, language);
+			return A5(_user$project$DataPlot$viewPlot, data, meta, plotFromYAtZero, hoverPoint, language);
 		}
 	});
 
@@ -32722,7 +32845,7 @@ var _user$project$Client$update = F2(
 				} else {
 					return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
 				}
-			default:
+			case 'ClearSelection':
 				var _p4 = model.tableMeta;
 				if (_p4.ctor === 'Just') {
 					return {
@@ -32738,6 +32861,14 @@ var _user$project$Client$update = F2(
 				} else {
 					return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
 				}
+			default:
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{plotHoverPoint: _p0._0}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
 		}
 	});
 var _user$project$Client$view = function (model) {
@@ -32774,7 +32905,7 @@ var _user$project$Client$view = function (model) {
 				if (_p6.ctor === 'Nothing') {
 					return A2(_user$project$TableMeta$viewTableMeta, _p7, language);
 				} else {
-					return A5(_user$project$Table$viewTable, _p6._0, _p7, model.showPlot, model.plotFromYAtZero, language);
+					return A6(_user$project$Table$viewTable, _p6._0, _p7, model.showPlot, model.plotFromYAtZero, model.plotHoverPoint, language);
 				}
 			}
 		}());
@@ -32786,6 +32917,7 @@ var _user$project$Client$initialModel = {
 	table: _elm_lang$core$Maybe$Nothing,
 	latestError: _elm_lang$core$Maybe$Nothing,
 	showPlot: false,
+	plotHoverPoint: _elm_lang$core$Maybe$Nothing,
 	plotFromYAtZero: false
 };
 var _user$project$Client$main = _elm_lang$html$Html$program(
@@ -32805,7 +32937,7 @@ var _user$project$Client$main = _elm_lang$html$Html$program(
 var Elm = {};
 Elm['Client'] = Elm['Client'] || {};
 if (typeof _user$project$Client$main !== 'undefined') {
-    _user$project$Client$main(Elm['Client'], 'Client', {"types":{"unions":{"Dict.LeafColor":{"args":[],"tags":{"LBBlack":[],"LBlack":[]}},"Dict.Dict":{"args":["k","v"],"tags":{"RBNode_elm_builtin":["Dict.NColor","k","v","Dict.Dict k v","Dict.Dict k v"],"RBEmpty_elm_builtin":["Dict.LeafColor"]}},"Types.Msg":{"args":[],"tags":{"ToggleTableMetaView":[],"SelectSite":["Types.Site"],"SelectLevel":["Types.Level","Int"],"TableLoaded":["Result.Result Http.Error Types.TableData"],"LevelLoaded":["Types.Level","Int","Result.Result Http.Error (List Types.Level)"],"ToggleValue":["Types.VariableMeta","Types.ValueMeta"],"ClearSelection":[],"TableMetaLoaded":["Types.Level","Int","Result.Result Http.Error Types.TableMeta"],"Submit":[],"SiteLoaded":["Types.Site","Result.Result Http.Error (List Types.Level)"],"TogglePlot":[],"ToggleSort":["Types.VariableMeta"],"ToggleTableDataView":[],"SelectAll":["Types.VariableMeta"],"TogglePlotOrigo":[]}},"Dict.NColor":{"args":[],"tags":{"BBlack":[],"Red":[],"NBlack":[],"Black":[]}},"Http.Error":{"args":[],"tags":{"BadUrl":["String"],"NetworkError":[],"Timeout":[],"BadStatus":["Http.Response String"],"BadPayload":["String","Http.Response String"]}},"Result.Result":{"args":["error","value"],"tags":{"Ok":["value"],"Err":["error"]}}},"aliases":{"Http.Response":{"args":["body"],"type":"{ url : String , status : { code : Int, message : String } , headers : Dict.Dict String String , body : body }"},"Types.Data":{"args":[],"type":"{ key : List String, time : String, values : List String }"},"Types.ValueMeta":{"args":[],"type":"{ value : String, text : String, selected : Bool }"},"Types.Column":{"args":[],"type":"{ code : String, text : String, type_ : String }"},"Types.Site":{"args":[],"type":"{ language : String, url : Types.Url }"},"Types.Url":{"args":[],"type":"String"},"Types.Level":{"args":[],"type":"{ id : String, type_ : String, text : String }"},"Types.TableData":{"args":[],"type":"{ data : List Types.Data, columns : List Types.Column }"},"Types.VariableMeta":{"args":[],"type":"{ code : String , text : String , values : List Types.ValueMeta , time : Bool , sorted : Bool }"},"Types.TableMeta":{"args":[],"type":"{ title : String, variables : List Types.VariableMeta }"}},"message":"Types.Msg"},"versions":{"elm":"0.18.0"}});
+    _user$project$Client$main(Elm['Client'], 'Client', {"types":{"unions":{"Dict.LeafColor":{"args":[],"tags":{"LBBlack":[],"LBlack":[]}},"Dict.Dict":{"args":["k","v"],"tags":{"RBNode_elm_builtin":["Dict.NColor","k","v","Dict.Dict k v","Dict.Dict k v"],"RBEmpty_elm_builtin":["Dict.LeafColor"]}},"Maybe.Maybe":{"args":["a"],"tags":{"Just":["a"],"Nothing":[]}},"Types.Msg":{"args":[],"tags":{"ToggleTableMetaView":[],"SelectSite":["Types.Site"],"SelectLevel":["Types.Level","Int"],"TableLoaded":["Result.Result Http.Error Types.TableData"],"LevelLoaded":["Types.Level","Int","Result.Result Http.Error (List Types.Level)"],"ToggleValue":["Types.VariableMeta","Types.ValueMeta"],"ClearSelection":[],"TableMetaLoaded":["Types.Level","Int","Result.Result Http.Error Types.TableMeta"],"Submit":[],"SiteLoaded":["Types.Site","Result.Result Http.Error (List Types.Level)"],"HoverPoint":["Maybe.Maybe Types.DataPoint"],"TogglePlot":[],"ToggleSort":["Types.VariableMeta"],"ToggleTableDataView":[],"SelectAll":["Types.VariableMeta"],"TogglePlotOrigo":[]}},"Dict.NColor":{"args":[],"tags":{"BBlack":[],"Red":[],"NBlack":[],"Black":[]}},"Http.Error":{"args":[],"tags":{"BadUrl":["String"],"NetworkError":[],"Timeout":[],"BadStatus":["Http.Response String"],"BadPayload":["String","Http.Response String"]}},"Result.Result":{"args":["error","value"],"tags":{"Ok":["value"],"Err":["error"]}}},"aliases":{"Http.Response":{"args":["body"],"type":"{ url : String , status : { code : Int, message : String } , headers : Dict.Dict String String , body : body }"},"Types.Data":{"args":[],"type":"{ key : List String, time : String, values : List String }"},"Types.ValueMeta":{"args":[],"type":"{ value : String, text : String, selected : Bool }"},"Types.Column":{"args":[],"type":"{ code : String, text : String, type_ : String }"},"Types.Site":{"args":[],"type":"{ language : String, url : Types.Url }"},"Types.Url":{"args":[],"type":"String"},"Types.DataPoint":{"args":[],"type":"{ time : String, values : List String }"},"Types.Level":{"args":[],"type":"{ id : String, type_ : String, text : String }"},"Types.TableData":{"args":[],"type":"{ data : List Types.Data, columns : List Types.Column }"},"Types.VariableMeta":{"args":[],"type":"{ code : String , text : String , values : List Types.ValueMeta , time : Bool , sorted : Bool }"},"Types.TableMeta":{"args":[],"type":"{ title : String, variables : List Types.VariableMeta }"}},"message":"Types.Msg"},"versions":{"elm":"0.18.0"}});
 }
 
 if (typeof define === "function" && define['amd'])

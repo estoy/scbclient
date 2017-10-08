@@ -18,8 +18,8 @@ import Element.Attributes exposing (spacing, verticalCenter, padding, spread, px
 -- View ---------------
 
 
-viewTable : TableData -> TableMeta -> Bool -> Bool -> String -> Element Styles variation Msg
-viewTable table meta showPlot plotFromYAtZero language =
+viewTable : TableData -> TableMeta -> Bool -> Bool -> Maybe DataPoint -> String -> Element Styles variation Msg
+viewTable table meta showPlot plotFromYAtZero hoverPoint language =
     let
         data : List DataSequence
         data =
@@ -40,7 +40,7 @@ viewTable table meta showPlot plotFromYAtZero language =
                     ]
 
             True ->
-                viewPlot data meta plotFromYAtZero language
+                viewPlot data meta plotFromYAtZero hoverPoint language
 
 
 viewValues : TableData -> TableMeta -> Element Styles variation Msg
