@@ -93,8 +93,8 @@ isNumericOrEmpty str =
 -- View -----------------------------
 
 
-viewPlot : List DataSequence -> TableMeta -> Element Styles variation Msg
-viewPlot data meta =
+viewPlot : List DataSequence -> TableMeta -> String -> Element Styles variation Msg
+viewPlot data meta language =
     let
         times : List String
         times =
@@ -190,7 +190,7 @@ plotDataSequences dataSeqs times =
                 { top = 20
                 , right = 40
                 , bottom = 20
-                , left = 60
+                , left = 80
                 }
         }
         (dataSeqs
@@ -274,7 +274,7 @@ timeAxis : List String -> Axis
 timeAxis times =
     let
         tickIndices =
-            Debug.log "ticks" (reasonableTicks times)
+            reasonableTicks times
     in
         customAxis <|
             \summary ->

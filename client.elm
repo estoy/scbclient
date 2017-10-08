@@ -30,25 +30,29 @@ initialModel =
 
 view : Model -> Html Msg
 view model =
-    layout stylesheet <|
-        case model.tableMeta of
-            Nothing ->
-                row Main
-                    [ spread ]
-                    ((column Styles.Site
-                        columnAttributes
-                        (List.map (elementFromSite model.siteContext.selected) sites)
-                     )
-                        :: (List.map columnFromLevelContext model.levelContexts)
-                    )
+    let
+        language =
+            model.siteContext.selected.language
+    in
+        layout stylesheet <|
+            case model.tableMeta of
+                Nothing ->
+                    row Main
+                        [ spread ]
+                        ((column Styles.Site
+                            columnAttributes
+                            (List.map (elementFromSite model.siteContext.selected) sites)
+                         )
+                            :: (List.map columnFromLevelContext model.levelContexts)
+                        )
 
-            Just meta ->
-                case model.table of
-                    Nothing ->
-                        viewTableMeta meta
+                Just meta ->
+                    case model.table of
+                        Nothing ->
+                            viewTableMeta meta language
 
-                    Just table ->
-                        viewTable table meta model.showPlot
+                        Just table ->
+                            viewTable table meta model.showPlot language
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -115,7 +119,7 @@ update msg model =
 
         TogglePlot ->
             ( { model | showPlot = not model.showPlot }, Cmd.none )
-        
+
         SelectAll variable ->
             case model.tableMeta of
                 Just table ->

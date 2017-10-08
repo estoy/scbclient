@@ -31361,10 +31361,7 @@ var _user$project$DataPlot$ticks = function (indices) {
 		A2(_elm_lang$core$List$map, _elm_lang$core$Basics$toFloat, indices));
 };
 var _user$project$DataPlot$timeAxis = function (times) {
-	var tickIndices = A2(
-		_elm_lang$core$Debug$log,
-		'ticks',
-		_user$project$DataPlot$reasonableTicks(times));
+	var tickIndices = _user$project$DataPlot$reasonableTicks(times);
 	return _terezka$elm_plot$Plot$customAxis(
 		function (summary) {
 			return {
@@ -31512,7 +31509,7 @@ var _user$project$DataPlot$plotDataSequences = F2(
 				_terezka$elm_plot$Plot$defaultSeriesPlotCustomizations,
 				{
 					horizontalAxis: _user$project$DataPlot$timeAxis(times),
-					margin: {top: 20, right: 40, bottom: 20, left: 60}
+					margin: {top: 20, right: 40, bottom: 20, left: 80}
 				}),
 			A2(_elm_lang$core$List$indexedMap, _user$project$DataPlot$plotLine, dataSeqs),
 			dataSeqs);
@@ -31597,8 +31594,8 @@ var _user$project$DataPlot$subKeysToUse = function (keys) {
 				}),
 			combinedKeys));
 };
-var _user$project$DataPlot$viewPlot = F2(
-	function (data, meta) {
+var _user$project$DataPlot$viewPlot = F3(
+	function (data, meta, language) {
 		var keys = A2(
 			_elm_lang$core$List$map,
 			function (_) {
@@ -31718,6 +31715,69 @@ var _user$project$DataPlot$canPlot = F2(
 			1);
 		var isAllNumeric = A2(_elm_lang$core$List$all, _user$project$DataPlot$isNumericSequence, data);
 		return onlyHasSingleDataPoints && isAllNumeric;
+	});
+
+var _user$project$Translations$emptyTranslation = _elm_lang$core$Dict$fromList(
+	{ctor: '[]'});
+var _user$project$Translations$swedish = _elm_lang$core$Dict$fromList(
+	{
+		ctor: '::',
+		_0: {ctor: '_Tuple2', _0: 'plot', _1: 'Plotta'},
+		_1: {
+			ctor: '::',
+			_0: {ctor: '_Tuple2', _0: 'sort', _1: 'Sortera'},
+			_1: {
+				ctor: '::',
+				_0: {ctor: '_Tuple2', _0: 'selectall', _1: 'Välj alla'},
+				_1: {
+					ctor: '::',
+					_0: {ctor: '_Tuple2', _0: 'submit', _1: 'Skicka'},
+					_1: {ctor: '[]'}
+				}
+			}
+		}
+	});
+var _user$project$Translations$english = _elm_lang$core$Dict$fromList(
+	{
+		ctor: '::',
+		_0: {ctor: '_Tuple2', _0: 'plot', _1: 'Plot'},
+		_1: {
+			ctor: '::',
+			_0: {ctor: '_Tuple2', _0: 'sort', _1: 'Sort'},
+			_1: {
+				ctor: '::',
+				_0: {ctor: '_Tuple2', _0: 'selectall', _1: 'Select all'},
+				_1: {
+					ctor: '::',
+					_0: {ctor: '_Tuple2', _0: 'submit', _1: 'Submit'},
+					_1: {ctor: '[]'}
+				}
+			}
+		}
+	});
+var _user$project$Translations$translations = _elm_lang$core$Dict$fromList(
+	{
+		ctor: '::',
+		_0: {ctor: '_Tuple2', _0: 'english', _1: _user$project$Translations$english},
+		_1: {
+			ctor: '::',
+			_0: {ctor: '_Tuple2', _0: 'svenska', _1: _user$project$Translations$swedish},
+			_1: {ctor: '[]'}
+		}
+	});
+var _user$project$Translations$translate = F2(
+	function (key, language) {
+		var lang = _elm_lang$core$String$toLower(language);
+		return A2(
+			_elm_lang$core$Maybe$withDefault,
+			'*missing*',
+			A2(
+				_elm_lang$core$Dict$get,
+				key,
+				A2(
+					_elm_lang$core$Maybe$withDefault,
+					_user$project$Translations$emptyTranslation,
+					A2(_elm_lang$core$Dict$get, lang, _user$project$Translations$translations))));
 	});
 
 var _user$project$Table$emptyVariableMeta = A5(
@@ -31990,8 +32050,8 @@ var _user$project$Table$viewValues = F2(
 						A2(_elm_lang$core$Basics_ops['++'], timeHeaders, dataRows)))
 			});
 	});
-var _user$project$Table$viewTable = F3(
-	function (table, meta, showPlot) {
+var _user$project$Table$viewTable = F4(
+	function (table, meta, showPlot, language) {
 		var data = A2(_user$project$Table$dataSequences, table, meta);
 		var isPlottable = A2(_user$project$DataPlot$canPlot, data, table.columns);
 		var _p0 = showPlot;
@@ -32007,7 +32067,11 @@ var _user$project$Table$viewTable = F3(
 						meta.title,
 						{
 							ctor: '::',
-							_0: A3(_user$project$Elements$buttonElement, 'Plot', _user$project$Types$TogglePlot, isPlottable),
+							_0: A3(
+								_user$project$Elements$buttonElement,
+								A2(_user$project$Translations$translate, 'plot', language),
+								_user$project$Types$TogglePlot,
+								isPlottable),
 							_1: {
 								ctor: '::',
 								_0: A3(_user$project$Elements$buttonElement, 'X', _user$project$Types$ToggleTableDataView, true),
@@ -32021,7 +32085,7 @@ var _user$project$Table$viewTable = F3(
 					}
 				});
 		} else {
-			return A2(_user$project$DataPlot$viewPlot, data, meta);
+			return A3(_user$project$DataPlot$viewPlot, data, meta, language);
 		}
 	});
 
@@ -32148,84 +32212,90 @@ var _user$project$TableMeta$viewValueMeta = F2(
 			},
 			_mdgriffith$style_elements$Element$text(val.text));
 	});
-var _user$project$TableMeta$viewVariableMeta = function (variable) {
-	var values = variable.sorted ? A2(
-		_elm_lang$core$List$sortBy,
-		function (_) {
-			return _.text;
-		},
-		variable.values) : variable.values;
-	return A3(
-		_mdgriffith$style_elements$Element$row,
-		_user$project$Styles$None,
-		{
-			ctor: '::',
-			_0: _mdgriffith$style_elements$Element_Attributes$alignTop,
-			_1: {
+var _user$project$TableMeta$viewVariableMeta = F2(
+	function (language, variable) {
+		var values = variable.sorted ? A2(
+			_elm_lang$core$List$sortBy,
+			function (_) {
+				return _.text;
+			},
+			variable.values) : variable.values;
+		return A3(
+			_mdgriffith$style_elements$Element$row,
+			_user$project$Styles$None,
+			{
 				ctor: '::',
-				_0: _mdgriffith$style_elements$Element_Attributes$spacing(10),
-				_1: {ctor: '[]'}
-			}
-		},
-		{
-			ctor: '::',
-			_0: A3(
-				_mdgriffith$style_elements$Element$el,
-				_user$project$Styles$VariableName,
-				{ctor: '[]'},
-				_mdgriffith$style_elements$Element$text(variable.text)),
-			_1: {
-				ctor: '::',
-				_0: A3(
-					_mdgriffith$style_elements$Element$column,
-					_user$project$Styles$VariableData,
-					A2(
-						_elm_lang$core$Basics_ops['++'],
-						{
-							ctor: '::',
-							_0: _mdgriffith$style_elements$Element_Attributes$yScrollbar,
-							_1: {
-								ctor: '::',
-								_0: _mdgriffith$style_elements$Element_Attributes$maxHeight(
-									_mdgriffith$style_elements$Element_Attributes$px(150)),
-								_1: {ctor: '[]'}
-							}
-						},
-						_user$project$Attributes$listAttributes),
-					A2(
-						_elm_lang$core$List$map,
-						_user$project$TableMeta$viewValueMeta(variable),
-						values)),
+				_0: _mdgriffith$style_elements$Element_Attributes$alignTop,
 				_1: {
 					ctor: '::',
-					_0: (!variable.time) ? A3(
-						_mdgriffith$style_elements$Element_Input$checkbox,
-						_user$project$Styles$None,
-						{ctor: '[]'},
-						{
-							onChange: function (_p1) {
-								return _user$project$Types$ToggleSort(variable);
-							},
-							label: _mdgriffith$style_elements$Element$text('sort'),
-							checked: variable.sorted,
-							options: {ctor: '[]'}
-						}) : A3(
-						_user$project$Elements$buttonElement,
-						'select all',
-						_user$project$Types$SelectAll(variable),
-						true),
+					_0: _mdgriffith$style_elements$Element_Attributes$spacing(10),
 					_1: {ctor: '[]'}
 				}
-			}
-		});
-};
-var _user$project$TableMeta$viewVariablesMeta = function (variables) {
-	return A3(
-		_mdgriffith$style_elements$Element$column,
-		_user$project$Styles$None,
-		_user$project$Attributes$columnAttributes,
-		A2(_elm_lang$core$List$map, _user$project$TableMeta$viewVariableMeta, variables));
-};
+			},
+			{
+				ctor: '::',
+				_0: A3(
+					_mdgriffith$style_elements$Element$el,
+					_user$project$Styles$VariableName,
+					{ctor: '[]'},
+					_mdgriffith$style_elements$Element$text(variable.text)),
+				_1: {
+					ctor: '::',
+					_0: A3(
+						_mdgriffith$style_elements$Element$column,
+						_user$project$Styles$VariableData,
+						A2(
+							_elm_lang$core$Basics_ops['++'],
+							{
+								ctor: '::',
+								_0: _mdgriffith$style_elements$Element_Attributes$yScrollbar,
+								_1: {
+									ctor: '::',
+									_0: _mdgriffith$style_elements$Element_Attributes$maxHeight(
+										_mdgriffith$style_elements$Element_Attributes$px(150)),
+									_1: {ctor: '[]'}
+								}
+							},
+							_user$project$Attributes$listAttributes),
+						A2(
+							_elm_lang$core$List$map,
+							_user$project$TableMeta$viewValueMeta(variable),
+							values)),
+					_1: {
+						ctor: '::',
+						_0: (!variable.time) ? A3(
+							_mdgriffith$style_elements$Element_Input$checkbox,
+							_user$project$Styles$None,
+							{ctor: '[]'},
+							{
+								onChange: function (_p1) {
+									return _user$project$Types$ToggleSort(variable);
+								},
+								label: _mdgriffith$style_elements$Element$text(
+									A2(_user$project$Translations$translate, 'sort', language)),
+								checked: variable.sorted,
+								options: {ctor: '[]'}
+							}) : A3(
+							_user$project$Elements$buttonElement,
+							A2(_user$project$Translations$translate, 'selectall', language),
+							_user$project$Types$SelectAll(variable),
+							true),
+						_1: {ctor: '[]'}
+					}
+				}
+			});
+	});
+var _user$project$TableMeta$viewVariablesMeta = F2(
+	function (variables, language) {
+		return A3(
+			_mdgriffith$style_elements$Element$column,
+			_user$project$Styles$None,
+			_user$project$Attributes$columnAttributes,
+			A2(
+				_elm_lang$core$List$map,
+				_user$project$TableMeta$viewVariableMeta(language),
+				variables));
+	});
 var _user$project$TableMeta$hasSelection = function ($var) {
 	return A2(
 		_elm_lang$core$List$any,
@@ -32234,33 +32304,38 @@ var _user$project$TableMeta$hasSelection = function ($var) {
 		},
 		$var.values);
 };
-var _user$project$TableMeta$viewTableMeta = function (meta) {
-	var completeSelection = A2(_elm_lang$core$List$all, _user$project$TableMeta$hasSelection, meta.variables);
-	return A3(
-		_mdgriffith$style_elements$Element$column,
-		_user$project$Styles$Table,
-		_user$project$Attributes$columnAttributes,
-		{
-			ctor: '::',
-			_0: A2(
-				_user$project$Elements$titleRow,
-				meta.title,
-				{
-					ctor: '::',
-					_0: A3(_user$project$Elements$buttonElement, 'Submit', _user$project$Types$Submit, completeSelection),
-					_1: {
-						ctor: '::',
-						_0: A3(_user$project$Elements$buttonElement, 'X', _user$project$Types$ToggleTableMetaView, true),
-						_1: {ctor: '[]'}
-					}
-				}),
-			_1: {
+var _user$project$TableMeta$viewTableMeta = F2(
+	function (meta, language) {
+		var completeSelection = A2(_elm_lang$core$List$all, _user$project$TableMeta$hasSelection, meta.variables);
+		return A3(
+			_mdgriffith$style_elements$Element$column,
+			_user$project$Styles$Table,
+			_user$project$Attributes$columnAttributes,
+			{
 				ctor: '::',
-				_0: _user$project$TableMeta$viewVariablesMeta(meta.variables),
-				_1: {ctor: '[]'}
-			}
-		});
-};
+				_0: A2(
+					_user$project$Elements$titleRow,
+					meta.title,
+					{
+						ctor: '::',
+						_0: A3(
+							_user$project$Elements$buttonElement,
+							A2(_user$project$Translations$translate, 'submit', language),
+							_user$project$Types$Submit,
+							completeSelection),
+						_1: {
+							ctor: '::',
+							_0: A3(_user$project$Elements$buttonElement, 'X', _user$project$Types$ToggleTableMetaView, true),
+							_1: {ctor: '[]'}
+						}
+					}),
+				_1: {
+					ctor: '::',
+					_0: A2(_user$project$TableMeta$viewVariablesMeta, meta.variables, language),
+					_1: {ctor: '[]'}
+				}
+			});
+	});
 
 var _user$project$Contexts$modelWithLevel = F4(
 	function (model, level, index, levels) {
@@ -32560,6 +32635,7 @@ var _user$project$Client$update = F2(
 		}
 	});
 var _user$project$Client$view = function (model) {
+	var language = model.siteContext.selected.language;
 	return A2(
 		_mdgriffith$style_elements$Element$layout,
 		_user$project$Styles$stylesheet,
@@ -32590,9 +32666,9 @@ var _user$project$Client$view = function (model) {
 				var _p6 = _p4._0;
 				var _p5 = model.table;
 				if (_p5.ctor === 'Nothing') {
-					return _user$project$TableMeta$viewTableMeta(_p6);
+					return A2(_user$project$TableMeta$viewTableMeta, _p6, language);
 				} else {
-					return A3(_user$project$Table$viewTable, _p5._0, _p6, model.showPlot);
+					return A4(_user$project$Table$viewTable, _p5._0, _p6, model.showPlot, language);
 				}
 			}
 		}());

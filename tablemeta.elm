@@ -5,6 +5,7 @@ import Styles exposing (..)
 import Utils exposing (mapIf)
 import Attributes exposing (columnAttributes, listAttributes, buttonHeight)
 import Elements exposing (buttonElement, titleRow)
+import Translations exposing (translate)
 
 
 -- External ------
@@ -18,8 +19,8 @@ import Element.Input as Input exposing (checkbox)
 -- View -------
 
 
-viewTableMeta : TableMeta -> Element Styles Styles Msg
-viewTableMeta meta =
+viewTableMeta : TableMeta -> String -> Element Styles Styles Msg
+viewTableMeta meta language =
     let
         completeSelection =
             meta.variables
@@ -28,10 +29,10 @@ viewTableMeta meta =
         column Table
             columnAttributes
             [ titleRow meta.title
-                [ buttonElement "Submit" Submit completeSelection
+                [ buttonElement (translate "submit" language) Submit completeSelection
                 , buttonElement "X" ToggleTableMetaView True
                 ]
-            , viewVariablesMeta meta.variables
+            , viewVariablesMeta meta.variables language
             ]
 
 
@@ -41,14 +42,14 @@ hasSelection var =
         |> List.any .selected
 
 
-viewVariablesMeta : List VariableMeta -> Element Styles variation Msg
-viewVariablesMeta variables =
+viewVariablesMeta : List VariableMeta -> String -> Element Styles variation Msg
+viewVariablesMeta variables language =
     column None columnAttributes <|
-        List.map viewVariableMeta variables
+        List.map (viewVariableMeta language) variables
 
 
-viewVariableMeta : VariableMeta -> Element Styles variation Msg
-viewVariableMeta variable =
+viewVariableMeta : String -> VariableMeta -> Element Styles variation Msg
+viewVariableMeta language variable =
     let
         values =
             if variable.sorted then
@@ -68,12 +69,12 @@ viewVariableMeta variable =
                 checkbox None
                     []
                     { onChange = \_ -> (ToggleSort variable)
-                    , label = text "sort"
+                    , label = text (translate "sort" language)
                     , checked = variable.sorted
                     , options = []
                     }
               else
-                buttonElement "select all" (SelectAll variable) True
+                buttonElement (translate "selectall" language) (SelectAll variable) True
             ]
 
 

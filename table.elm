@@ -6,20 +6,20 @@ import Utils exposing (groupBy)
 import Attributes exposing (columnAttributes, buttonHeight)
 import DataPlot exposing (viewPlot, canPlot)
 import Elements exposing (buttonElement, titleRow)
+import Translations exposing (translate)
 
 
 -- External ------
 
 import Element exposing (Element, paragraph, column, text, row, el, button, grid, cell)
-import Element.Events exposing (onClick)
 import Element.Attributes exposing (spacing, verticalCenter, padding, spread, px, scrollbars)
 
 
 -- View ---------------
 
 
-viewTable : TableData -> TableMeta -> Bool -> Element Styles variation Msg
-viewTable table meta showPlot =
+viewTable : TableData -> TableMeta -> Bool -> String -> Element Styles variation Msg
+viewTable table meta showPlot language =
     let
         data : List DataSequence
         data =
@@ -33,14 +33,14 @@ viewTable table meta showPlot =
                 column Table
                     columnAttributes
                     [ titleRow meta.title
-                        [ buttonElement "Plot" TogglePlot isPlottable
+                        [ buttonElement (translate "plot" language) TogglePlot isPlottable
                         , buttonElement "X" ToggleTableDataView True
                         ]
                     , viewValues table meta
                     ]
 
             True ->
-                viewPlot data meta
+                viewPlot data meta language
 
 
 viewValues : TableData -> TableMeta -> Element Styles variation Msg
