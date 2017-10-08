@@ -64,13 +64,16 @@ viewVariableMeta variable =
                 (values
                     |> List.map (viewValueMeta variable)
                 )
-            , checkbox None
-                [ paddingLeft 10 ]
-                { onChange = \_ -> (ToggleSort variable)
-                , label = text "sort"
-                , checked = variable.sorted
-                , options = []
-                }
+            , if not variable.time then
+                checkbox None
+                    [ paddingLeft 10 ]
+                    { onChange = \_ -> (ToggleSort variable)
+                    , label = text "sort"
+                    , checked = variable.sorted
+                    , options = []
+                    }
+              else
+                text ""
             ]
 
 

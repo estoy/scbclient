@@ -32133,7 +32133,7 @@ var _user$project$TableMeta$viewVariableMeta = function (variable) {
 						values)),
 				_1: {
 					ctor: '::',
-					_0: A3(
+					_0: (!variable.time) ? A3(
 						_mdgriffith$style_elements$Element_Input$checkbox,
 						_user$project$Styles$None,
 						{
@@ -32148,7 +32148,7 @@ var _user$project$TableMeta$viewVariableMeta = function (variable) {
 							label: _mdgriffith$style_elements$Element$text('sort'),
 							checked: variable.sorted,
 							options: {ctor: '[]'}
-						}),
+						}) : _mdgriffith$style_elements$Element$text(''),
 					_1: {ctor: '[]'}
 				}
 			}
