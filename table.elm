@@ -33,7 +33,7 @@ viewTable table meta showPlot language =
                 column Table
                     columnAttributes
                     [ titleRow meta.title
-                        [ buttonElement (translate "plot" language) TogglePlot isPlottable
+                        [ buttonElement (translate PlotKey language) TogglePlot isPlottable
                         , buttonElement "X" ToggleTableDataView True
                         ]
                     , viewValues table meta

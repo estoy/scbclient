@@ -29,8 +29,8 @@ viewTableMeta meta language =
         column Table
             columnAttributes
             [ titleRow meta.title
-                [ buttonElement (translate "submit" language) Submit completeSelection
-                , buttonElement (translate "clearselections" language) ClearSelection True
+                [ buttonElement (translate SubmitKey language) Submit completeSelection
+                , buttonElement (translate ClearSelectionsKey language) ClearSelection True
                 , buttonElement "X" ToggleTableMetaView True
                 ]
             , viewVariablesMeta meta.variables language
@@ -70,12 +70,12 @@ viewVariableMeta language variable =
                 checkbox None
                     []
                     { onChange = \_ -> (ToggleSort variable)
-                    , label = text (translate "sort" language)
+                    , label = text (translate SortKey language)
                     , checked = variable.sorted
                     , options = []
                     }
               else
-                buttonElement (translate "selectall" language) (SelectAll variable) True
+                buttonElement (translate SelectAllKey language) (SelectAll variable) True
             ]
 
 

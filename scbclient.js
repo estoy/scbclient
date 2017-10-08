@@ -30871,6 +30871,11 @@ var _user$project$Types$SiteLoaded = F2(
 var _user$project$Types$SelectSite = function (a) {
 	return {ctor: 'SelectSite', _0: a};
 };
+var _user$project$Types$ClearSelectionsKey = {ctor: 'ClearSelectionsKey'};
+var _user$project$Types$SubmitKey = {ctor: 'SubmitKey'};
+var _user$project$Types$SelectAllKey = {ctor: 'SelectAllKey'};
+var _user$project$Types$SortKey = {ctor: 'SortKey'};
+var _user$project$Types$PlotKey = {ctor: 'PlotKey'};
 
 var _user$project$Utils$variableQuery = function (variable) {
 	return _elm_lang$core$Json_Encode$object(
@@ -31718,52 +31723,66 @@ var _user$project$DataPlot$canPlot = F2(
 		return onlyHasSingleDataPoints && isAllNumeric;
 	});
 
-var _user$project$Translations$emptyTranslation = _elm_lang$core$Dict$fromList(
-	{ctor: '[]'});
-var _user$project$Translations$swedish = _elm_lang$core$Dict$fromList(
-	{
+var _user$project$Translations$lookup = F2(
+	function (key, table) {
+		return _elm_lang$core$List$head(
+			A2(
+				_elm_lang$core$List$map,
+				function (_p0) {
+					var _p1 = _p0;
+					return _p1._1;
+				},
+				A2(
+					_elm_lang$core$List$filter,
+					function (_p2) {
+						var _p3 = _p2;
+						return _elm_lang$core$Native_Utils.eq(_p3._0, key);
+					},
+					table)));
+	});
+var _user$project$Translations$emptyTranslation = {ctor: '[]'};
+var _user$project$Translations$swedish = {
+	ctor: '::',
+	_0: {ctor: '_Tuple2', _0: _user$project$Types$PlotKey, _1: 'Plotta'},
+	_1: {
 		ctor: '::',
-		_0: {ctor: '_Tuple2', _0: 'plot', _1: 'Plotta'},
+		_0: {ctor: '_Tuple2', _0: _user$project$Types$SortKey, _1: 'Sortera'},
 		_1: {
 			ctor: '::',
-			_0: {ctor: '_Tuple2', _0: 'sort', _1: 'Sortera'},
+			_0: {ctor: '_Tuple2', _0: _user$project$Types$SelectAllKey, _1: 'Välj alla'},
 			_1: {
 				ctor: '::',
-				_0: {ctor: '_Tuple2', _0: 'selectall', _1: 'Välj alla'},
+				_0: {ctor: '_Tuple2', _0: _user$project$Types$SubmitKey, _1: 'Skicka'},
 				_1: {
 					ctor: '::',
-					_0: {ctor: '_Tuple2', _0: 'submit', _1: 'Skicka'},
-					_1: {
-						ctor: '::',
-						_0: {ctor: '_Tuple2', _0: 'clearselections', _1: 'Rensa alla val'},
-						_1: {ctor: '[]'}
-					}
+					_0: {ctor: '_Tuple2', _0: _user$project$Types$ClearSelectionsKey, _1: 'Rensa alla val'},
+					_1: {ctor: '[]'}
 				}
 			}
 		}
-	});
-var _user$project$Translations$english = _elm_lang$core$Dict$fromList(
-	{
+	}
+};
+var _user$project$Translations$english = {
+	ctor: '::',
+	_0: {ctor: '_Tuple2', _0: _user$project$Types$PlotKey, _1: 'Plot'},
+	_1: {
 		ctor: '::',
-		_0: {ctor: '_Tuple2', _0: 'plot', _1: 'Plot'},
+		_0: {ctor: '_Tuple2', _0: _user$project$Types$SortKey, _1: 'Sort'},
 		_1: {
 			ctor: '::',
-			_0: {ctor: '_Tuple2', _0: 'sort', _1: 'Sort'},
+			_0: {ctor: '_Tuple2', _0: _user$project$Types$SelectAllKey, _1: 'Select all'},
 			_1: {
 				ctor: '::',
-				_0: {ctor: '_Tuple2', _0: 'selectall', _1: 'Select all'},
+				_0: {ctor: '_Tuple2', _0: _user$project$Types$SubmitKey, _1: 'Submit'},
 				_1: {
 					ctor: '::',
-					_0: {ctor: '_Tuple2', _0: 'submit', _1: 'Submit'},
-					_1: {
-						ctor: '::',
-						_0: {ctor: '_Tuple2', _0: 'clearselections', _1: 'Clear all selections'},
-						_1: {ctor: '[]'}
-					}
+					_0: {ctor: '_Tuple2', _0: _user$project$Types$ClearSelectionsKey, _1: 'Clear all selections'},
+					_1: {ctor: '[]'}
 				}
 			}
 		}
-	});
+	}
+};
 var _user$project$Translations$translations = _elm_lang$core$Dict$fromList(
 	{
 		ctor: '::',
@@ -31781,7 +31800,7 @@ var _user$project$Translations$translate = F2(
 			_elm_lang$core$Maybe$withDefault,
 			'*missing*',
 			A2(
-				_elm_lang$core$Dict$get,
+				_user$project$Translations$lookup,
 				key,
 				A2(
 					_elm_lang$core$Maybe$withDefault,
@@ -32078,7 +32097,7 @@ var _user$project$Table$viewTable = F4(
 							ctor: '::',
 							_0: A3(
 								_user$project$Elements$buttonElement,
-								A2(_user$project$Translations$translate, 'plot', language),
+								A2(_user$project$Translations$translate, _user$project$Types$PlotKey, language),
 								_user$project$Types$TogglePlot,
 								isPlottable),
 							_1: {
@@ -32307,12 +32326,12 @@ var _user$project$TableMeta$viewVariableMeta = F2(
 									return _user$project$Types$ToggleSort(variable);
 								},
 								label: _mdgriffith$style_elements$Element$text(
-									A2(_user$project$Translations$translate, 'sort', language)),
+									A2(_user$project$Translations$translate, _user$project$Types$SortKey, language)),
 								checked: variable.sorted,
 								options: {ctor: '[]'}
 							}) : A3(
 							_user$project$Elements$buttonElement,
-							A2(_user$project$Translations$translate, 'selectall', language),
+							A2(_user$project$Translations$translate, _user$project$Types$SelectAllKey, language),
 							_user$project$Types$SelectAll(variable),
 							true),
 						_1: {ctor: '[]'}
@@ -32355,14 +32374,14 @@ var _user$project$TableMeta$viewTableMeta = F2(
 						ctor: '::',
 						_0: A3(
 							_user$project$Elements$buttonElement,
-							A2(_user$project$Translations$translate, 'submit', language),
+							A2(_user$project$Translations$translate, _user$project$Types$SubmitKey, language),
 							_user$project$Types$Submit,
 							completeSelection),
 						_1: {
 							ctor: '::',
 							_0: A3(
 								_user$project$Elements$buttonElement,
-								A2(_user$project$Translations$translate, 'clearselections', language),
+								A2(_user$project$Translations$translate, _user$project$Types$ClearSelectionsKey, language),
 								_user$project$Types$ClearSelection,
 								true),
 							_1: {

@@ -1,8 +1,10 @@
 module Translations exposing (translate)
 
+import Types exposing (..)
 import Dict exposing (..)
 
-translate : String -> String -> String
+
+translate : TranslationKey -> String -> String
 translate key language =
     let
         lang =
@@ -11,37 +13,45 @@ translate key language =
         translations
             |> Dict.get lang
             |> Maybe.withDefault emptyTranslation
-            |> Dict.get key
+            |> lookup key
             |> Maybe.withDefault "*missing*"
-    
-english : Dict String String
+
+
+english : List ( TranslationKey, String )
 english =
-    Dict.fromList
-        [ ("plot", "Plot") 
-        , ("sort", "Sort") 
-        , ("selectall", "Select all")
-        , ("submit", "Submit")
-        , ("clearselections", "Clear all selections")
-        ]
+    [ ( PlotKey, "Plot" )
+    , ( SortKey, "Sort" )
+    , ( SelectAllKey, "Select all" )
+    , ( SubmitKey, "Submit" )
+    , ( ClearSelectionsKey, "Clear all selections" )
+    ]
 
-swedish : Dict String String
+
+swedish : List ( TranslationKey, String )
 swedish =
-    Dict.fromList
-        [ ("plot", "Plotta") 
-        , ("sort", "Sortera") 
-        , ("selectall", "Välj alla")
-        , ("submit", "Skicka")
-        , ("clearselections", "Rensa alla val")
-        ]
+    [ ( PlotKey, "Plotta" )
+    , ( SortKey, "Sortera" )
+    , ( SelectAllKey, "Välj alla" )
+    , ( SubmitKey, "Skicka" )
+    , ( ClearSelectionsKey, "Rensa alla val" )
+    ]
 
-emptyTranslation : Dict String String
+
+emptyTranslation : List ( TranslationKey, String )
 emptyTranslation =
-    Dict.fromList []
-   
+    []
 
-translations : Dict String (Dict String String)
+
+translations : Dict String (List ( TranslationKey, String ))
 translations =
     Dict.fromList
-        [ ("english", english)
-        , ("svenska", swedish)
+        [ ( "english", english )
+        , ( "svenska", swedish )
         ]
+
+lookup : TranslationKey -> List ( TranslationKey, String ) -> Maybe String
+lookup key table =
+    table
+        |> List.filter (\(k, v) -> k == key)
+        |> List.map (\(k, v) -> v)
+        |> List.head

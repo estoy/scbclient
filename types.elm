@@ -137,3 +137,11 @@ type alias Column =
 
 type alias Button variation =
     Element Styles variation Msg
+
+
+type TranslationKey
+    = PlotKey
+    | SortKey
+    | SelectAllKey
+    | SubmitKey
+    | ClearSelectionsKey
