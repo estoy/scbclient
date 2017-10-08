@@ -4,7 +4,7 @@ import Types exposing (..)
 import Styles exposing (..)
 import Attributes exposing (columnAttributes)
 import Table exposing (viewTable)
-import TableMeta exposing (viewTableMeta, toggleValueForTable, modelWithTableMeta, toggleVariableSort, selectAll)
+import TableMeta exposing (viewTableMeta, toggleValueForTable, modelWithTableMeta, toggleVariableSort, selectAll, clearAll)
 import Api exposing (loadSiteCmd, loadLevelCmd, submitQueryCmd)
 import Contexts exposing (elementFromSite, columnFromLevelContext, modelWithSite, modelWithLevel)
 import Config exposing (..)
@@ -124,6 +124,16 @@ update msg model =
             case model.tableMeta of
                 Just table ->
                     ( { model | tableMeta = Just <| selectAll variable table }
+                    , Cmd.none
+                    )
+
+                Nothing ->
+                    ( model, Cmd.none )
+
+        ClearSelection ->
+            case model.tableMeta of
+                Just table ->
+                    ( { model | tableMeta = Just <| clearAll table }
                     , Cmd.none
                     )
 

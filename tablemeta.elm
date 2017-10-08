@@ -1,4 +1,4 @@
-module TableMeta exposing (viewTableMeta, toggleValueForTable, modelWithTableMeta, toggleVariableSort, selectAll)
+module TableMeta exposing (viewTableMeta, toggleValueForTable, modelWithTableMeta, toggleVariableSort, selectAll, clearAll)
 
 import Types exposing (..)
 import Styles exposing (..)
@@ -10,7 +10,7 @@ import Translations exposing (translate)
 
 -- External ------
 
-import Element exposing (Element, text, button, el, column, row)
+import Element exposing (Element, text, button, el, column, row, paragraph)
 import Element.Attributes exposing (alignTop, spacing, spread, paddingRight, paddingLeft, yScrollbar, maxHeight, px)
 import Element.Events exposing (onClick)
 import Element.Input as Input exposing (checkbox)
@@ -30,6 +30,7 @@ viewTableMeta meta language =
             columnAttributes
             [ titleRow meta.title
                 [ buttonElement (translate "submit" language) Submit completeSelection
+                , buttonElement (translate "clearselections" language) ClearSelection True
                 , buttonElement "X" ToggleTableMetaView True
                 ]
             , viewVariablesMeta meta.variables language
@@ -87,7 +88,7 @@ viewValueMeta var val =
             else
                 None
     in
-        el style [ onClick (ToggleValue var val) ] (text val.text)
+        el style [ onClick (ToggleValue var val) ] <| paragraph None [] [ text val.text ]
 
 
 
@@ -174,3 +175,23 @@ selectAllValues variable =
 selectValue : ValueMeta -> ValueMeta
 selectValue val =
     { val | selected = True }
+
+
+clearAll : TableMeta -> TableMeta
+clearAll table =
+    let
+        variables =
+            table.variables
+                |> List.map clearSelections
+    in
+        { table | variables = variables }
+
+
+clearSelections : VariableMeta -> VariableMeta
+clearSelections variable =
+    { variable | values = List.map deselectValue variable.values }
+
+
+deselectValue : ValueMeta -> ValueMeta
+deselectValue val =
+    { val | selected = False }

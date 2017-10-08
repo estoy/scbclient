@@ -21,6 +21,7 @@ english =
         , ("sort", "Sort") 
         , ("selectall", "Select all")
         , ("submit", "Submit")
+        , ("clearselections", "Clear all selections")
         ]
 
 swedish : Dict String String
@@ -30,6 +31,7 @@ swedish =
         , ("sort", "Sortera") 
         , ("selectall", "Välj alla")
         , ("submit", "Skicka")
+        , ("clearselections", "Rensa alla val")
         ]
 
 emptyTranslation : Dict String String

@@ -30834,6 +30834,7 @@ var _user$project$Types$Column = F3(
 	function (a, b, c) {
 		return {code: a, text: b, type_: c};
 	});
+var _user$project$Types$ClearSelection = {ctor: 'ClearSelection'};
 var _user$project$Types$SelectAll = function (a) {
 	return {ctor: 'SelectAll', _0: a};
 };
@@ -31732,7 +31733,11 @@ var _user$project$Translations$swedish = _elm_lang$core$Dict$fromList(
 				_1: {
 					ctor: '::',
 					_0: {ctor: '_Tuple2', _0: 'submit', _1: 'Skicka'},
-					_1: {ctor: '[]'}
+					_1: {
+						ctor: '::',
+						_0: {ctor: '_Tuple2', _0: 'clearselections', _1: 'Rensa alla val'},
+						_1: {ctor: '[]'}
+					}
 				}
 			}
 		}
@@ -31750,7 +31755,11 @@ var _user$project$Translations$english = _elm_lang$core$Dict$fromList(
 				_1: {
 					ctor: '::',
 					_0: {ctor: '_Tuple2', _0: 'submit', _1: 'Submit'},
-					_1: {ctor: '[]'}
+					_1: {
+						ctor: '::',
+						_0: {ctor: '_Tuple2', _0: 'clearselections', _1: 'Clear all selections'},
+						_1: {ctor: '[]'}
+					}
 				}
 			}
 		}
@@ -32089,6 +32098,24 @@ var _user$project$Table$viewTable = F4(
 		}
 	});
 
+var _user$project$TableMeta$deselectValue = function (val) {
+	return _elm_lang$core$Native_Utils.update(
+		val,
+		{selected: false});
+};
+var _user$project$TableMeta$clearSelections = function (variable) {
+	return _elm_lang$core$Native_Utils.update(
+		variable,
+		{
+			values: A2(_elm_lang$core$List$map, _user$project$TableMeta$deselectValue, variable.values)
+		});
+};
+var _user$project$TableMeta$clearAll = function (table) {
+	var variables = A2(_elm_lang$core$List$map, _user$project$TableMeta$clearSelections, table.variables);
+	return _elm_lang$core$Native_Utils.update(
+		table,
+		{variables: variables});
+};
 var _user$project$TableMeta$selectValue = function (val) {
 	return _elm_lang$core$Native_Utils.update(
 		val,
@@ -32210,7 +32237,15 @@ var _user$project$TableMeta$viewValueMeta = F2(
 					A2(_user$project$Types$ToggleValue, $var, val)),
 				_1: {ctor: '[]'}
 			},
-			_mdgriffith$style_elements$Element$text(val.text));
+			A3(
+				_mdgriffith$style_elements$Element$paragraph,
+				_user$project$Styles$None,
+				{ctor: '[]'},
+				{
+					ctor: '::',
+					_0: _mdgriffith$style_elements$Element$text(val.text),
+					_1: {ctor: '[]'}
+				}));
 	});
 var _user$project$TableMeta$viewVariableMeta = F2(
 	function (language, variable) {
@@ -32325,8 +32360,16 @@ var _user$project$TableMeta$viewTableMeta = F2(
 							completeSelection),
 						_1: {
 							ctor: '::',
-							_0: A3(_user$project$Elements$buttonElement, 'X', _user$project$Types$ToggleTableMetaView, true),
-							_1: {ctor: '[]'}
+							_0: A3(
+								_user$project$Elements$buttonElement,
+								A2(_user$project$Translations$translate, 'clearselections', language),
+								_user$project$Types$ClearSelection,
+								true),
+							_1: {
+								ctor: '::',
+								_0: A3(_user$project$Elements$buttonElement, 'X', _user$project$Types$ToggleTableMetaView, true),
+								_1: {ctor: '[]'}
+							}
 						}
 					}),
 				_1: {
@@ -32616,7 +32659,7 @@ var _user$project$Client$update = F2(
 						{showPlot: !model.showPlot}),
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
-			default:
+			case 'SelectAll':
 				var _p3 = model.tableMeta;
 				if (_p3.ctor === 'Just') {
 					return {
@@ -32632,6 +32675,22 @@ var _user$project$Client$update = F2(
 				} else {
 					return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
 				}
+			default:
+				var _p4 = model.tableMeta;
+				if (_p4.ctor === 'Just') {
+					return {
+						ctor: '_Tuple2',
+						_0: _elm_lang$core$Native_Utils.update(
+							model,
+							{
+								tableMeta: _elm_lang$core$Maybe$Just(
+									_user$project$TableMeta$clearAll(_p4._0))
+							}),
+						_1: _elm_lang$core$Platform_Cmd$none
+					};
+				} else {
+					return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
+				}
 		}
 	});
 var _user$project$Client$view = function (model) {
@@ -32640,8 +32699,8 @@ var _user$project$Client$view = function (model) {
 		_mdgriffith$style_elements$Element$layout,
 		_user$project$Styles$stylesheet,
 		function () {
-			var _p4 = model.tableMeta;
-			if (_p4.ctor === 'Nothing') {
+			var _p5 = model.tableMeta;
+			if (_p5.ctor === 'Nothing') {
 				return A3(
 					_mdgriffith$style_elements$Element$row,
 					_user$project$Styles$Main,
@@ -32663,12 +32722,12 @@ var _user$project$Client$view = function (model) {
 						_1: A2(_elm_lang$core$List$map, _user$project$Contexts$columnFromLevelContext, model.levelContexts)
 					});
 			} else {
-				var _p6 = _p4._0;
-				var _p5 = model.table;
-				if (_p5.ctor === 'Nothing') {
-					return A2(_user$project$TableMeta$viewTableMeta, _p6, language);
+				var _p7 = _p5._0;
+				var _p6 = model.table;
+				if (_p6.ctor === 'Nothing') {
+					return A2(_user$project$TableMeta$viewTableMeta, _p7, language);
 				} else {
-					return A4(_user$project$Table$viewTable, _p5._0, _p6, model.showPlot, language);
+					return A4(_user$project$Table$viewTable, _p6._0, _p7, model.showPlot, language);
 				}
 			}
 		}());
@@ -32698,7 +32757,7 @@ var _user$project$Client$main = _elm_lang$html$Html$program(
 var Elm = {};
 Elm['Client'] = Elm['Client'] || {};
 if (typeof _user$project$Client$main !== 'undefined') {
-    _user$project$Client$main(Elm['Client'], 'Client', {"types":{"unions":{"Dict.LeafColor":{"args":[],"tags":{"LBBlack":[],"LBlack":[]}},"Dict.Dict":{"args":["k","v"],"tags":{"RBNode_elm_builtin":["Dict.NColor","k","v","Dict.Dict k v","Dict.Dict k v"],"RBEmpty_elm_builtin":["Dict.LeafColor"]}},"Types.Msg":{"args":[],"tags":{"ToggleTableMetaView":[],"SelectSite":["Types.Site"],"SelectLevel":["Types.Level","Int"],"TableLoaded":["Result.Result Http.Error Types.TableData"],"LevelLoaded":["Types.Level","Int","Result.Result Http.Error (List Types.Level)"],"ToggleValue":["Types.VariableMeta","Types.ValueMeta"],"TableMetaLoaded":["Types.Level","Int","Result.Result Http.Error Types.TableMeta"],"Submit":[],"SiteLoaded":["Types.Site","Result.Result Http.Error (List Types.Level)"],"TogglePlot":[],"ToggleSort":["Types.VariableMeta"],"ToggleTableDataView":[],"SelectAll":["Types.VariableMeta"]}},"Dict.NColor":{"args":[],"tags":{"BBlack":[],"Red":[],"NBlack":[],"Black":[]}},"Http.Error":{"args":[],"tags":{"BadUrl":["String"],"NetworkError":[],"Timeout":[],"BadStatus":["Http.Response String"],"BadPayload":["String","Http.Response String"]}},"Result.Result":{"args":["error","value"],"tags":{"Ok":["value"],"Err":["error"]}}},"aliases":{"Http.Response":{"args":["body"],"type":"{ url : String , status : { code : Int, message : String } , headers : Dict.Dict String String , body : body }"},"Types.Data":{"args":[],"type":"{ key : List String, time : String, values : List String }"},"Types.ValueMeta":{"args":[],"type":"{ value : String, text : String, selected : Bool }"},"Types.Column":{"args":[],"type":"{ code : String, text : String, type_ : String }"},"Types.Site":{"args":[],"type":"{ language : String, url : Types.Url }"},"Types.Url":{"args":[],"type":"String"},"Types.Level":{"args":[],"type":"{ id : String, type_ : String, text : String }"},"Types.TableData":{"args":[],"type":"{ data : List Types.Data, columns : List Types.Column }"},"Types.VariableMeta":{"args":[],"type":"{ code : String , text : String , values : List Types.ValueMeta , time : Bool , sorted : Bool }"},"Types.TableMeta":{"args":[],"type":"{ title : String, variables : List Types.VariableMeta }"}},"message":"Types.Msg"},"versions":{"elm":"0.18.0"}});
+    _user$project$Client$main(Elm['Client'], 'Client', {"types":{"unions":{"Dict.LeafColor":{"args":[],"tags":{"LBBlack":[],"LBlack":[]}},"Dict.Dict":{"args":["k","v"],"tags":{"RBNode_elm_builtin":["Dict.NColor","k","v","Dict.Dict k v","Dict.Dict k v"],"RBEmpty_elm_builtin":["Dict.LeafColor"]}},"Types.Msg":{"args":[],"tags":{"ToggleTableMetaView":[],"SelectSite":["Types.Site"],"SelectLevel":["Types.Level","Int"],"TableLoaded":["Result.Result Http.Error Types.TableData"],"LevelLoaded":["Types.Level","Int","Result.Result Http.Error (List Types.Level)"],"ToggleValue":["Types.VariableMeta","Types.ValueMeta"],"ClearSelection":[],"TableMetaLoaded":["Types.Level","Int","Result.Result Http.Error Types.TableMeta"],"Submit":[],"SiteLoaded":["Types.Site","Result.Result Http.Error (List Types.Level)"],"TogglePlot":[],"ToggleSort":["Types.VariableMeta"],"ToggleTableDataView":[],"SelectAll":["Types.VariableMeta"]}},"Dict.NColor":{"args":[],"tags":{"BBlack":[],"Red":[],"NBlack":[],"Black":[]}},"Http.Error":{"args":[],"tags":{"BadUrl":["String"],"NetworkError":[],"Timeout":[],"BadStatus":["Http.Response String"],"BadPayload":["String","Http.Response String"]}},"Result.Result":{"args":["error","value"],"tags":{"Ok":["value"],"Err":["error"]}}},"aliases":{"Http.Response":{"args":["body"],"type":"{ url : String , status : { code : Int, message : String } , headers : Dict.Dict String String , body : body }"},"Types.Data":{"args":[],"type":"{ key : List String, time : String, values : List String }"},"Types.ValueMeta":{"args":[],"type":"{ value : String, text : String, selected : Bool }"},"Types.Column":{"args":[],"type":"{ code : String, text : String, type_ : String }"},"Types.Site":{"args":[],"type":"{ language : String, url : Types.Url }"},"Types.Url":{"args":[],"type":"String"},"Types.Level":{"args":[],"type":"{ id : String, type_ : String, text : String }"},"Types.TableData":{"args":[],"type":"{ data : List Types.Data, columns : List Types.Column }"},"Types.VariableMeta":{"args":[],"type":"{ code : String , text : String , values : List Types.ValueMeta , time : Bool , sorted : Bool }"},"Types.TableMeta":{"args":[],"type":"{ title : String, variables : List Types.VariableMeta }"}},"message":"Types.Msg"},"versions":{"elm":"0.18.0"}});
 }
 
 if (typeof define === "function" && define['amd'])

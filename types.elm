@@ -23,6 +23,7 @@ type Msg
     | ToggleSort VariableMeta
     | TogglePlot
     | SelectAll VariableMeta
+    | ClearSelection
 
 
 type alias Model =
