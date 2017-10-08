@@ -7,7 +7,9 @@
 
 # Query Results
 * Show comments
+* Make background fill vertically
 
 # Plot
 * Make plot interactive
 * Make y-axis (optionally) zero-based
+* Make background fill vertically
