@@ -1,0 +1,4 @@
+Cache responses
+Show comments
+Add help on hover
+Make plot interactive
