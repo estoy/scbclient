@@ -30795,6 +30795,17 @@ var _user$project$Api$loadSiteCmd = function (site) {
 			_elm_lang$core$Json_Decode$list(_user$project$Api$levelDecoder)));
 };
 
+var _user$project$Attributes$titleAttributes = {
+	ctor: '::',
+	_0: _mdgriffith$style_elements$Element_Attributes$spread,
+	_1: {
+		ctor: '::',
+		_0: _mdgriffith$style_elements$Element_Attributes$spacing(10),
+		_1: {ctor: '[]'}
+	}
+};
+var _user$project$Attributes$buttonHeight = _mdgriffith$style_elements$Element_Attributes$height(
+	_mdgriffith$style_elements$Element_Attributes$px(30));
 var _user$project$Attributes$listAttributes = {
 	ctor: '::',
 	_0: _mdgriffith$style_elements$Element_Attributes$spacing(5),
@@ -31224,6 +31235,22 @@ var _user$project$Styles$stylesheet = _mdgriffith$style_elements$Style$styleShee
 		}
 	});
 
+var _user$project$Elements$titleElement = function (title) {
+	return A3(
+		_mdgriffith$style_elements$Element$el,
+		_user$project$Styles$TableTitle,
+		{ctor: '[]'},
+		A3(
+			_mdgriffith$style_elements$Element$paragraph,
+			_user$project$Styles$None,
+			{ctor: '[]'},
+			{
+				ctor: '::',
+				_0: _mdgriffith$style_elements$Element$text(title),
+				_1: {ctor: '[]'}
+			}));
+};
+
 var _user$project$DataPlot$emptyVariableMeta = A5(
 	_user$project$Types$VariableMeta,
 	'',
@@ -31525,18 +31552,10 @@ var _user$project$DataPlot$viewPlot = F2(
 				_0: A3(
 					_mdgriffith$style_elements$Element$row,
 					_user$project$Styles$None,
+					_user$project$Attributes$titleAttributes,
 					{
 						ctor: '::',
-						_0: _mdgriffith$style_elements$Element_Attributes$spread,
-						_1: {ctor: '[]'}
-					},
-					{
-						ctor: '::',
-						_0: A3(
-							_mdgriffith$style_elements$Element$el,
-							_user$project$Styles$TableTitle,
-							{ctor: '[]'},
-							_mdgriffith$style_elements$Element$text(meta.title)),
+						_0: _user$project$Elements$titleElement(meta.title),
 						_1: {
 							ctor: '::',
 							_0: A3(
@@ -31551,7 +31570,11 @@ var _user$project$DataPlot$viewPlot = F2(
 										{
 											ctor: '::',
 											_0: _mdgriffith$style_elements$Element_Events$onClick(_user$project$Types$TogglePlot),
-											_1: {ctor: '[]'}
+											_1: {
+												ctor: '::',
+												_0: _user$project$Attributes$buttonHeight,
+												_1: {ctor: '[]'}
+											}
 										},
 										_mdgriffith$style_elements$Element$text('X')),
 									_1: {ctor: '[]'}
@@ -31936,18 +31959,10 @@ var _user$project$Table$viewTable = F3(
 					_0: A3(
 						_mdgriffith$style_elements$Element$row,
 						_user$project$Styles$None,
+						_user$project$Attributes$titleAttributes,
 						{
 							ctor: '::',
-							_0: _mdgriffith$style_elements$Element_Attributes$spread,
-							_1: {ctor: '[]'}
-						},
-						{
-							ctor: '::',
-							_0: A3(
-								_mdgriffith$style_elements$Element$el,
-								_user$project$Styles$TableTitle,
-								{ctor: '[]'},
-								_mdgriffith$style_elements$Element$text(meta.title)),
+							_0: _user$project$Elements$titleElement(meta.title),
 							_1: {
 								ctor: '::',
 								_0: A3(
@@ -31963,7 +31978,7 @@ var _user$project$Table$viewTable = F3(
 										_0: A3(
 											_mdgriffith$style_elements$Element$button,
 											plotButtonStyle,
-											plotButtonAttributes,
+											{ctor: '::', _0: _user$project$Attributes$buttonHeight, _1: plotButtonAttributes},
 											_mdgriffith$style_elements$Element$text('Plot')),
 										_1: {
 											ctor: '::',
@@ -31973,7 +31988,11 @@ var _user$project$Table$viewTable = F3(
 												{
 													ctor: '::',
 													_0: _mdgriffith$style_elements$Element_Events$onClick(_user$project$Types$ToggleTableDataView),
-													_1: {ctor: '[]'}
+													_1: {
+														ctor: '::',
+														_0: _user$project$Attributes$buttonHeight,
+														_1: {ctor: '[]'}
+													}
 												},
 												_mdgriffith$style_elements$Element$text('X')),
 											_1: {ctor: '[]'}
@@ -32193,7 +32212,7 @@ var _user$project$TableMeta$viewTableMeta = function (meta) {
 		_1: {ctor: '[]'}
 	};
 	var buttonStyle = _p2._0;
-	var buttonAttributes = _p2._1;
+	var submitButtonAttributes = _p2._1;
 	return A3(
 		_mdgriffith$style_elements$Element$column,
 		_user$project$Styles$Table,
@@ -32203,18 +32222,10 @@ var _user$project$TableMeta$viewTableMeta = function (meta) {
 			_0: A3(
 				_mdgriffith$style_elements$Element$row,
 				_user$project$Styles$None,
+				_user$project$Attributes$titleAttributes,
 				{
 					ctor: '::',
-					_0: _mdgriffith$style_elements$Element_Attributes$spread,
-					_1: {ctor: '[]'}
-				},
-				{
-					ctor: '::',
-					_0: A3(
-						_mdgriffith$style_elements$Element$el,
-						_user$project$Styles$TableTitle,
-						{ctor: '[]'},
-						_mdgriffith$style_elements$Element$text(meta.title)),
+					_0: _user$project$Elements$titleElement(meta.title),
 					_1: {
 						ctor: '::',
 						_0: A3(
@@ -32230,7 +32241,7 @@ var _user$project$TableMeta$viewTableMeta = function (meta) {
 								_0: A3(
 									_mdgriffith$style_elements$Element$button,
 									buttonStyle,
-									buttonAttributes,
+									{ctor: '::', _0: _user$project$Attributes$buttonHeight, _1: submitButtonAttributes},
 									_mdgriffith$style_elements$Element$text('Submit')),
 								_1: {
 									ctor: '::',
@@ -32240,7 +32251,11 @@ var _user$project$TableMeta$viewTableMeta = function (meta) {
 										{
 											ctor: '::',
 											_0: _mdgriffith$style_elements$Element_Events$onClick(_user$project$Types$ToggleTableMetaView),
-											_1: {ctor: '[]'}
+											_1: {
+												ctor: '::',
+												_0: _user$project$Attributes$buttonHeight,
+												_1: {ctor: '[]'}
+											}
 										},
 										_mdgriffith$style_elements$Element$text('X')),
 									_1: {ctor: '[]'}

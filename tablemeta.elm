@@ -3,7 +3,8 @@ module TableMeta exposing (viewTableMeta, toggleValueForTable, modelWithTableMet
 import Types exposing (..)
 import Styles exposing (..)
 import Utils exposing (mapIf)
-import Attributes exposing (columnAttributes, listAttributes)
+import Attributes exposing (columnAttributes, listAttributes,  buttonHeight, titleAttributes)
+import Elements exposing (titleElement)
 
 
 -- External ------
@@ -24,7 +25,7 @@ viewTableMeta meta =
             meta.variables
                 |> List.all hasSelection
 
-        (buttonStyle, buttonAttributes) =
+        (buttonStyle, submitButtonAttributes) =
             if completeSelection then
                 (Main, [ onClick Submit])
             else
@@ -34,12 +35,12 @@ viewTableMeta meta =
         column Table
             columnAttributes
             [ row None
-                [ spread ]
-                [ el TableTitle [] <| text meta.title
+                titleAttributes
+                [ titleElement meta.title
                 , (row None
                     [ spacing 5 ]
-                    [ button buttonStyle buttonAttributes  <| text "Submit"
-                    , button Main [ onClick ToggleTableMetaView ] <| text "X"
+                    [ button buttonStyle (buttonHeight :: submitButtonAttributes)  <| text "Submit"
+                    , button Main [ onClick ToggleTableMetaView, buttonHeight ] <| text "X"
                     ]
                   )
                 ]

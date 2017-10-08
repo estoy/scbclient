@@ -10,7 +10,7 @@ import Contexts exposing (elementFromSite, columnFromLevelContext, modelWithSite
 import Config exposing (..)
 
 
--- External
+-- External ---------------------
 
 import Html exposing (Html)
 import Element exposing (layout, row, column)

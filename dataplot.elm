@@ -2,8 +2,8 @@ module DataPlot exposing (viewPlot, canPlot)
 
 import Types exposing (..)
 import Styles exposing (..)
-import Attributes exposing (columnAttributes)
-
+import Attributes exposing (columnAttributes, buttonHeight, titleAttributes)
+import Elements exposing (titleElement)
 
 -- External ------
 
@@ -117,11 +117,11 @@ viewPlot data meta =
         column Table
             columnAttributes
             [ row None
-                [ spread ]
-                [ el TableTitle [] <| text meta.title
+                titleAttributes
+                [ titleElement meta.title
                 , (row None
                     []
-                    [ button Main [ onClick TogglePlot ] <| text "X"
+                    [ button Main [ onClick TogglePlot, buttonHeight ] <| text "X"
                     ]
                   )
                 ]

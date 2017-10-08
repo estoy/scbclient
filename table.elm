@@ -3,8 +3,9 @@ module Table exposing (viewTable)
 import Types exposing (..)
 import Styles exposing (..)
 import Utils exposing (groupBy)
-import Attributes exposing (columnAttributes)
+import Attributes exposing (columnAttributes, buttonHeight, titleAttributes)
 import DataPlot exposing (viewPlot, canPlot)
+import Elements exposing (titleElement)
 
 
 -- External ------
@@ -38,12 +39,12 @@ viewTable table meta showPlot =
                 column Table
                     columnAttributes
                     [ row None
-                        [ spread ]
-                        [ el TableTitle [] <| text meta.title
+                        titleAttributes
+                        [ titleElement meta.title
                         , (row None
                             [ spacing 5 ]
-                            [ button plotButtonStyle plotButtonAttributes <| text "Plot"
-                            , button Main [ onClick ToggleTableDataView ] <| text "X"
+                            [ button plotButtonStyle (buttonHeight :: plotButtonAttributes) <| text "Plot"
+                            , button Main [ onClick ToggleTableDataView, buttonHeight ] <| text "X"
                             ]
                           )
                         ]
