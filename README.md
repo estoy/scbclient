@@ -6,5 +6,8 @@ At any time you can close the current page and go back to the previous one by pr
 # N.B.
 The server exposing the API doesn't handle preflight calls well so you'll need to help the browser along a bit by, for instance, installing an extension that handles CORS.
 # Planned Improvements
-* Plot graphs of numeric data
 * Cache results
+* Make plot interactive: Give details on hover
+* Improve query selection: *Select all* for time dimension
+## Recently done
+* Plot graphs of numeric data
