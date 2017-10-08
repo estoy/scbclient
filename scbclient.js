@@ -30774,9 +30774,9 @@ var _user$project$Styles$stylesheet = _mdgriffith$style_elements$Style$styleShee
 		}
 	});
 
-var _user$project$Types$Model = F6(
-	function (a, b, c, d, e, f) {
-		return {siteContext: a, levelContexts: b, tableMeta: c, table: d, showPlot: e, latestError: f};
+var _user$project$Types$Model = F7(
+	function (a, b, c, d, e, f, g) {
+		return {siteContext: a, levelContexts: b, tableMeta: c, table: d, showPlot: e, plotFromYAtZero: f, latestError: g};
 	});
 var _user$project$Types$SiteCtx = F2(
 	function (a, b) {
@@ -30834,6 +30834,7 @@ var _user$project$Types$Column = F3(
 	function (a, b, c) {
 		return {code: a, text: b, type_: c};
 	});
+var _user$project$Types$TogglePlotOrigo = {ctor: 'TogglePlotOrigo'};
 var _user$project$Types$ClearSelection = {ctor: 'ClearSelection'};
 var _user$project$Types$SelectAll = function (a) {
 	return {ctor: 'SelectAll', _0: a};
@@ -30871,6 +30872,7 @@ var _user$project$Types$SiteLoaded = F2(
 var _user$project$Types$SelectSite = function (a) {
 	return {ctor: 'SelectSite', _0: a};
 };
+var _user$project$Types$ToggleOriginKey = {ctor: 'ToggleOriginKey'};
 var _user$project$Types$ClearSelectionsKey = {ctor: 'ClearSelectionsKey'};
 var _user$project$Types$SubmitKey = {ctor: 'SubmitKey'};
 var _user$project$Types$SelectAllKey = {ctor: 'SelectAllKey'};
@@ -31306,6 +31308,99 @@ var _user$project$Elements$titleRow = F2(
 			});
 	});
 
+var _user$project$Translations$lookup = F2(
+	function (key, table) {
+		return _elm_lang$core$List$head(
+			A2(
+				_elm_lang$core$List$map,
+				function (_p0) {
+					var _p1 = _p0;
+					return _p1._1;
+				},
+				A2(
+					_elm_lang$core$List$filter,
+					function (_p2) {
+						var _p3 = _p2;
+						return _elm_lang$core$Native_Utils.eq(_p3._0, key);
+					},
+					table)));
+	});
+var _user$project$Translations$emptyTranslation = {ctor: '[]'};
+var _user$project$Translations$swedish = {
+	ctor: '::',
+	_0: {ctor: '_Tuple2', _0: _user$project$Types$PlotKey, _1: 'Plotta'},
+	_1: {
+		ctor: '::',
+		_0: {ctor: '_Tuple2', _0: _user$project$Types$SortKey, _1: 'Sortera'},
+		_1: {
+			ctor: '::',
+			_0: {ctor: '_Tuple2', _0: _user$project$Types$SelectAllKey, _1: 'Välj alla'},
+			_1: {
+				ctor: '::',
+				_0: {ctor: '_Tuple2', _0: _user$project$Types$SubmitKey, _1: 'Skicka'},
+				_1: {
+					ctor: '::',
+					_0: {ctor: '_Tuple2', _0: _user$project$Types$ClearSelectionsKey, _1: 'Rensa alla val'},
+					_1: {
+						ctor: '::',
+						_0: {ctor: '_Tuple2', _0: _user$project$Types$ToggleOriginKey, _1: 'Skifta origo'},
+						_1: {ctor: '[]'}
+					}
+				}
+			}
+		}
+	}
+};
+var _user$project$Translations$english = {
+	ctor: '::',
+	_0: {ctor: '_Tuple2', _0: _user$project$Types$PlotKey, _1: 'Plot'},
+	_1: {
+		ctor: '::',
+		_0: {ctor: '_Tuple2', _0: _user$project$Types$SortKey, _1: 'Sort'},
+		_1: {
+			ctor: '::',
+			_0: {ctor: '_Tuple2', _0: _user$project$Types$SelectAllKey, _1: 'Select all'},
+			_1: {
+				ctor: '::',
+				_0: {ctor: '_Tuple2', _0: _user$project$Types$SubmitKey, _1: 'Submit'},
+				_1: {
+					ctor: '::',
+					_0: {ctor: '_Tuple2', _0: _user$project$Types$ClearSelectionsKey, _1: 'Clear all selections'},
+					_1: {
+						ctor: '::',
+						_0: {ctor: '_Tuple2', _0: _user$project$Types$ToggleOriginKey, _1: 'Toggle origo'},
+						_1: {ctor: '[]'}
+					}
+				}
+			}
+		}
+	}
+};
+var _user$project$Translations$translations = _elm_lang$core$Dict$fromList(
+	{
+		ctor: '::',
+		_0: {ctor: '_Tuple2', _0: 'english', _1: _user$project$Translations$english},
+		_1: {
+			ctor: '::',
+			_0: {ctor: '_Tuple2', _0: 'svenska', _1: _user$project$Translations$swedish},
+			_1: {ctor: '[]'}
+		}
+	});
+var _user$project$Translations$translate = F2(
+	function (key, language) {
+		var lang = _elm_lang$core$String$toLower(language);
+		return A2(
+			_elm_lang$core$Maybe$withDefault,
+			'*missing*',
+			A2(
+				_user$project$Translations$lookup,
+				key,
+				A2(
+					_elm_lang$core$Maybe$withDefault,
+					_user$project$Translations$emptyTranslation,
+					A2(_elm_lang$core$Dict$get, lang, _user$project$Translations$translations))));
+	});
+
 var _user$project$DataPlot$emptyVariableMeta = A5(
 	_user$project$Types$VariableMeta,
 	'',
@@ -31507,15 +31602,17 @@ var _user$project$DataPlot$plotLine = F2(
 				return A2(_user$project$DataPlot$preparePoints, colour, seq.points);
 			});
 	});
-var _user$project$DataPlot$plotDataSequences = F2(
-	function (dataSeqs, times) {
+var _user$project$DataPlot$plotDataSequences = F3(
+	function (dataSeqs, times, plotFromYAtZero) {
+		var domainLowest = plotFromYAtZero ? _elm_lang$core$Basics$always(0) : _elm_lang$core$Basics$identity;
 		return A3(
 			_terezka$elm_plot$Plot$viewSeriesCustom,
 			_elm_lang$core$Native_Utils.update(
 				_terezka$elm_plot$Plot$defaultSeriesPlotCustomizations,
 				{
 					horizontalAxis: _user$project$DataPlot$timeAxis(times),
-					margin: {top: 20, right: 40, bottom: 20, left: 80}
+					margin: {top: 20, right: 40, bottom: 30, left: 80},
+					toDomainLowest: domainLowest
 				}),
 			A2(_elm_lang$core$List$indexedMap, _user$project$DataPlot$plotLine, dataSeqs),
 			dataSeqs);
@@ -31600,8 +31697,8 @@ var _user$project$DataPlot$subKeysToUse = function (keys) {
 				}),
 			combinedKeys));
 };
-var _user$project$DataPlot$viewPlot = F3(
-	function (data, meta, language) {
+var _user$project$DataPlot$viewPlot = F4(
+	function (data, meta, plotFromYAtZero, language) {
 		var keys = A2(
 			_elm_lang$core$List$map,
 			function (_) {
@@ -31643,8 +31740,16 @@ var _user$project$DataPlot$viewPlot = F3(
 					meta.title,
 					{
 						ctor: '::',
-						_0: A3(_user$project$Elements$buttonElement, 'X', _user$project$Types$TogglePlot, true),
-						_1: {ctor: '[]'}
+						_0: A3(
+							_user$project$Elements$buttonElement,
+							A2(_user$project$Translations$translate, _user$project$Types$ToggleOriginKey, language),
+							_user$project$Types$TogglePlotOrigo,
+							true),
+						_1: {
+							ctor: '::',
+							_0: A3(_user$project$Elements$buttonElement, 'X', _user$project$Types$TogglePlot, true),
+							_1: {ctor: '[]'}
+						}
 					}),
 				_1: {
 					ctor: '::',
@@ -31672,7 +31777,7 @@ var _user$project$DataPlot$viewPlot = F3(
 									}
 								},
 								_mdgriffith$style_elements$Element$html(
-									A2(_user$project$DataPlot$plotDataSequences, data, times))),
+									A3(_user$project$DataPlot$plotDataSequences, data, times, plotFromYAtZero))),
 							_1: {
 								ctor: '::',
 								_0: A2(_user$project$DataPlot$legend, data, subKeyIndices),
@@ -31721,91 +31826,6 @@ var _user$project$DataPlot$canPlot = F2(
 			1);
 		var isAllNumeric = A2(_elm_lang$core$List$all, _user$project$DataPlot$isNumericSequence, data);
 		return onlyHasSingleDataPoints && isAllNumeric;
-	});
-
-var _user$project$Translations$lookup = F2(
-	function (key, table) {
-		return _elm_lang$core$List$head(
-			A2(
-				_elm_lang$core$List$map,
-				function (_p0) {
-					var _p1 = _p0;
-					return _p1._1;
-				},
-				A2(
-					_elm_lang$core$List$filter,
-					function (_p2) {
-						var _p3 = _p2;
-						return _elm_lang$core$Native_Utils.eq(_p3._0, key);
-					},
-					table)));
-	});
-var _user$project$Translations$emptyTranslation = {ctor: '[]'};
-var _user$project$Translations$swedish = {
-	ctor: '::',
-	_0: {ctor: '_Tuple2', _0: _user$project$Types$PlotKey, _1: 'Plotta'},
-	_1: {
-		ctor: '::',
-		_0: {ctor: '_Tuple2', _0: _user$project$Types$SortKey, _1: 'Sortera'},
-		_1: {
-			ctor: '::',
-			_0: {ctor: '_Tuple2', _0: _user$project$Types$SelectAllKey, _1: 'Välj alla'},
-			_1: {
-				ctor: '::',
-				_0: {ctor: '_Tuple2', _0: _user$project$Types$SubmitKey, _1: 'Skicka'},
-				_1: {
-					ctor: '::',
-					_0: {ctor: '_Tuple2', _0: _user$project$Types$ClearSelectionsKey, _1: 'Rensa alla val'},
-					_1: {ctor: '[]'}
-				}
-			}
-		}
-	}
-};
-var _user$project$Translations$english = {
-	ctor: '::',
-	_0: {ctor: '_Tuple2', _0: _user$project$Types$PlotKey, _1: 'Plot'},
-	_1: {
-		ctor: '::',
-		_0: {ctor: '_Tuple2', _0: _user$project$Types$SortKey, _1: 'Sort'},
-		_1: {
-			ctor: '::',
-			_0: {ctor: '_Tuple2', _0: _user$project$Types$SelectAllKey, _1: 'Select all'},
-			_1: {
-				ctor: '::',
-				_0: {ctor: '_Tuple2', _0: _user$project$Types$SubmitKey, _1: 'Submit'},
-				_1: {
-					ctor: '::',
-					_0: {ctor: '_Tuple2', _0: _user$project$Types$ClearSelectionsKey, _1: 'Clear all selections'},
-					_1: {ctor: '[]'}
-				}
-			}
-		}
-	}
-};
-var _user$project$Translations$translations = _elm_lang$core$Dict$fromList(
-	{
-		ctor: '::',
-		_0: {ctor: '_Tuple2', _0: 'english', _1: _user$project$Translations$english},
-		_1: {
-			ctor: '::',
-			_0: {ctor: '_Tuple2', _0: 'svenska', _1: _user$project$Translations$swedish},
-			_1: {ctor: '[]'}
-		}
-	});
-var _user$project$Translations$translate = F2(
-	function (key, language) {
-		var lang = _elm_lang$core$String$toLower(language);
-		return A2(
-			_elm_lang$core$Maybe$withDefault,
-			'*missing*',
-			A2(
-				_user$project$Translations$lookup,
-				key,
-				A2(
-					_elm_lang$core$Maybe$withDefault,
-					_user$project$Translations$emptyTranslation,
-					A2(_elm_lang$core$Dict$get, lang, _user$project$Translations$translations))));
 	});
 
 var _user$project$Table$emptyVariableMeta = A5(
@@ -32078,8 +32098,8 @@ var _user$project$Table$viewValues = F2(
 						A2(_elm_lang$core$Basics_ops['++'], timeHeaders, dataRows)))
 			});
 	});
-var _user$project$Table$viewTable = F4(
-	function (table, meta, showPlot, language) {
+var _user$project$Table$viewTable = F5(
+	function (table, meta, showPlot, plotFromYAtZero, language) {
 		var data = A2(_user$project$Table$dataSequences, table, meta);
 		var isPlottable = A2(_user$project$DataPlot$canPlot, data, table.columns);
 		var _p0 = showPlot;
@@ -32113,7 +32133,7 @@ var _user$project$Table$viewTable = F4(
 					}
 				});
 		} else {
-			return A3(_user$project$DataPlot$viewPlot, data, meta, language);
+			return A4(_user$project$DataPlot$viewPlot, data, meta, plotFromYAtZero, language);
 		}
 	});
 
@@ -32678,6 +32698,14 @@ var _user$project$Client$update = F2(
 						{showPlot: !model.showPlot}),
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
+			case 'TogglePlotOrigo':
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{plotFromYAtZero: !model.plotFromYAtZero}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
 			case 'SelectAll':
 				var _p3 = model.tableMeta;
 				if (_p3.ctor === 'Just') {
@@ -32746,7 +32774,7 @@ var _user$project$Client$view = function (model) {
 				if (_p6.ctor === 'Nothing') {
 					return A2(_user$project$TableMeta$viewTableMeta, _p7, language);
 				} else {
-					return A4(_user$project$Table$viewTable, _p6._0, _p7, model.showPlot, language);
+					return A5(_user$project$Table$viewTable, _p6._0, _p7, model.showPlot, model.plotFromYAtZero, language);
 				}
 			}
 		}());
@@ -32757,7 +32785,8 @@ var _user$project$Client$initialModel = {
 	tableMeta: _elm_lang$core$Maybe$Nothing,
 	table: _elm_lang$core$Maybe$Nothing,
 	latestError: _elm_lang$core$Maybe$Nothing,
-	showPlot: false
+	showPlot: false,
+	plotFromYAtZero: false
 };
 var _user$project$Client$main = _elm_lang$html$Html$program(
 	{
@@ -32776,7 +32805,7 @@ var _user$project$Client$main = _elm_lang$html$Html$program(
 var Elm = {};
 Elm['Client'] = Elm['Client'] || {};
 if (typeof _user$project$Client$main !== 'undefined') {
-    _user$project$Client$main(Elm['Client'], 'Client', {"types":{"unions":{"Dict.LeafColor":{"args":[],"tags":{"LBBlack":[],"LBlack":[]}},"Dict.Dict":{"args":["k","v"],"tags":{"RBNode_elm_builtin":["Dict.NColor","k","v","Dict.Dict k v","Dict.Dict k v"],"RBEmpty_elm_builtin":["Dict.LeafColor"]}},"Types.Msg":{"args":[],"tags":{"ToggleTableMetaView":[],"SelectSite":["Types.Site"],"SelectLevel":["Types.Level","Int"],"TableLoaded":["Result.Result Http.Error Types.TableData"],"LevelLoaded":["Types.Level","Int","Result.Result Http.Error (List Types.Level)"],"ToggleValue":["Types.VariableMeta","Types.ValueMeta"],"ClearSelection":[],"TableMetaLoaded":["Types.Level","Int","Result.Result Http.Error Types.TableMeta"],"Submit":[],"SiteLoaded":["Types.Site","Result.Result Http.Error (List Types.Level)"],"TogglePlot":[],"ToggleSort":["Types.VariableMeta"],"ToggleTableDataView":[],"SelectAll":["Types.VariableMeta"]}},"Dict.NColor":{"args":[],"tags":{"BBlack":[],"Red":[],"NBlack":[],"Black":[]}},"Http.Error":{"args":[],"tags":{"BadUrl":["String"],"NetworkError":[],"Timeout":[],"BadStatus":["Http.Response String"],"BadPayload":["String","Http.Response String"]}},"Result.Result":{"args":["error","value"],"tags":{"Ok":["value"],"Err":["error"]}}},"aliases":{"Http.Response":{"args":["body"],"type":"{ url : String , status : { code : Int, message : String } , headers : Dict.Dict String String , body : body }"},"Types.Data":{"args":[],"type":"{ key : List String, time : String, values : List String }"},"Types.ValueMeta":{"args":[],"type":"{ value : String, text : String, selected : Bool }"},"Types.Column":{"args":[],"type":"{ code : String, text : String, type_ : String }"},"Types.Site":{"args":[],"type":"{ language : String, url : Types.Url }"},"Types.Url":{"args":[],"type":"String"},"Types.Level":{"args":[],"type":"{ id : String, type_ : String, text : String }"},"Types.TableData":{"args":[],"type":"{ data : List Types.Data, columns : List Types.Column }"},"Types.VariableMeta":{"args":[],"type":"{ code : String , text : String , values : List Types.ValueMeta , time : Bool , sorted : Bool }"},"Types.TableMeta":{"args":[],"type":"{ title : String, variables : List Types.VariableMeta }"}},"message":"Types.Msg"},"versions":{"elm":"0.18.0"}});
+    _user$project$Client$main(Elm['Client'], 'Client', {"types":{"unions":{"Dict.LeafColor":{"args":[],"tags":{"LBBlack":[],"LBlack":[]}},"Dict.Dict":{"args":["k","v"],"tags":{"RBNode_elm_builtin":["Dict.NColor","k","v","Dict.Dict k v","Dict.Dict k v"],"RBEmpty_elm_builtin":["Dict.LeafColor"]}},"Types.Msg":{"args":[],"tags":{"ToggleTableMetaView":[],"SelectSite":["Types.Site"],"SelectLevel":["Types.Level","Int"],"TableLoaded":["Result.Result Http.Error Types.TableData"],"LevelLoaded":["Types.Level","Int","Result.Result Http.Error (List Types.Level)"],"ToggleValue":["Types.VariableMeta","Types.ValueMeta"],"ClearSelection":[],"TableMetaLoaded":["Types.Level","Int","Result.Result Http.Error Types.TableMeta"],"Submit":[],"SiteLoaded":["Types.Site","Result.Result Http.Error (List Types.Level)"],"TogglePlot":[],"ToggleSort":["Types.VariableMeta"],"ToggleTableDataView":[],"SelectAll":["Types.VariableMeta"],"TogglePlotOrigo":[]}},"Dict.NColor":{"args":[],"tags":{"BBlack":[],"Red":[],"NBlack":[],"Black":[]}},"Http.Error":{"args":[],"tags":{"BadUrl":["String"],"NetworkError":[],"Timeout":[],"BadStatus":["Http.Response String"],"BadPayload":["String","Http.Response String"]}},"Result.Result":{"args":["error","value"],"tags":{"Ok":["value"],"Err":["error"]}}},"aliases":{"Http.Response":{"args":["body"],"type":"{ url : String , status : { code : Int, message : String } , headers : Dict.Dict String String , body : body }"},"Types.Data":{"args":[],"type":"{ key : List String, time : String, values : List String }"},"Types.ValueMeta":{"args":[],"type":"{ value : String, text : String, selected : Bool }"},"Types.Column":{"args":[],"type":"{ code : String, text : String, type_ : String }"},"Types.Site":{"args":[],"type":"{ language : String, url : Types.Url }"},"Types.Url":{"args":[],"type":"String"},"Types.Level":{"args":[],"type":"{ id : String, type_ : String, text : String }"},"Types.TableData":{"args":[],"type":"{ data : List Types.Data, columns : List Types.Column }"},"Types.VariableMeta":{"args":[],"type":"{ code : String , text : String , values : List Types.ValueMeta , time : Bool , sorted : Bool }"},"Types.TableMeta":{"args":[],"type":"{ title : String, variables : List Types.VariableMeta }"}},"message":"Types.Msg"},"versions":{"elm":"0.18.0"}});
 }
 
 if (typeof define === "function" && define['amd'])

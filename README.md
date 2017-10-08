@@ -16,4 +16,6 @@ The server exposing the API doesn't handle preflight calls well so you'll need t
 * Make plot interactive: Give details on hover
 ## Recently done
 * Plot graphs of numeric data
+* Optinally shift origo for Y axis.
 * Improve query selection: *Select all* for time dimension
+* Improve query selection: Clear all selections

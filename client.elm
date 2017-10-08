@@ -25,6 +25,7 @@ initialModel =
     , table = Nothing
     , latestError = Nothing
     , showPlot = False
+    , plotFromYAtZero = False
     }
 
 
@@ -52,7 +53,7 @@ view model =
                             viewTableMeta meta language
 
                         Just table ->
-                            viewTable table meta model.showPlot language
+                            viewTable table meta model.showPlot model.plotFromYAtZero language
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -119,6 +120,9 @@ update msg model =
 
         TogglePlot ->
             ( { model | showPlot = not model.showPlot }, Cmd.none )
+
+        TogglePlotOrigo ->
+            ( { model | plotFromYAtZero = not model.plotFromYAtZero }, Cmd.none )
 
         SelectAll variable ->
             case model.tableMeta of

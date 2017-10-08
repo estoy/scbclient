@@ -24,6 +24,7 @@ english =
     , ( SelectAllKey, "Select all" )
     , ( SubmitKey, "Submit" )
     , ( ClearSelectionsKey, "Clear all selections" )
+    , ( ToggleOriginKey, "Toggle origo" )
     ]
 
 
@@ -34,6 +35,7 @@ swedish =
     , ( SelectAllKey, "Välj alla" )
     , ( SubmitKey, "Skicka" )
     , ( ClearSelectionsKey, "Rensa alla val" )
+    , ( ToggleOriginKey, "Skifta origo" )
     ]
 
 
@@ -49,9 +51,10 @@ translations =
         , ( "svenska", swedish )
         ]
 
+
 lookup : TranslationKey -> List ( TranslationKey, String ) -> Maybe String
 lookup key table =
     table
-        |> List.filter (\(k, v) -> k == key)
-        |> List.map (\(k, v) -> v)
+        |> List.filter (\( k, v ) -> k == key)
+        |> List.map (\( k, v ) -> v)
         |> List.head

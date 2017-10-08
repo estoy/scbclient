@@ -4,6 +4,7 @@ import Types exposing (..)
 import Styles exposing (..)
 import Attributes exposing (columnAttributes, buttonHeight)
 import Elements exposing (buttonElement, titleRow)
+import Translations exposing (translate)
 
 
 -- External ------
@@ -93,8 +94,8 @@ isNumericOrEmpty str =
 -- View -----------------------------
 
 
-viewPlot : List DataSequence -> TableMeta -> String -> Element Styles variation Msg
-viewPlot data meta language =
+viewPlot : List DataSequence -> TableMeta -> Bool -> String -> Element Styles variation Msg
+viewPlot data meta plotFromYAtZero language =
     let
         times : List String
         times =
@@ -116,10 +117,13 @@ viewPlot data meta language =
     in
         column Table
             columnAttributes
-            [ titleRow meta.title [ buttonElement "X" TogglePlot True ]
+            [ titleRow meta.title
+                [ buttonElement (translate ToggleOriginKey language) TogglePlotOrigo True
+                , buttonElement "X" TogglePlot True
+                ]
             , row None
                 [ spacing 20 ]
-                [ el Main [ height fill, width (percent 70) ] <| html <| plotDataSequences data times
+                [ el Main [ height fill, width (percent 70) ] <| html <| plotDataSequences data times plotFromYAtZero
                 , legend data subKeyIndices
                 ]
             ]
@@ -181,22 +185,31 @@ legendLabel subKeyIndices index data =
         paragraph (colourForIndex index) [] [ text key ]
 
 
-plotDataSequences : List DataSequence -> List String -> Svg msg
-plotDataSequences dataSeqs times =
-    viewSeriesCustom
-        { defaultSeriesPlotCustomizations
-            | horizontalAxis = timeAxis times
-            , margin =
-                { top = 20
-                , right = 40
-                , bottom = 20
-                , left = 80
-                }
-        }
-        (dataSeqs
-            |> List.indexedMap plotLine
-        )
-        dataSeqs
+plotDataSequences : List DataSequence -> List String -> Bool -> Svg msg
+plotDataSequences dataSeqs times plotFromYAtZero =
+    let
+        domainLowest : Float -> Float
+        domainLowest =
+            if plotFromYAtZero then
+                always 0
+            else
+                identity
+    in
+        viewSeriesCustom
+            { defaultSeriesPlotCustomizations
+                | horizontalAxis = timeAxis times
+                , margin =
+                    { top = 20
+                    , right = 40
+                    , bottom = 30
+                    , left = 80
+                    }
+                , toDomainLowest = domainLowest
+            }
+            (dataSeqs
+                |> List.indexedMap plotLine
+            )
+            dataSeqs
 
 
 plotLine : Int -> DataSequence -> Series (List DataSequence) msg
@@ -298,6 +311,7 @@ reasonableTicks times =
     let
         length =
             List.length times
+
         step : Int
         step =
             max 1 ((length - 1) // 5 + 1)

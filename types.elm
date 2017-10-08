@@ -24,6 +24,7 @@ type Msg
     | TogglePlot
     | SelectAll VariableMeta
     | ClearSelection
+    | TogglePlotOrigo
 
 
 type alias Model =
@@ -32,6 +33,7 @@ type alias Model =
     , tableMeta : Maybe TableMeta
     , table : Maybe TableData
     , showPlot : Bool
+    , plotFromYAtZero : Bool
     , latestError : Maybe Http.Error
     }
 
@@ -145,3 +147,4 @@ type TranslationKey
     | SelectAllKey
     | SubmitKey
     | ClearSelectionsKey
+    | ToggleOriginKey
