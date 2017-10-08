@@ -13,3 +13,4 @@
 * Make plot interactive
 * Make y-axis (optionally) zero-based
 * Make background fill vertically
+* Show selection values that are common for all series
