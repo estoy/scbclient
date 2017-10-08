@@ -14,6 +14,6 @@ The server exposing the API doesn't handle preflight calls well so you'll need t
 # Planned Improvements
 * Cache results
 * Make plot interactive: Give details on hover
-* Improve query selection: *Select all* for time dimension
 ## Recently done
 * Plot graphs of numeric data
+* Improve query selection: *Select all* for time dimension

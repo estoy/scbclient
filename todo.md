@@ -4,7 +4,6 @@
 * Localization
 
 # Query
-* Select all for time dimension
 * Make sorting culture aware
 
 # Query Results

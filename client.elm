@@ -4,7 +4,7 @@ import Types exposing (..)
 import Styles exposing (..)
 import Attributes exposing (columnAttributes)
 import Table exposing (viewTable)
-import TableMeta exposing (viewTableMeta, toggleValueForTable, modelWithTableMeta, toggleVariableSort)
+import TableMeta exposing (viewTableMeta, toggleValueForTable, modelWithTableMeta, toggleVariableSort, selectAll)
 import Api exposing (loadSiteCmd, loadLevelCmd, submitQueryCmd)
 import Contexts exposing (elementFromSite, columnFromLevelContext, modelWithSite, modelWithLevel)
 import Config exposing (..)
@@ -115,6 +115,16 @@ update msg model =
 
         TogglePlot ->
             ( { model | showPlot = not model.showPlot }, Cmd.none )
+        
+        SelectAll variable ->
+            case model.tableMeta of
+                Just table ->
+                    ( { model | tableMeta = Just <| selectAll variable table }
+                    , Cmd.none
+                    )
+
+                Nothing ->
+                    ( model, Cmd.none )
 
 
 main : Program Never Model Msg

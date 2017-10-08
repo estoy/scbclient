@@ -22,6 +22,7 @@ type Msg
     | TableLoaded (Result Http.Error TableData)
     | ToggleSort VariableMeta
     | TogglePlot
+    | SelectAll VariableMeta
 
 
 type alias Model =

@@ -1,4 +1,4 @@
-module TableMeta exposing (viewTableMeta, toggleValueForTable, modelWithTableMeta, toggleVariableSort)
+module TableMeta exposing (viewTableMeta, toggleValueForTable, modelWithTableMeta, toggleVariableSort, selectAll)
 
 import Types exposing (..)
 import Styles exposing (..)
@@ -57,8 +57,8 @@ viewVariableMeta variable =
                 variable.values
     in
         row None
-            [ alignTop ]
-            [ el VariableName [ paddingRight 10 ] <| text variable.text
+            [ alignTop, spacing 10 ]
+            [ el VariableName [] <| text variable.text
             , column VariableData
                 ([ yScrollbar, maxHeight (px 150) ] ++ listAttributes)
                 (values
@@ -66,14 +66,14 @@ viewVariableMeta variable =
                 )
             , if not variable.time then
                 checkbox None
-                    [ paddingLeft 10 ]
+                    []
                     { onChange = \_ -> (ToggleSort variable)
                     , label = text "sort"
                     , checked = variable.sorted
                     , options = []
                     }
               else
-                text ""
+                buttonElement "select all" (SelectAll variable) True
             ]
 
 
@@ -153,3 +153,23 @@ toggleVariableSort variable table =
 toggleSort : VariableMeta -> VariableMeta
 toggleSort variable =
     { variable | sorted = not variable.sorted }
+
+
+selectAll : VariableMeta -> TableMeta -> TableMeta
+selectAll variable table =
+    let
+        variables =
+            table.variables
+                |> mapIf (\var -> var.code == variable.code) selectAllValues
+    in
+        { table | variables = variables }
+
+
+selectAllValues : VariableMeta -> VariableMeta
+selectAllValues variable =
+    { variable | values = List.map selectValue variable.values }
+
+
+selectValue : ValueMeta -> ValueMeta
+selectValue val =
+    { val | selected = True }

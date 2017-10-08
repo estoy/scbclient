@@ -30834,6 +30834,9 @@ var _user$project$Types$Column = F3(
 	function (a, b, c) {
 		return {code: a, text: b, type_: c};
 	});
+var _user$project$Types$SelectAll = function (a) {
+	return {ctor: 'SelectAll', _0: a};
+};
 var _user$project$Types$TogglePlot = {ctor: 'TogglePlot'};
 var _user$project$Types$ToggleSort = function (a) {
 	return {ctor: 'ToggleSort', _0: a};
@@ -31985,6 +31988,31 @@ var _user$project$Table$viewTable = F3(
 		}
 	});
 
+var _user$project$TableMeta$selectValue = function (val) {
+	return _elm_lang$core$Native_Utils.update(
+		val,
+		{selected: true});
+};
+var _user$project$TableMeta$selectAllValues = function (variable) {
+	return _elm_lang$core$Native_Utils.update(
+		variable,
+		{
+			values: A2(_elm_lang$core$List$map, _user$project$TableMeta$selectValue, variable.values)
+		});
+};
+var _user$project$TableMeta$selectAll = F2(
+	function (variable, table) {
+		var variables = A3(
+			_user$project$Utils$mapIf,
+			function ($var) {
+				return _elm_lang$core$Native_Utils.eq($var.code, variable.code);
+			},
+			_user$project$TableMeta$selectAllValues,
+			table.variables);
+		return _elm_lang$core$Native_Utils.update(
+			table,
+			{variables: variables});
+	});
 var _user$project$TableMeta$toggleSort = function (variable) {
 	return _elm_lang$core$Native_Utils.update(
 		variable,
@@ -32096,18 +32124,18 @@ var _user$project$TableMeta$viewVariableMeta = function (variable) {
 		{
 			ctor: '::',
 			_0: _mdgriffith$style_elements$Element_Attributes$alignTop,
-			_1: {ctor: '[]'}
+			_1: {
+				ctor: '::',
+				_0: _mdgriffith$style_elements$Element_Attributes$spacing(10),
+				_1: {ctor: '[]'}
+			}
 		},
 		{
 			ctor: '::',
 			_0: A3(
 				_mdgriffith$style_elements$Element$el,
 				_user$project$Styles$VariableName,
-				{
-					ctor: '::',
-					_0: _mdgriffith$style_elements$Element_Attributes$paddingRight(10),
-					_1: {ctor: '[]'}
-				},
+				{ctor: '[]'},
 				_mdgriffith$style_elements$Element$text(variable.text)),
 			_1: {
 				ctor: '::',
@@ -32136,11 +32164,7 @@ var _user$project$TableMeta$viewVariableMeta = function (variable) {
 					_0: (!variable.time) ? A3(
 						_mdgriffith$style_elements$Element_Input$checkbox,
 						_user$project$Styles$None,
-						{
-							ctor: '::',
-							_0: _mdgriffith$style_elements$Element_Attributes$paddingLeft(10),
-							_1: {ctor: '[]'}
-						},
+						{ctor: '[]'},
 						{
 							onChange: function (_p1) {
 								return _user$project$Types$ToggleSort(variable);
@@ -32148,7 +32172,11 @@ var _user$project$TableMeta$viewVariableMeta = function (variable) {
 							label: _mdgriffith$style_elements$Element$text('sort'),
 							checked: variable.sorted,
 							options: {ctor: '[]'}
-						}) : _mdgriffith$style_elements$Element$text(''),
+						}) : A3(
+						_user$project$Elements$buttonElement,
+						'select all',
+						_user$project$Types$SelectAll(variable),
+						true),
 					_1: {ctor: '[]'}
 				}
 			}
@@ -32468,7 +32496,7 @@ var _user$project$Client$update = F2(
 				} else {
 					return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
 				}
-			default:
+			case 'TogglePlot':
 				return {
 					ctor: '_Tuple2',
 					_0: _elm_lang$core$Native_Utils.update(
@@ -32476,6 +32504,22 @@ var _user$project$Client$update = F2(
 						{showPlot: !model.showPlot}),
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
+			default:
+				var _p3 = model.tableMeta;
+				if (_p3.ctor === 'Just') {
+					return {
+						ctor: '_Tuple2',
+						_0: _elm_lang$core$Native_Utils.update(
+							model,
+							{
+								tableMeta: _elm_lang$core$Maybe$Just(
+									A2(_user$project$TableMeta$selectAll, _p0._0, _p3._0))
+							}),
+						_1: _elm_lang$core$Platform_Cmd$none
+					};
+				} else {
+					return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
+				}
 		}
 	});
 var _user$project$Client$view = function (model) {
@@ -32483,8 +32527,8 @@ var _user$project$Client$view = function (model) {
 		_mdgriffith$style_elements$Element$layout,
 		_user$project$Styles$stylesheet,
 		function () {
-			var _p3 = model.tableMeta;
-			if (_p3.ctor === 'Nothing') {
+			var _p4 = model.tableMeta;
+			if (_p4.ctor === 'Nothing') {
 				return A3(
 					_mdgriffith$style_elements$Element$row,
 					_user$project$Styles$Main,
@@ -32506,12 +32550,12 @@ var _user$project$Client$view = function (model) {
 						_1: A2(_elm_lang$core$List$map, _user$project$Contexts$columnFromLevelContext, model.levelContexts)
 					});
 			} else {
-				var _p5 = _p3._0;
-				var _p4 = model.table;
-				if (_p4.ctor === 'Nothing') {
-					return _user$project$TableMeta$viewTableMeta(_p5);
+				var _p6 = _p4._0;
+				var _p5 = model.table;
+				if (_p5.ctor === 'Nothing') {
+					return _user$project$TableMeta$viewTableMeta(_p6);
 				} else {
-					return A3(_user$project$Table$viewTable, _p4._0, _p5, model.showPlot);
+					return A3(_user$project$Table$viewTable, _p5._0, _p6, model.showPlot);
 				}
 			}
 		}());
@@ -32541,7 +32585,7 @@ var _user$project$Client$main = _elm_lang$html$Html$program(
 var Elm = {};
 Elm['Client'] = Elm['Client'] || {};
 if (typeof _user$project$Client$main !== 'undefined') {
-    _user$project$Client$main(Elm['Client'], 'Client', {"types":{"unions":{"Dict.LeafColor":{"args":[],"tags":{"LBBlack":[],"LBlack":[]}},"Dict.Dict":{"args":["k","v"],"tags":{"RBNode_elm_builtin":["Dict.NColor","k","v","Dict.Dict k v","Dict.Dict k v"],"RBEmpty_elm_builtin":["Dict.LeafColor"]}},"Types.Msg":{"args":[],"tags":{"ToggleTableMetaView":[],"SelectSite":["Types.Site"],"SelectLevel":["Types.Level","Int"],"TableLoaded":["Result.Result Http.Error Types.TableData"],"LevelLoaded":["Types.Level","Int","Result.Result Http.Error (List Types.Level)"],"ToggleValue":["Types.VariableMeta","Types.ValueMeta"],"TableMetaLoaded":["Types.Level","Int","Result.Result Http.Error Types.TableMeta"],"Submit":[],"SiteLoaded":["Types.Site","Result.Result Http.Error (List Types.Level)"],"TogglePlot":[],"ToggleSort":["Types.VariableMeta"],"ToggleTableDataView":[]}},"Dict.NColor":{"args":[],"tags":{"BBlack":[],"Red":[],"NBlack":[],"Black":[]}},"Http.Error":{"args":[],"tags":{"BadUrl":["String"],"NetworkError":[],"Timeout":[],"BadStatus":["Http.Response String"],"BadPayload":["String","Http.Response String"]}},"Result.Result":{"args":["error","value"],"tags":{"Ok":["value"],"Err":["error"]}}},"aliases":{"Http.Response":{"args":["body"],"type":"{ url : String , status : { code : Int, message : String } , headers : Dict.Dict String String , body : body }"},"Types.Data":{"args":[],"type":"{ key : List String, time : String, values : List String }"},"Types.ValueMeta":{"args":[],"type":"{ value : String, text : String, selected : Bool }"},"Types.Column":{"args":[],"type":"{ code : String, text : String, type_ : String }"},"Types.Site":{"args":[],"type":"{ language : String, url : Types.Url }"},"Types.Url":{"args":[],"type":"String"},"Types.Level":{"args":[],"type":"{ id : String, type_ : String, text : String }"},"Types.TableData":{"args":[],"type":"{ data : List Types.Data, columns : List Types.Column }"},"Types.VariableMeta":{"args":[],"type":"{ code : String , text : String , values : List Types.ValueMeta , time : Bool , sorted : Bool }"},"Types.TableMeta":{"args":[],"type":"{ title : String, variables : List Types.VariableMeta }"}},"message":"Types.Msg"},"versions":{"elm":"0.18.0"}});
+    _user$project$Client$main(Elm['Client'], 'Client', {"types":{"unions":{"Dict.LeafColor":{"args":[],"tags":{"LBBlack":[],"LBlack":[]}},"Dict.Dict":{"args":["k","v"],"tags":{"RBNode_elm_builtin":["Dict.NColor","k","v","Dict.Dict k v","Dict.Dict k v"],"RBEmpty_elm_builtin":["Dict.LeafColor"]}},"Types.Msg":{"args":[],"tags":{"ToggleTableMetaView":[],"SelectSite":["Types.Site"],"SelectLevel":["Types.Level","Int"],"TableLoaded":["Result.Result Http.Error Types.TableData"],"LevelLoaded":["Types.Level","Int","Result.Result Http.Error (List Types.Level)"],"ToggleValue":["Types.VariableMeta","Types.ValueMeta"],"TableMetaLoaded":["Types.Level","Int","Result.Result Http.Error Types.TableMeta"],"Submit":[],"SiteLoaded":["Types.Site","Result.Result Http.Error (List Types.Level)"],"TogglePlot":[],"ToggleSort":["Types.VariableMeta"],"ToggleTableDataView":[],"SelectAll":["Types.VariableMeta"]}},"Dict.NColor":{"args":[],"tags":{"BBlack":[],"Red":[],"NBlack":[],"Black":[]}},"Http.Error":{"args":[],"tags":{"BadUrl":["String"],"NetworkError":[],"Timeout":[],"BadStatus":["Http.Response String"],"BadPayload":["String","Http.Response String"]}},"Result.Result":{"args":["error","value"],"tags":{"Ok":["value"],"Err":["error"]}}},"aliases":{"Http.Response":{"args":["body"],"type":"{ url : String , status : { code : Int, message : String } , headers : Dict.Dict String String , body : body }"},"Types.Data":{"args":[],"type":"{ key : List String, time : String, values : List String }"},"Types.ValueMeta":{"args":[],"type":"{ value : String, text : String, selected : Bool }"},"Types.Column":{"args":[],"type":"{ code : String, text : String, type_ : String }"},"Types.Site":{"args":[],"type":"{ language : String, url : Types.Url }"},"Types.Url":{"args":[],"type":"String"},"Types.Level":{"args":[],"type":"{ id : String, type_ : String, text : String }"},"Types.TableData":{"args":[],"type":"{ data : List Types.Data, columns : List Types.Column }"},"Types.VariableMeta":{"args":[],"type":"{ code : String , text : String , values : List Types.ValueMeta , time : Bool , sorted : Bool }"},"Types.TableMeta":{"args":[],"type":"{ title : String, variables : List Types.VariableMeta }"}},"message":"Types.Msg"},"versions":{"elm":"0.18.0"}});
 }
 
 if (typeof define === "function" && define['amd'])
